@@ -206,15 +206,23 @@ export function Mapa({ className }: { className?: string }) {
       </p>
 
       {/* A área clicável inteira leva à rota no Google Maps, que é o que a
-          pessoa quer fazer com um mapa num site de empresa. */}
+          pessoa quer fazer com um mapa num site de empresa.
+
+          O rótulo vai como texto DENTRO da âncora, e não como `aria-label` numa
+          âncora vazia. Os dois expõem o mesmo nome acessível, mas um link sem
+          conteúdo depende inteiramente do atributo: se ele for removido num
+          refactor, sobra um link anônimo que o leitor de tela anuncia como
+          "link" e nada mais. Com texto dentro, some o rótulo e some o link
+          junto — a falha fica visível. */}
       <a
         href={BUSINESS.mapsLink}
         target="_blank"
         rel="noopener noreferrer"
         data-cursor="Traçar rota"
         className="absolute inset-0"
-        aria-label={`Abrir rota até ${BUSINESS.address.venue} no Google Maps`}
-      />
+      >
+        <span className="sr-only">Abrir rota até {BUSINESS.address.venue} no Google Maps</span>
+      </a>
     </div>
   )
 }

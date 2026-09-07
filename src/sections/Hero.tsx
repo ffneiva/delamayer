@@ -9,24 +9,26 @@ import { cn } from '@/lib/utils'
 /**
  * A primeira dobra.
  *
- * Três decisões de carregamento moram aqui, e todas existem porque a maior
- * parte do tráfego chega de Instagram, em celular, em rede móvel:
+ * A cena 3D existe nas duas larguras, e o layout muda com ela:
  *
- * 1. **A cena WebGL é `lazy`.** O chunk do three.js passa de 700 kB. Ele é
- *    buscado depois que a página já está interativa, e o `Suspense` mostra no
- *    lugar um halo dourado — não um retângulo cinza, que prometeria uma caixa
- *    que nunca chega.
+ * · **Desktop.** A peça ocupa a metade direita, ao lado do texto. É a
+ *   composição clássica de anúncio: argumento à esquerda, produto à direita.
  *
- * 2. **Ela nem existe em tela pequena.** `useIsDesktop` decide ANTES do
- *    `lazy`, então o import dinâmico sequer é disparado no celular. Um objeto
- *    3D com pointer-follow não tem o que seguir num aparelho sem ponteiro, e a
- *    conta de bateria é real.
+ * · **Celular.** Não há metade direita para ocupar, então a peça vira um bloco
+ *   EM FLUXO, entre o título e o parágrafo — o único lugar da dobra em que ela
+ *   aparece inteira sem empurrar o botão para baixo da linha d'água.
  *
- * 3. **Nem em `prefers-reduced-motion`.** Pelo mesmo motivo.
+ *   Duas tentativas anteriores falharam, e vale registrar por quê: deixá-la
+ *   atrás do texto com um véu por cima fazia ouro brigar com branco justo em
+ *   cima dos botões; e ancorá-la com `absolute bottom-0` a jogava para fora da
+ *   tela, porque a seção cresce além de 100svh quando o conteúdo não cabe — e
+ *   aí o "bottom" da seção deixa de ser o bottom da dobra.
  *
  * O texto NUNCA depende de nada disso. Ele é HTML no bundle principal, e a
  * animação de entrada só esconde alguma coisa quando a classe `hero-armed`
- * está presente — ver o comentário em index.css.
+ * está presente — ver o comentário em index.css. Se a cena não carregar, se o
+ * WebGL não existir, se o aparelho pedir movimento reduzido, o que fica na tela
+ * é exatamente a mesma dobra, sem o enfeite.
  */
 const LINHAS = ['Do CPF travado', 'à chave do', 'apartamento.']
 
@@ -37,19 +39,15 @@ export function Hero({ ready }: { ready: boolean }) {
     <section
       id="inicio"
       className={cn(
-        'relative flex min-h-[100svh] items-center overflow-hidden pt-28 pb-20',
+        // Coluna no celular (texto, depois a peça); linha centralizada no
+        // desktop, onde a peça é posicionada de forma absoluta.
+        'relative flex min-h-[100svh] flex-col justify-center overflow-hidden pt-28 pb-20 lg:flex-row lg:items-center',
         // `hero-armed` é o interruptor de segurança: sem ele, nada é escondido.
         !reduzido && 'hero-armed',
         ready && 'hero-ready',
       )}
     >
-      {/* A cena fica atrás do texto e ocupa a metade direita no desktop. */}
-      <Cena3D
-        className="pointer-events-none absolute inset-y-0 right-0 hidden w-[52%] lg:block"
-        giroPorScroll={0.55}
-      />
-
-      <div className="container-x relative z-10">
+      <div className="container-x z-10">
         <p data-hero-fade className="label-mono mb-7 flex items-center gap-3">
           <span aria-hidden className="h-px w-10 bg-gold-700" />
           {BUSINESS.address.city} · {BUSINESS.address.state}
@@ -69,7 +67,15 @@ export function Hero({ ready }: { ready: boolean }) {
 
         <div data-hero-rule aria-hidden className="hairline mt-9 max-w-md origin-left" />
 
-        <p data-hero-fade className="mt-8 max-w-lg text-[1.02rem] leading-relaxed text-plat-300">
+        {/* Celular: bloco em fluxo, entre o fio e o parágrafo. Desktop: metade
+            direita, altura inteira, fora do fluxo — o `lg:absolute` se ancora na
+            seção, e não neste contêiner, porque ele é `static` de propósito. */}
+        <Cena3D
+          className="pointer-events-none my-8 h-[26svh] w-full lg:absolute lg:inset-y-0 lg:right-0 lg:my-0 lg:h-auto lg:w-[52%]"
+          giroPorScroll={0.55}
+        />
+
+        <p data-hero-fade className="max-w-lg text-[1.02rem] leading-relaxed text-plat-300 lg:mt-8">
           Regularizar o nome é o meio, não o fim. A gente lê o que trava o seu crédito, negocia com
           quem pode dar baixa e acompanha até a consulta mostrar o combinado.
         </p>

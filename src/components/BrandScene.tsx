@@ -1,38 +1,46 @@
-import { Canvas, type ThreeElements, useFrame, useThree } from '@react-three/fiber'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
 import { markOutline } from '@/lib/mark'
 
 /**
- * O monograma da marca, em ouro de verdade.
+ * O monograma da marca, em ouro — a peça central do site.
  *
- * Quatro decisões carregam a cena — e as quatro existem para servir à mesma
- * restrição: **nenhum byte vindo de terceiro, nenhum asset binário no
- * repositório.**
+ * Cinco decisões carregam a cena, e todas servem à mesma restrição: **nenhum
+ * byte vindo de terceiro, nenhum asset binário no repositório.**
  *
  * 1. **Ambiente cozido em código, sem HDRI.** Metal sem environment map fica
- *    amarelo-chapado: o que dá a leitura de "polido" são as faixas de luz
- *    refletidas. Em vez de baixar um `.hdr` de estúdio (2–8 MB, hospedado num
- *    CDN que um dia sai do ar), monta-se uma cena auxiliar com retângulos
- *    emissivos — softboxes — e o `PMREMGenerator` a converte, uma única vez,
- *    no cubemap que a `MeshStandardMaterial` consome.
+ *    amarelo chapado: o que dá a leitura de "polido" são as faixas de luz
+ *    refletidas. Em vez de baixar um `.hdr` de estúdio (2–8 MB, num CDN que um
+ *    dia sai do ar), monta-se uma cena auxiliar com retângulos emissivos —
+ *    softboxes — e o `PMREMGenerator` a converte, uma vez, no cubemap que a
+ *    `MeshStandardMaterial` consome.
  *
- * 2. **Geometria vinda do vetor da marca.** O "D" cortado é extrudado a partir
- *    dos mesmos pontos que desenham o favicon (ver src/lib/mark.ts). Não é uma
- *    aproximação do logotipo: é o logotipo, com espessura. Ajustar a espessura
- *    do traço muda os dois ao mesmo tempo.
+ * 2. **Geometria vinda do vetor da marca.** O símbolo é extrudado a partir dos
+ *    mesmos pontos que desenham o favicon (ver src/lib/mark.ts). Não é uma
+ *    aproximação do logotipo: é o logotipo, com espessura.
  *
- * 3. **Sem @react-three/drei.** A biblioteca resolveria ambiente, flutuação e
- *    sombra de contato, mas traz junto os loaders de HDRI e gainmap que este
- *    site nunca usa — ~250 kB de JS para três efeitos que cabem em 80 linhas.
+ * 3. **Três peças, e não uma.** O traço da marca é um só, mas ele se cruza
+ *    consigo mesmo; `markOutline` já o devolve cortado em três fitas que se
+ *    encaixam sem fenda. Extrudá-las separadamente custa duas chamadas de
+ *    desenho a mais e habilita a coisa mais interessante da cena: **a peça se
+ *    monta na entrada**, cada fita vindo da sua própria direção.
  *
- * 4. **Ouro, e não amarelo.** A cor base vem do arquivo da marca, mas o que
- *    faz o material parecer ouro é a combinação de `metalness: 1` com
- *    reflexo colorido: as softboxes são levemente quentes, e é a luz refletida
- *    — não o `color` — que produz o tom.
+ * 4. **Poça de luz no lugar de reflexo.** A primeira versão espelhava a peça
+ *    abaixo de um chão virtual. Não coube: o quadro tem ~3,9 unidades de altura
+ *    e a peça ocupa 1,6 — sobra menos do que o espelho precisaria, e o que
+ *    aparecia era um pedaço de ouro cortado na borda inferior, sem leitura de
+ *    reflexo nenhuma. O que ficou é o que a composição comporta: uma sombra de
+ *    contato e um halo elíptico quente logo abaixo da peça.
  *
- * A cena é carregada sob `React.lazy` (ver sections/Hero) e nunca monta em
- * `prefers-reduced-motion` nem em tela pequena.
+ * 5. **Sem @react-three/drei.** A biblioteca resolveria ambiente, flutuação,
+ *    reflexo e sombra de contato, mas traz junto os loaders de HDRI e gainmap
+ *    que este site nunca usa — ~250 kB de JS para efeitos que couberam aqui.
+ *
+ * A cena não monta com `prefers-reduced-motion`, nem sem WebGL (ver Cena3D).
+ * No celular ela monta em modo `compacto`: menos partículas, sem a segunda
+ * camada de poeira, sem antisserrilhado e com metade da resolução — o que sai é
+ * o que custa fill rate, que é o gargalo num aparelho de bolso.
  */
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -50,10 +58,10 @@ type Softbox = {
 /**
  * Cada retângulo só existe no reflexo — é ele que desenha o brilho no ouro.
  *
- * O estúdio envolve o objeto, inclusive por trás e por baixo. A primeira
- * versão tinha só luzes frontais, e o monograma "apagava" sempre que o
- * ponteiro o girava para longe delas: metal com `metalness: 1` não tem cor
- * própria, só reflexo, e o que havia atrás era preto.
+ * As intensidades são muito mais altas do que a intuição sugere, e isso custou
+ * uma iteração: com preenchimento em ~1, o monograma saía parecendo um contorno
+ * vazado. Metal com `metalness` alto não tem cor própria, só reflexo, e sobre
+ * fundo preto um reflexo fraco é indistinguível de reflexo nenhum.
  */
 const SOFTBOXES: Softbox[] = [
   // Key: a faixa larga que corre pela frente e define a aresta do bisel.
@@ -70,12 +78,17 @@ const SOFTBOXES: Softbox[] = [
     color: '#ffffff',
     rotation: [0, 0, Math.PI / 5],
   },
+  // Segunda barra, cruzada com a primeira: são as duas que fazem o brilho
+  // varrer a superfície quando a peça gira, em vez de acender e apagar.
+  {
+    position: [-2.4, -3, 2],
+    scale: [0.3, 7],
+    intensity: 9,
+    color: '#fff6e4',
+    rotation: [0, 0, -Math.PI / 3.4],
+  },
 
-  // Preenchimento: largos, por todos os lados, e MUITO mais fortes do que a
-  // intuição sugere. O primeiro ajuste desta cena usou intensidade ~1 aqui e o
-  // monograma saiu parecendo um contorno vazado: com `metalness: 1` o objeto
-  // não tem cor própria, só reflexo, e um preenchimento fraco sobre fundo preto
-  // é indistinguível de não ter preenchimento nenhum.
+  // Preenchimento: largos, por todos os lados.
   { position: [-7, 0, 3], scale: [9, 9], intensity: 3.4, color: '#e8d5ad' },
   { position: [7, 1.5, -2], scale: [9, 9], intensity: 3.4, color: '#dcc79c' },
   { position: [0, -5, 1], scale: [12, 6], intensity: 2.6, color: '#b8a888' },
@@ -154,37 +167,57 @@ function AmbienteDeEstudio() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Geometria do monograma
+// Geometria
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * Converte os contornos vetoriais da marca em geometria extrudada.
+ * As três fitas da marca, extrudadas separadamente.
  *
  * O bisel é o detalhe que faz a peça parecer usinada em vez de recortada: ele
  * cria a aresta fina que captura a luz da key light e desenha o contorno
  * brilhante do símbolo. Sem ele, as bordas ficam pretas e o objeto some no
  * fundo.
  */
-function useGeometriaDaMarca() {
-  return useMemo(() => {
-    const shapes = markOutline().map(({ externo, furos }) => {
-      const shape = new THREE.Shape(externo.map((p) => new THREE.Vector2(p.x, p.y)))
-      for (const furo of furos) {
-        shape.holes.push(new THREE.Path(furo.map((p) => new THREE.Vector2(p.x, p.y))))
-      }
-      return shape
-    })
-
-    return new THREE.ExtrudeGeometry(shapes, {
-      depth: 0.16,
-      bevelEnabled: true,
-      bevelThickness: 0.022,
-      bevelSize: 0.018,
-      bevelSegments: 4,
-      curveSegments: 12,
-    }).center()
-  }, [])
+function useGeometrias() {
+  return useMemo(
+    () =>
+      markOutline().map(({ externo, furos }) => {
+        const shape = new THREE.Shape(externo.map((p) => new THREE.Vector2(p.x, p.y)))
+        for (const furo of furos) {
+          shape.holes.push(new THREE.Path(furo.map((p) => new THREE.Vector2(p.x, p.y))))
+        }
+        return new THREE.ExtrudeGeometry(shape, {
+          depth: 0.17,
+          bevelEnabled: true,
+          bevelThickness: 0.024,
+          bevelSize: 0.02,
+          bevelSegments: 4,
+          curveSegments: 12,
+        })
+      }),
+    [],
+  )
 }
+
+/**
+ * De onde cada fita vem na animação de montagem.
+ *
+ * A direção de cada uma acompanha o próprio traço: a diagonal longa entra pelo
+ * canto inferior direito, na linha dela; o "D" entra pela esquerda; a segunda
+ * diagonal, por baixo. O escalonamento é curto — a peça precisa estar inteira
+ * antes de a pessoa terminar de ler o título.
+ */
+const ENTRADA = [
+  { atraso: 0.0, de: [2.3, -2.0, 1.1] as const, giro: [0.2, 0.9, 0.6] as const },
+  { atraso: 0.13, de: [-2.6, 0.7, -0.9] as const, giro: [0.35, -0.9, -0.35] as const },
+  { atraso: 0.26, de: [-1.2, -2.3, 1.0] as const, giro: [-0.5, 0.7, 0.8] as const },
+]
+
+const DURACAO_ENTRADA = 1.35
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Movimento
+// ─────────────────────────────────────────────────────────────────────────────
 
 /**
  * Posição do ponteiro normalizada em [-1, 1], lida da window.
@@ -209,25 +242,6 @@ function usePonteiroDaJanela() {
   return ponteiro
 }
 
-/** Largura aproximada do monograma, em unidades de cena. */
-const LARGURA_MARCA = 2.1
-
-/**
- * Escala o monograma para caber na largura visível.
- *
- * A câmera é fixa, então o que muda entre telas é a proporção: num desktop
- * 16:9 cabem ~9 unidades de cena na horizontal; num celular em pé, ~2. Com
- * escala constante, o mesmo símbolo que fica elegante no monitor invade a tela
- * inteira do telefone.
- *
- * `viewport` já vem do R3F em unidades de mundo no plano z=0, e é recalculado
- * no resize — então basta uma regra de três.
- */
-function useEscalaAjustada() {
-  const viewport = useThree((s) => s.viewport)
-  return Math.min(1.7, Math.max(0.45, (viewport.width * 0.5) / LARGURA_MARCA))
-}
-
 /**
  * Onde a cena está na tela, de −1 (saindo por cima) a +1 (entrando por baixo).
  *
@@ -236,9 +250,6 @@ function useEscalaAjustada() {
  * passava de 85°, e o monograma aparecia **de perfil** — uma lasca dourada de
  * três pixels de largura. Um objeto que existe em duas seções precisa de uma
  * referência local, não global.
- *
- * Com a medida local, cada cena gira em torno de zero quando está centralizada,
- * que é exatamente quando alguém a está olhando.
  *
  * A leitura é feita fora do ciclo de render do React: um `useState` aqui
  * re-renderizaria a árvore da cena a cada evento de scroll para mudar um número
@@ -267,28 +278,59 @@ function usePosicaoNaTela(gl: THREE.WebGLRenderer) {
   return posicao
 }
 
-function Monograma({
-  giroPorScroll = 0,
-  ...props
-}: ThreeElements['group'] & { giroPorScroll?: number }) {
-  const externo = useRef<THREE.Group>(null)
-  const interno = useRef<THREE.Group>(null)
+/** Largura aproximada do monograma, em unidades de cena. */
+const LARGURA_MARCA = 2.1
+
+/**
+ * Escala o monograma para caber na largura visível.
+ *
+ * A câmera é fixa, então o que muda entre telas é a proporção: num desktop
+ * 16:9 cabem ~9 unidades de cena na horizontal; num celular em pé, ~4. Com
+ * escala constante, o mesmo símbolo que fica elegante no monitor invade a tela
+ * inteira do telefone.
+ *
+ * `viewport` já vem do R3F em unidades de mundo no plano z=0 e é recalculado no
+ * resize — então basta uma regra de três. O `ocupacao` diferente no celular
+ * existe porque lá a cena tem a largura toda, e não 52% dela.
+ */
+function useEscalaAjustada(ocupacao: number) {
+  const viewport = useThree((s) => s.viewport)
+  return Math.min(1.7, Math.max(0.42, (viewport.width * ocupacao) / LARGURA_MARCA))
+}
+
+/** Altura do "chão" virtual sob a peça. */
+const CHAO = -1.22
+
+// ─────────────────────────────────────────────────────────────────────────────
+// A peça
+// ─────────────────────────────────────────────────────────────────────────────
+
+type MonogramaProps = {
+  escala: number
+  ocupacao: number
+  giroPorScroll: number
+}
+
+function Monograma({ escala, ocupacao, giroPorScroll }: MonogramaProps) {
+  const orientacao = useRef<THREE.Group>(null)
+  const flutuacao = useRef<THREE.Group>(null)
+  const fitas = useRef<Array<THREE.Mesh | null>>([])
+  const inicio = useRef(0)
+
   const ponteiro = usePonteiroDaJanela()
   const gl = useThree((estado) => estado.gl)
   const posicao = usePosicaoNaTela(gl)
-  const ajuste = useEscalaAjustada()
-  const geometria = useGeometriaDaMarca()
+  const ajuste = useEscalaAjustada(ocupacao)
+  const geometrias = useGeometrias()
 
   const ouro = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
         color: '#e8be6b',
-        // 0,88 em vez de 1: metal puro não tem cor difusa nenhuma, só reflexo —
-        // e no pior ângulo de giro isso deixava a peça cinza. A fração de
-        // difusa que sobra aqui garante que ela seja dourada sempre.
+        // 0,88 e não 1: metal puro não tem cor difusa nenhuma, só reflexo — e
+        // no pior ângulo de giro isso deixava a peça cinza. A fração de difusa
+        // que sobra garante que ela seja dourada sempre.
         metalness: 0.88,
-        // Rugosidade espalha o reflexo em vez de concentrá-lo num ponto: o
-        // brilho fica menos "liga/desliga" conforme a peça gira.
         roughness: 0.24,
         envMapIntensity: 2.8,
       }),
@@ -298,52 +340,136 @@ function Monograma({
   useEffect(() => {
     return () => {
       ouro.dispose()
-      geometria.dispose()
+      for (const g of geometrias) g.dispose()
     }
-  }, [ouro, geometria])
+  }, [ouro, geometrias])
 
-  useFrame((state, delta) => {
-    // Perseguição amortecida do ponteiro. O fator exponencial mantém a mesma
-    // sensação a 60 ou a 144 Hz — um `lerp` de passo fixo ficaria mais rápido
-    // em telas mais velozes.
-    if (externo.current) {
-      // Amplitude curta de propósito: com giro largo, o ponteiro no canto da
-      // tela leva a peça a um ângulo em que ela reflete só o fundo escuro — e
-      // some. Aqui ela nunca sai do cone de luz.
-      const k = 1 - 0.0015 ** delta
-      // A rolagem entra somada ao ponteiro: a peça continua respondendo ao
-      // mouse, mas também vira conforme atravessa a tela.
-      const alvoY = ponteiro.current.x * 0.42 + posicao.current * giroPorScroll
-      externo.current.rotation.y += (alvoY - externo.current.rotation.y) * k
-      externo.current.rotation.x += (-ponteiro.current.y * 0.2 - externo.current.rotation.x) * k
+  useFrame((estado, delta) => {
+    if (!inicio.current) inicio.current = estado.clock.elapsedTime
+    const t = estado.clock.elapsedTime
+    const desdeAEntrada = t - inicio.current
+
+    // ── Montagem: cada fita vem da sua direção e trava no lugar ──────────────
+    for (let i = 0; i < ENTRADA.length; i++) {
+      const { atraso, de, giro } = ENTRADA[i]
+      const bruto = Math.min(1, Math.max(0, (desdeAEntrada - atraso) / DURACAO_ENTRADA))
+      // easeOutQuint: a fita chega rápido e desacelera longo, que é o que faz
+      // parecer que ela "assenta" em vez de simplesmente parar.
+      const p = 1 - (1 - bruto) ** 5
+      const resto = 1 - p
+
+      const malha = fitas.current[i]
+      if (!malha) continue
+      malha.position.set(de[0] * resto, de[1] * resto, de[2] * resto)
+      malha.rotation.set(giro[0] * resto, giro[1] * resto, giro[2] * resto)
     }
 
-    // Flutuação ociosa: duas senoides de período diferente, para o movimento
-    // não parecer um metrônomo.
-    if (interno.current) {
-      const t = state.clock.elapsedTime
-      interno.current.position.y = Math.sin(t * 0.85) * 0.07
-      interno.current.rotation.z = Math.sin(t * 0.6) * 0.035
+    // ── Orientação: deriva lenta + ponteiro + posição na tela ────────────────
+    //
+    // A deriva existe para a peça nunca ficar parada: é ela que faz o brilho
+    // varrer a superfície mesmo sem ninguém mexer o mouse — e é a única fonte
+    // de movimento no celular, onde não há ponteiro.
+    const k = 1 - 0.0015 ** delta
+    const alvoY =
+      Math.sin(t * 0.17) * 0.34 + ponteiro.current.x * 0.4 + posicao.current * giroPorScroll
+    const alvoX = Math.sin(t * 0.23) * 0.08 - ponteiro.current.y * 0.18
+
+    if (orientacao.current) {
+      orientacao.current.rotation.y += (alvoY - orientacao.current.rotation.y) * k
+      orientacao.current.rotation.x += (alvoX - orientacao.current.rotation.x) * k
+    }
+
+    // ── Flutuação ociosa: duas senoides de período diferente, para o
+    //    movimento não parecer um metrônomo.
+    if (flutuacao.current) {
+      flutuacao.current.position.y = Math.sin(t * 0.85) * 0.07
+      flutuacao.current.rotation.z = Math.sin(t * 0.6) * 0.035
     }
   })
 
+  const escalaFinal = escala * ajuste
+
   return (
-    <group ref={externo} {...props} scale={(props.scale as number) * ajuste}>
-      <group ref={interno}>
-        <mesh geometry={geometria} material={ouro} />
+    <>
+      <group
+        ref={orientacao}
+        scale={escalaFinal}
+        position={[0, 0.08, 0]}
+        rotation={[0.06, -0.35, 0]}
+      >
+        <group ref={flutuacao}>
+          {geometrias.map((geometria, i) => (
+            <mesh
+              // biome-ignore lint/suspicious/noArrayIndexKey: as três fitas são fixas e a ordem é a identidade
+              key={i}
+              ref={(m) => {
+                fitas.current[i] = m
+              }}
+              geometry={geometria}
+              material={ouro}
+            />
+          ))}
+        </group>
       </group>
-    </group>
+    </>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Ambiente da cena
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Poça de luz sob a peça.
+ *
+ * Um plano elíptico com degradê radial quente, deitado no chão e em mistura
+ * aditiva. Ele faz o trabalho que o reflexo faria — dizer que existe uma
+ * superfície ali embaixo — sem precisar da altura de quadro que um espelho
+ * exige, e sem nenhum dos problemas de normal invertida que escalar por −1 traz.
+ */
+function PocaDeLuz({ ocupacao }: { ocupacao: number }) {
+  const ajuste = useEscalaAjustada(ocupacao)
+  const textura = useMemo(() => {
+    const lado = 256
+    const canvas = document.createElement('canvas')
+    canvas.width = lado
+    canvas.height = lado
+    const ctx = canvas.getContext('2d')!
+    const g = ctx.createRadialGradient(lado / 2, lado / 2, 0, lado / 2, lado / 2, lado / 2)
+    g.addColorStop(0, 'rgba(233,199,126,0.55)')
+    g.addColorStop(0.3, 'rgba(191,142,58,0.22)')
+    g.addColorStop(0.65, 'rgba(120,84,24,0.06)')
+    g.addColorStop(1, 'rgba(0,0,0,0)')
+    ctx.fillStyle = g
+    ctx.fillRect(0, 0, lado, lado)
+    const tex = new THREE.CanvasTexture(canvas)
+    tex.colorSpace = THREE.SRGBColorSpace
+    return tex
+  }, [])
+
+  useEffect(() => () => textura.dispose(), [textura])
+
+  return (
+    <mesh position={[0, CHAO + 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]} scale={ajuste}>
+      <planeGeometry args={[6, 3.4]} />
+      <meshBasicMaterial
+        map={textura}
+        transparent
+        depthWrite={false}
+        blending={THREE.AdditiveBlending}
+      />
+    </mesh>
   )
 }
 
 /**
- * Sombra de contato falsa: um plano com textura radial.
+ * Sombra de contato: um plano com textura radial, deitado no chão.
  *
  * Uma sombra real exigiria shadow map e um segundo passe de render — caro para
  * um borrão que ninguém olha de perto.
  */
-function SombraDeContato() {
-  const ajuste = useEscalaAjustada()
+function SombraDeContato({ ocupacao }: { ocupacao: number }) {
+  const ajuste = useEscalaAjustada(ocupacao)
   const textura = useMemo(() => {
     const lado = 256
     const canvas = document.createElement('canvas')
@@ -352,8 +478,8 @@ function SombraDeContato() {
     const ctx = canvas.getContext('2d')!
 
     const g = ctx.createRadialGradient(lado / 2, lado / 2, 0, lado / 2, lado / 2, lado / 2)
-    g.addColorStop(0, 'rgba(0,0,0,0.5)')
-    g.addColorStop(0.45, 'rgba(0,0,0,0.2)')
+    g.addColorStop(0, 'rgba(0,0,0,0.55)')
+    g.addColorStop(0.45, 'rgba(0,0,0,0.22)')
     g.addColorStop(1, 'rgba(0,0,0,0)')
     ctx.fillStyle = g
     ctx.fillRect(0, 0, lado, lado)
@@ -366,7 +492,7 @@ function SombraDeContato() {
   useEffect(() => () => textura.dispose(), [textura])
 
   return (
-    <mesh position={[0, -1.55 * ajuste, 0]} rotation={[-Math.PI / 2, 0, 0]} scale={ajuste}>
+    <mesh position={[0, CHAO + 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]} scale={ajuste}>
       <planeGeometry args={[7, 4]} />
       <meshBasicMaterial map={textura} transparent depthWrite={false} />
     </mesh>
@@ -374,48 +500,99 @@ function SombraDeContato() {
 }
 
 /**
- * Poeira de ouro suspensa.
+ * Halo dourado atrás da peça.
  *
- * Um `Points` com 160 partículas distribuídas numa casca esférica ao redor da
- * peça. Custa quase nada (uma chamada de desenho, sem iluminação) e resolve um
- * problema real: sem nada entre a câmera e o fundo preto, o monograma parece
- * colado na tela em vez de flutuar num espaço.
- *
- * `sizeAttenuation` é o que faz as partículas de trás ficarem menores — é a
- * única pista de profundidade que a cena tem.
+ * É o mais barato dos efeitos de "bloom" — um plano com degradê radial e mistura
+ * aditiva, atrás de tudo. Um bloom de verdade exigiria pós-processamento, que
+ * significa render targets, dois passes e ~40 kB de `postprocessing`. Aqui o
+ * que se quer é só o objeto não flutuar sobre um vazio absoluto.
  */
-function PoeiraDeOuro() {
+function Halo({ escala }: { escala: number }) {
+  const textura = useMemo(() => {
+    const lado = 256
+    const canvas = document.createElement('canvas')
+    canvas.width = lado
+    canvas.height = lado
+    const ctx = canvas.getContext('2d')!
+    const g = ctx.createRadialGradient(lado / 2, lado / 2, 0, lado / 2, lado / 2, lado / 2)
+    g.addColorStop(0, 'rgba(212,168,85,0.5)')
+    g.addColorStop(0.35, 'rgba(176,124,36,0.19)')
+    g.addColorStop(0.7, 'rgba(120,84,24,0.05)')
+    g.addColorStop(1, 'rgba(0,0,0,0)')
+    ctx.fillStyle = g
+    ctx.fillRect(0, 0, lado, lado)
+    const tex = new THREE.CanvasTexture(canvas)
+    tex.colorSpace = THREE.SRGBColorSpace
+    return tex
+  }, [])
+
+  useEffect(() => () => textura.dispose(), [textura])
+
+  return (
+    <mesh position={[0, 0.1, -1.6]} scale={5.2 * escala}>
+      <planeGeometry args={[1, 1]} />
+      <meshBasicMaterial
+        map={textura}
+        transparent
+        depthWrite={false}
+        blending={THREE.AdditiveBlending}
+      />
+    </mesh>
+  )
+}
+
+/**
+ * Poeira de ouro suspensa, em duas camadas de profundidade.
+ *
+ * Custa duas chamadas de desenho (sem iluminação) e resolve um problema real:
+ * sem nada entre a câmera e o fundo preto, o monograma parece colado na tela em
+ * vez de flutuar num espaço. As duas camadas giram em velocidades diferentes —
+ * é a diferença entre elas que produz a sensação de paralaxe.
+ *
+ * `sizeAttenuation` é o que faz as partículas de trás ficarem menores; é a
+ * única outra pista de profundidade que a cena tem.
+ */
+function PoeiraDeOuro({
+  total,
+  raio,
+  tamanho,
+  velocidade,
+}: {
+  total: number
+  raio: number
+  tamanho: number
+  velocidade: number
+}) {
   const pontos = useRef<THREE.Points>(null)
 
   const geometria = useMemo(() => {
-    const total = 160
     const posicoes = new Float32Array(total * 3)
     for (let i = 0; i < total; i++) {
-      // Distribuição em casca esférica: raio entre 2,2 e 5, ângulos uniformes.
-      const raio = 2.2 + Math.random() * 2.8
+      // Distribuição em casca esférica: raio na faixa, ângulos uniformes.
+      const r = raio + Math.random() * raio * 0.9
       const theta = Math.random() * Math.PI * 2
       const phi = Math.acos(2 * Math.random() - 1)
-      posicoes[i * 3] = raio * Math.sin(phi) * Math.cos(theta)
-      posicoes[i * 3 + 1] = raio * Math.sin(phi) * Math.sin(theta) * 0.6
-      posicoes[i * 3 + 2] = raio * Math.cos(phi)
+      posicoes[i * 3] = r * Math.sin(phi) * Math.cos(theta)
+      posicoes[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta) * 0.62
+      posicoes[i * 3 + 2] = r * Math.cos(phi)
     }
     const g = new THREE.BufferGeometry()
     g.setAttribute('position', new THREE.BufferAttribute(posicoes, 3))
     return g
-  }, [])
+  }, [total, raio])
 
   const material = useMemo(
     () =>
       new THREE.PointsMaterial({
         color: '#e8cb8a',
-        size: 0.022,
+        size: tamanho,
         sizeAttenuation: true,
         transparent: true,
         opacity: 0.55,
         depthWrite: false,
         blending: THREE.AdditiveBlending,
       }),
-    [],
+    [tamanho],
   )
 
   useEffect(() => {
@@ -426,48 +603,71 @@ function PoeiraDeOuro() {
   }, [geometria, material])
 
   useFrame((_, delta) => {
-    if (pontos.current) pontos.current.rotation.y += delta * 0.045
+    if (pontos.current) {
+      pontos.current.rotation.y += delta * velocidade
+      pontos.current.rotation.x += delta * velocidade * 0.3
+    }
   })
 
   return <points ref={pontos} geometry={geometria} material={material} />
 }
 
-function Cena({ escala, giroPorScroll }: { escala: number; giroPorScroll: number }) {
+// ─────────────────────────────────────────────────────────────────────────────
+// Montagem
+// ─────────────────────────────────────────────────────────────────────────────
+
+type Props = {
+  /** Tamanho relativo da peça. 1 é o do herói no desktop. */
+  escala?: number
+  /** Quanto a rolagem gira a peça, em radianos por tela atravessada. */
+  giroPorScroll?: number
+  /**
+   * Modo econômico para celular: menos partículas, sem reflexo e resolução
+   * menor. A peça e a iluminação continuam idênticas — o que sai é o que
+   * custa fill rate, que é o gargalo num aparelho de bolso.
+   */
+  compacto?: boolean
+}
+
+function Cena({ escala, giroPorScroll, compacto }: Required<Props>) {
+  // No celular a cena ocupa a largura toda do herói; no desktop, 52% dela.
+  const ocupacao = compacto ? 0.42 : 0.5
+
   return (
     <>
       <AmbienteDeEstudio />
       <ambientLight intensity={0.35} color="#ffe9c2" />
       <directionalLight position={[3, 5, 6]} intensity={2.4} color="#fff3d8" />
       <directionalLight position={[-5, -1, 3]} intensity={1.1} color="#ffd08a" />
-      <PoeiraDeOuro />
-      <Monograma
-        scale={escala}
-        position={[0, 0.08, 0]}
-        rotation={[0.06, -0.35, 0]}
-        giroPorScroll={giroPorScroll}
-      />
-      <SombraDeContato />
+
+      <Halo escala={escala} />
+      <PoeiraDeOuro total={compacto ? 70 : 150} raio={2.2} tamanho={0.022} velocidade={0.045} />
+      {!compacto && <PoeiraDeOuro total={90} raio={4.2} tamanho={0.014} velocidade={-0.022} />}
+
+      <Monograma escala={escala} ocupacao={ocupacao} giroPorScroll={giroPorScroll} />
+
+      <SombraDeContato ocupacao={ocupacao} />
+      <PocaDeLuz ocupacao={ocupacao} />
     </>
   )
 }
 
-export default function BrandScene({
-  escala = 1,
-  giroPorScroll = 0,
-}: {
-  escala?: number
-  giroPorScroll?: number
-}) {
+export default function BrandScene({ escala = 1, giroPorScroll = 0, compacto = false }: Props) {
   return (
     <Canvas
       // dpr limitado: em telas 3x o custo por fragmento triplica sem ganho
-      // perceptível num objeto que está sempre em movimento.
-      dpr={[1, 1.75]}
-      gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
+      // perceptível num objeto que está sempre em movimento. No celular o teto
+      // é ainda mais baixo, porque lá ele custa bateria.
+      dpr={[1, compacto ? 1.4 : 1.75]}
+      gl={{
+        antialias: !compacto,
+        alpha: true,
+        powerPreference: compacto ? 'default' : 'high-performance',
+      }}
       camera={{ position: [0, 0.3, 6.4], fov: 34 }}
       style={{ pointerEvents: 'none' }}
     >
-      <Cena escala={escala} giroPorScroll={giroPorScroll} />
+      <Cena escala={escala} giroPorScroll={giroPorScroll} compacto={compacto} />
     </Canvas>
   )
 }
