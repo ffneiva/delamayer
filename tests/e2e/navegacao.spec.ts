@@ -67,6 +67,41 @@ test.describe('HTML por rota', () => {
   })
 })
 
+test.describe('imagem de compartilhamento', () => {
+  /**
+   * Duas coisas quebram aqui e nenhuma dá erro visível: a meta tag apontar para
+   * um arquivo que o gerador não produziu, e as cinco rotas dividirem a mesma
+   * arte porque o plugin do build parou de reescrever a tag. A primeira só
+   * aparece quando alguém cola o link e vê um espaço em branco.
+   */
+  test('cada rota aponta para uma arte própria, e o arquivo existe', async ({ page, request }) => {
+    const vistas = new Map<string, string>()
+
+    for (const rota of ROTAS) {
+      await page.goto(rota.caminho)
+
+      const src = await page.locator('meta[property="og:image"]').getAttribute('content')
+      const twitter = await page.locator('meta[name="twitter:image"]').getAttribute('content')
+      expect(src, rota.caminho).toBeTruthy()
+      // As duas redes precisam apontar para o mesmo lugar.
+      expect(twitter, rota.caminho).toBe(src)
+
+      const alt = await page.locator('meta[property="og:image:alt"]').getAttribute('content')
+      expect(alt?.length, `alt de ${rota.caminho}`).toBeGreaterThan(8)
+
+      // O arquivo tem que existir de verdade no build.
+      const arquivo = new URL(src!).pathname
+      const resposta = await request.get(arquivo)
+      expect(resposta.status(), `${rota.caminho} -> ${arquivo}`).toBe(200)
+
+      vistas.set(rota.caminho, arquivo)
+    }
+
+    // Quatro rotas, quatro artes distintas.
+    expect(new Set(vistas.values()).size).toBe(ROTAS.length)
+  })
+})
+
 test.describe('arquivos de SEO', () => {
   test('sitemap.xml lista as rotas indexáveis', async ({ request }) => {
     const resposta = await request.get('/sitemap.xml')

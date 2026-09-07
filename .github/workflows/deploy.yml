@@ -87,6 +87,7 @@ jobs:
             --exclude "sitemap.xml" \
             --exclude "llms.txt" \
             --exclude "site.webmanifest" \
+            --exclude "og*.png" \
             --exclude "google*.html" \
             --cache-control "public,max-age=31536000,immutable"
 
@@ -140,6 +141,23 @@ jobs:
           aws s3 cp dist/site.webmanifest "s3://${{ vars.S3_BUCKET_NAME }}/site.webmanifest" \
             --no-progress --content-type "application/manifest+json" \
             --cache-control "public,max-age=86400"
+
+      # As artes de compartilhamento ficam de fora do cache imutável.
+      #
+      # O nome delas não tem hash — precisa não ter, porque a meta tag do
+      # `og:image` é escrita a partir da rota (ver ogArquivoDe em routes.ts) e
+      # os robôs sociais guardam a URL. Com `immutable` de um ano, trocar a arte
+      # não teria efeito nenhum até o cache expirar. Um dia é o meio-termo: as
+      # imagens quase nunca mudam, e quando mudam, aparecem.
+      - name: 📤 Imagens de compartilhamento
+        run: |
+          shopt -s nullglob
+          for f in dist/og*.png; do
+            aws s3 cp "$f" "s3://${{ vars.S3_BUCKET_NAME }}/$(basename "$f")" \
+              --no-progress --content-type "image/png" \
+              --cache-control "public,max-age=86400"
+            echo "publicado: $(basename "$f")"
+          done
 
       # Arquivos de verificação de propriedade (Google Search Console e afins).
       # Cache curto de propósito: se o token for trocado, o novo precisa valer

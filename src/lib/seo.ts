@@ -1,4 +1,4 @@
-import { BUSINESS, FAQ, KEYWORDS, SERVICES } from './business.ts'
+import { BUSINESS, FAQ, KEYWORDS, MIDIA, SERVICES } from './business.ts'
 import { openingHoursSpec } from './hours.ts'
 import { canonicalFor, ROUTES, routeFor } from './routes.ts'
 
@@ -29,6 +29,38 @@ function faqNode(id: string, itens: typeof FAQ) {
       name: item.q,
       acceptedAnswer: { '@type': 'Answer', text: item.a },
     })),
+  }
+}
+
+/**
+ * A matéria em TV aberta como `VideoObject`.
+ *
+ * Só é emitido nas rotas que de fato mostram o player — a home e /rating.
+ * Declarar um vídeo numa página que não o contém é a mesma violação de sempre:
+ * o dado estruturado tem que descrever o que está na tela.
+ *
+ * `uploadDate`, `duration` e `thumbnailUrl` não são opcionais na prática: sem
+ * os três o Google descarta o nó em silêncio. Com eles, a página fica elegível
+ * ao resultado com miniatura de vídeo ao lado.
+ *
+ * `contentUrl` aponta para a página do YouTube e `embedUrl` para o player sem
+ * cookie — que é exatamente o que o site monta quando alguém clica em assistir.
+ */
+function videoNode(caminho: string) {
+  return {
+    '@type': 'VideoObject',
+    '@id': `${BUSINESS.url}${caminho === '/' ? '' : caminho}#materia`,
+    name: MIDIA.tituloOriginal,
+    description: MIDIA.chamada,
+    thumbnailUrl: [MIDIA.miniatura],
+    uploadDate: MIDIA.publicadoEm,
+    duration: MIDIA.duracao,
+    contentUrl: MIDIA.url,
+    embedUrl: `https://www.youtube-nocookie.com/embed/${MIDIA.youtubeId}`,
+    inLanguage: 'pt-BR',
+    isFamilyFriendly: true,
+    publisher: { '@id': ID_NEGOCIO },
+    about: { '@type': 'Thing', name: 'Rating bancário e score de crédito' },
   }
 }
 
@@ -69,7 +101,7 @@ function nosDaRota(caminho: string) {
   const rota = routeFor(caminho)
 
   if (rota.path === '/') {
-    return [faqNode(`${BUSINESS.url}/#faq`, FAQ)]
+    return [faqNode(`${BUSINESS.url}/#faq`, FAQ), videoNode('/')]
   }
 
   if (rota.path === '/rating') {
@@ -78,6 +110,7 @@ function nosDaRota(caminho: string) {
       trilha(caminho),
       paginaNode(caminho, 'Rating bancário e score de crédito'),
       faqNode(`${canonicalFor(rota)}#faq`, perguntas),
+      videoNode(caminho),
     ]
   }
 

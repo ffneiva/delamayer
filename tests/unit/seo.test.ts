@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { BUSINESS, FAQ, SERVICES } from '@/lib/business'
-import { canonicalFor, NAO_ENCONTRADA, ROUTES } from '@/lib/routes'
+import { BUSINESS, FAQ, MIDIA, SERVICES } from '@/lib/business'
+import { canonicalFor, NAO_ENCONTRADA, ogArquivoDe, ogUrlDe, ROUTES } from '@/lib/routes'
 import { buildJsonLd, buildLlmsTxt } from '@/lib/seo'
 
 /**
@@ -74,6 +74,88 @@ describe('FAQPage só onde as perguntas aparecem', () => {
   it('rotas sem FAQ na tela não declaram FAQPage', () => {
     for (const caminho of ['/diagnostico', '/politica-de-privacidade', '/404']) {
       expect(tipos(caminho), caminho).not.toContain('FAQPage')
+    }
+  })
+})
+
+describe('a matéria em vídeo', () => {
+  /**
+   * `VideoObject` é o nó mais fácil de emitir errado: sem `uploadDate`,
+   * `duration` e `thumbnailUrl` o Google descarta o bloco inteiro em silêncio —
+   * não avisa, não valida, simplesmente ignora. O teste garante que os três
+   * continuem lá depois de qualquer mexida no business.ts.
+   */
+  it('declara os campos sem os quais o Google descarta o nó', () => {
+    const video = grafo('/').find((no) => no['@type'] === 'VideoObject')
+
+    expect(video).toBeDefined()
+    expect(video!.uploadDate).toBeTruthy()
+    expect(video!.duration).toMatch(/^PT\d+M\d+S$/)
+    expect((video!.thumbnailUrl as string[])[0]).toMatch(/^https:\/\//)
+    expect(video!.name).toBe(MIDIA.tituloOriginal)
+  })
+
+  it('a data de publicação é uma data ISO válida', () => {
+    expect(MIDIA.publicadoEm).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+    expect(Number.isNaN(Date.parse(MIDIA.publicadoEm))).toBe(false)
+  })
+
+  /**
+   * O <Midia> é renderizado na home e em /rating, e em lugar nenhum mais.
+   * Declarar um vídeo numa página que não o mostra é a mesma violação de sempre.
+   */
+  it('só aparece nas rotas que mostram o player', () => {
+    expect(tipos('/')).toContain('VideoObject')
+    expect(tipos('/rating')).toContain('VideoObject')
+
+    for (const caminho of ['/diagnostico', '/imovel', '/politica-de-privacidade', '/404']) {
+      expect(tipos(caminho), caminho).not.toContain('VideoObject')
+    }
+  })
+})
+
+describe('imagem de compartilhamento', () => {
+  it('cada rota com texto próprio tem a própria arte', () => {
+    const comTexto = ROUTES.filter((r) => r.ogLinhas)
+    const arquivos = comTexto.map(ogArquivoDe)
+
+    expect(arquivos.length).toBeGreaterThan(1)
+    expect(new Set(arquivos).size).toBe(arquivos.length)
+  })
+
+  it('a home fica em og.png, e as demais em og-<rota>.png', () => {
+    expect(ogArquivoDe(ROUTES[0])).toBe('og.png')
+    for (const rota of ROUTES.filter((r) => r.path !== '/' && r.ogLinhas)) {
+      expect(ogArquivoDe(rota)).toBe(`og${rota.path}.png`.replace('/', '-'))
+    }
+  })
+
+  it('rota sem texto próprio cai na arte da home', () => {
+    const semTexto = ROUTES.filter((r) => !r.ogLinhas)
+    for (const rota of semTexto) {
+      expect(ogArquivoDe(rota)).toBe('og.png')
+    }
+  })
+
+  it('a URL é absoluta e no domínio do site', () => {
+    for (const rota of ROUTES) {
+      expect(ogUrlDe(rota)).toMatch(new RegExp(`^${BUSINESS.url.replace('.', '\\.')}/og`))
+    }
+  })
+
+  /**
+   * A arte tem 1200×630 e o texto grande ocupa a metade direita. Duas linhas
+   * longas demais transbordam a peça — e como o SVG não quebra linha sozinho, o
+   * excesso simplesmente sai do quadro sem erro nenhum.
+   */
+  it('as linhas cabem na arte', () => {
+    for (const rota of ROUTES) {
+      for (const linha of rota.ogLinhas ?? []) {
+        expect(linha.length, `${rota.path}: "${linha}"`).toBeLessThanOrEqual(28)
+      }
+      if (rota.ogNota) {
+        expect(rota.ogNota.length, rota.path).toBeLessThanOrEqual(56)
+      }
     }
   })
 })

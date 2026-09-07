@@ -13,7 +13,7 @@
     />
     <link rel="canonical" href="https://delamayer.com.br/" />
     <meta name="author" content="Delamayer Soluções Financeiras" />
-    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
     <meta name="geo.region" content="BR-GO" />
     <meta name="geo.placename" content="Goiânia" />
     <meta name="geo.position" content="-16.690429;-49.267148" />
@@ -40,12 +40,22 @@
       content="Diagnóstico de crédito, regularização direta e leitura de rating bancário em Goiânia."
     />
     <meta name="twitter:image" content="https://delamayer.com.br/og.png" />
+    <meta name="twitter:image:alt" content="Delamayer Soluções Financeiras — do CPF travado à chave do apartamento" />
 
     <!-- Ícones -->
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
+
+    <!--
+      O mapa da seção de localização é montado com tiles do OpenStreetMap (ver
+      src/components/Mapa.tsx). Abrir a conexão desde já economiza o DNS, o TCP
+      e o TLS na hora em que os dezesseis tiles são pedidos de uma vez — e é o
+      terceiro domínio mais caro do site, atrás só do YouTube e do Google, que
+      só entram depois de um clique.
+    -->
+    <link rel="preconnect" href="https://tile.openstreetmap.org" crossorigin />
 
     <!--
       As fontes são self-hosted e só o subset latin é usado no primeiro texto

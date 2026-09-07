@@ -3,7 +3,7 @@ import path from 'node:path'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig, type Plugin } from 'vite'
-import { canonicalFor, NAO_ENCONTRADA, ROUTES } from './src/lib/routes.ts'
+import { canonicalFor, NAO_ENCONTRADA, ogUrlDe, ROUTES } from './src/lib/routes.ts'
 import { buildJsonLd, buildLlmsTxt } from './src/lib/seo.ts'
 
 /**
@@ -72,13 +72,26 @@ function perRouteHtmlPlugin(): Plugin {
             `$1${escapeHtml(rota.description)}$2`,
           )
           .replace(/(<meta property="og:url" content=")[^"]*(")/, `$1${canonicalFor(rota)}$2`)
+          // A arte de compartilhamento é própria de cada rota (ver ogUrlDe).
+          // Sem esta reescrita, as cinco páginas apareceriam no WhatsApp com a
+          // mesma imagem — e um link colado é lido pela imagem antes do texto.
+          .replace(/(<meta property="og:image" content=")[^"]*(")/, `$1${ogUrlDe(rota)}$2`)
+          .replace(/(<meta name="twitter:image" content=")[^"]*(")/, `$1${ogUrlDe(rota)}$2`)
+          .replace(
+            /(<meta property="og:image:alt" content=")[^"]*(")/,
+            `$1${escapeHtml(rota.ogLinhas ? rota.ogLinhas.join(' ') : rota.title)}$2`,
+          )
+          .replace(
+            /(<meta name="twitter:image:alt" content=")[^"]*(")/,
+            `$1${escapeHtml(rota.ogLinhas ? rota.ogLinhas.join(' ') : rota.title)}$2`,
+          )
           .replace(
             /(<meta name="twitter:title" content=")[^"]*(")/,
             `$1${escapeHtml(rota.title)}$2`,
           )
           .replace(
             /(<meta name="robots" content=")[^"]*(")/,
-            `$1${rota.noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large'}$2`,
+            `$1${rota.noindex ? 'noindex, follow' : DIRETIVAS_ROBOTS}$2`,
           )
           // Dados estruturados próprios por rota: trilha de navegação nas
           // filhas, FAQPage só onde as perguntas realmente aparecem.
@@ -154,6 +167,21 @@ function seoAssetsPlugin(): Plugin {
     },
   }
 }
+
+/**
+ * O que o buscador pode mostrar do conteúdo.
+ *
+ * Os três limites são explicitamente liberados. `max-snippet:-1` deixa o
+ * trecho na busca ter o tamanho que o Google achar melhor, em vez de ser
+ * cortado no padrão conservador; `max-image-preview:large` libera a miniatura
+ * grande; e `max-video-preview:-1` permite a prévia inteira do vídeo da
+ * matéria — que só faz sentido junto com o `VideoObject` de lib/seo.ts.
+ *
+ * Nada disso é "mais indexação": a página seria indexada do mesmo jeito. O que
+ * muda é o tamanho do espaço que ela ocupa no resultado.
+ */
+const DIRETIVAS_ROBOTS =
+  'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1'
 
 function escapeHtml(valor: string): string {
   return valor

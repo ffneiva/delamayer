@@ -368,14 +368,33 @@ export const RATING_ESCALA = [
 // Na mídia
 // ─────────────────────────────────────────────────────────────────────────────
 
+/**
+ * A matéria em TV aberta.
+ *
+ * Os quatro últimos campos existem para o `VideoObject` do JSON-LD: sem
+ * `uploadDate`, `duration` e `thumbnailUrl` o Google descarta o nó inteiro, e
+ * com eles a página fica elegível a aparecer na busca com a miniatura do vídeo
+ * ao lado — que num resultado de texto é a diferença mais barata de clique que
+ * existe.
+ *
+ * Todos vieram do próprio YouTube (oEmbed e metadados da página), e não de
+ * estimativa: a data é a de publicação, e a duração, os 195 segundos que o
+ * player informa.
+ */
 export const MIDIA = {
   veiculo: 'TV Serra Dourada · SBT Goiás',
   titulo: 'A diferença entre o score e o rating de crédito bancário',
+  tituloOriginal: 'SBT & Delamayer: A Diferença entre o SCORE e o RATING de Crédito Bancário',
   chamada:
     'A explicação que virou pauta de TV aberta: por que o crédito é negado mesmo ' +
     'com score alto — e onde procurar a trava.',
   url: 'https://www.youtube.com/watch?v=lF44FdFNcn4',
   youtubeId: 'lF44FdFNcn4',
+  /** ISO 8601, como o schema.org espera. */
+  publicadoEm: '2026-04-03',
+  /** Duração em formato de período ISO 8601 — 195 segundos. */
+  duracao: 'PT3M15S',
+  miniatura: 'https://i.ytimg.com/vi/lF44FdFNcn4/maxresdefault.jpg',
 } as const
 
 // ─────────────────────────────────────────────────────────────────────────────

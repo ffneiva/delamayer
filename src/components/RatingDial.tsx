@@ -45,36 +45,20 @@ function anguloDaLetra(indice: number) {
 }
 
 /**
- * Fração de cada trecho gasta ANDANDO. O resto é descanso.
- *
- * Com movimento linear, o ponteiro atravessa as seis letras em velocidade
- * constante e nenhuma delas fica parada tempo suficiente para ser lida — na
- * prática, F e E passavam batido antes de a pessoa terminar de olhar. Andando
- * em 40% do trecho e descansando nos outros 60%, cada letra ganha uma pausa
- * proporcional, e o gesto passa a ser "de degrau em degrau" em vez de um
- * deslize contínuo.
- */
-const FRACAO_ANDANDO = 0.4
-
-/** easeInOutCubic: sai e chega devagar, o que faz a parada parecer intencional. */
-function suavizar(t: number): number {
-  return t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2
-}
-
-/**
  * Traduz o progresso da rolagem (0 a 1) na posição do ponteiro.
  *
+ * Movimento contínuo: o ponteiro desliza em velocidade constante de F até A.
+ * Houve uma versão que andava em 40% de cada trecho e descansava nos outros
+ * 60% — o gesto ficava "de degrau em degrau", e o degrau parecia travamento.
+ *
  * Devolve o ângulo em graus e o índice da letra em destaque, contando de F (0)
- * até A (5) — a mesma direção em que o ponteiro anda.
+ * até A (5), na mesma direção em que o ponteiro anda. `Math.round` faz a letra
+ * virar no meio do caminho entre uma e outra, que é onde o ponteiro deixa de
+ * apontar para a primeira e passa a apontar para a segunda.
  */
 function posicaoDoPonteiro(progresso: number) {
   // São TOTAL letras, logo TOTAL−1 trechos entre elas.
-  const passo = clamp(progresso, 0, 1) * (TOTAL - 1)
-  const trecho = Math.min(Math.floor(passo), TOTAL - 2)
-  const dentroDoTrecho = passo - trecho
-
-  const avanco = suavizar(clamp(dentroDoTrecho / FRACAO_ANDANDO, 0, 1))
-  const continuo = trecho + avanco
+  const continuo = clamp(progresso, 0, 1) * (TOTAL - 1)
 
   return {
     indice: Math.round(continuo),
@@ -110,11 +94,22 @@ export function RatingDial({ className }: { className?: string }) {
         ease: 'none',
         scrollTrigger: {
           trigger: escopo.current,
-          // Faixa de rolagem generosa: são seis paradas para ler, e o percurso
-          // anterior (top 78% → bottom 42%) espremia as duas primeiras num
-          // punhado de pixels.
-          start: 'top 88%',
-          end: 'bottom 25%',
+          // O percurso começa quando o mostrador está INTEIRO na tela, e não
+          // quando ele espia por baixo.
+          //
+          // Foi esse o motivo de o F nunca aparecer. Com `top 88%`, o progresso
+          // saía de zero no instante em que a borda superior do mostrador
+          // cruzava os 88% da altura da janela — ou seja, com ele quase todo
+          // fora do campo de visão. Quando ficava legível, a rolagem já tinha
+          // consumido um terço do percurso, e as duas primeiras letras haviam
+          // passado sem nunca terem sido vistas.
+          //
+          // `bottom bottom` ancora o início na borda INFERIOR do elemento
+          // tocando a base da janela: dali em diante ele está inteiro visível, e
+          // o F fica na tela por toda a aproximação, parado, antes de o ponteiro
+          // começar a andar.
+          start: 'bottom bottom',
+          end: 'top top',
           scrub: 0.8,
         },
         onUpdate: () => {

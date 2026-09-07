@@ -24,6 +24,16 @@ export type Route = {
   label: string
   /** Mantém a página fora do índice do Google (usado só pelo 404). */
   noindex?: boolean
+  /**
+   * As duas linhas grandes da imagem de compartilhamento.
+   *
+   * Sem elas a rota herda a imagem da home. Ter uma por rota importa mais do
+   * que parece: um link colado no WhatsApp é lido pela imagem antes do texto, e
+   * cinco páginas com a mesma arte fazem as cinco parecerem a mesma página.
+   */
+  ogLinhas?: readonly [string, string]
+  /** A linha de apoio da imagem, abaixo do título. */
+  ogNota?: string
 }
 
 export const ROUTES: Route[] = [
@@ -33,6 +43,8 @@ export const ROUTES: Route[] = [
     title: 'Delamayer · Regularização de nome e rating bancário em Goiânia',
     description:
       'Assessoria de crédito em Goiânia. Diagnóstico do seu CPF na hora, regularização direta com o credor e leitura do rating bancário — o índice que o banco usa e não aparece no score. Fale pelo WhatsApp.',
+    ogLinhas: ['Do CPF travado', 'à chave do apartamento.'],
+    ogNota: 'Diagnóstico · Regularização direta · Rating bancário',
   },
   {
     path: '/diagnostico',
@@ -40,6 +52,8 @@ export const ROUTES: Route[] = [
     title: 'Diagnóstico de crédito grátis · Delamayer, Goiânia',
     description:
       'Responda cinco perguntas e descubra onde o seu crédito está travado: negativação, rating bancário ou cadastro desatualizado. O resultado vira uma mensagem pronta no WhatsApp da Delamayer.',
+    ogLinhas: ['Cinco perguntas', 'e uma leitura honesta.'],
+    ogNota: 'Roda no seu navegador · Sem cadastro · Sem servidor',
   },
   {
     path: '/rating',
@@ -47,6 +61,8 @@ export const ROUTES: Route[] = [
     title: 'Score alto e crédito negado? A diferença entre score e rating bancário',
     description:
       'Score é do birô e vale para o mercado inteiro; rating é interno do banco, vai de A a F e mede só o seu relacionamento com ele. Entenda por que os dois discordam — e o que fazer quando isso trava o seu crédito.',
+    ogLinhas: ['Score alto,', 'crédito negado.'],
+    ogNota: 'O índice que o banco usa e não aparece em consulta',
   },
   {
     path: '/imovel',
@@ -54,6 +70,8 @@ export const ROUTES: Route[] = [
     title: 'Financiamento imobiliário com o nome negativado · Delamayer Goiânia',
     description:
       'Regularizar o CPF é o primeiro passo para financiar um imóvel — não o último. Veja o que o banco analisa além do nome limpo e como chegar à proposta com renda, entrada e rating já resolvidos.',
+    ogLinhas: ['Nome limpo é o', 'primeiro passo.'],
+    ogNota: 'O que o banco analisa além da restrição',
   },
   {
     path: '/politica-de-privacidade',
@@ -90,4 +108,26 @@ export function routeFor(pathname: string): Route {
 
 export function canonicalFor(route: Route): string {
   return route.path === '/' ? `${BUSINESS.url}/` : `${BUSINESS.url}${route.path}`
+}
+
+/**
+ * Nome do arquivo da imagem de compartilhamento da rota.
+ *
+ * A home fica em `og.png` porque é o nome que qualquer um procura primeiro; as
+ * demais viram `og-<rota>.png`. Rotas sem `ogLinhas` — hoje só a política de
+ * privacidade, que ninguém compartilha — caem na arte da home em vez de exigir
+ * uma peça que nunca seria vista.
+ *
+ * É a MESMA função usada pelo gerador de imagens (scripts/make-brand.mjs) e
+ * pelo plugin que reescreve o `<head>` de cada rota no build. Dois lugares
+ * derivando o nome por conta própria é como uma meta tag acaba apontando para
+ * um arquivo que não existe.
+ */
+export function ogArquivoDe(route: Route): string {
+  if (!route.ogLinhas || route.path === '/') return 'og.png'
+  return `og-${route.path.replace(/^\//, '')}.png`
+}
+
+export function ogUrlDe(route: Route): string {
+  return `${BUSINESS.url}/${ogArquivoDe(route)}`
 }

@@ -59,6 +59,10 @@ export function Contador({ texto, className }: { texto: string; className?: stri
 
     let frame = 0
     let inicio = 0
+    // `true` quando a contagem pode começar. Vira `false` ao disparar e volta a
+    // `true` quando o número sai da tela — é o que permite ver a animação de
+    // novo ao voltar para a seção, em vez de encontrar o número já parado.
+    let armado = true
 
     const passo = (agora: number) => {
       if (!inicio) inicio = agora
@@ -72,9 +76,22 @@ export function Contador({ texto, className }: { texto: string; className?: stri
 
     const io = new IntersectionObserver(
       (entradas) => {
-        if (!entradas.some((e) => e.isIntersecting)) return
-        io.disconnect()
-        frame = requestAnimationFrame(passo)
+        const dentro = entradas.some((e) => e.isIntersecting)
+
+        if (dentro && armado) {
+          armado = false
+          inicio = 0
+          if (frame) cancelAnimationFrame(frame)
+          frame = requestAnimationFrame(passo)
+          return
+        }
+
+        // Rearma só quando o número sai INTEIRO da tela. Rearmar a cada
+        // pequena saída faria a contagem reiniciar a cada tremida de rolagem.
+        if (!dentro) {
+          armado = true
+          if (frame) cancelAnimationFrame(frame)
+        }
       },
       { rootMargin: '0px 0px -12% 0px' },
     )

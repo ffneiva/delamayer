@@ -22,6 +22,7 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import sharp from 'sharp'
 import { MARK_SIZE, MARK_STROKE, markCenterline, OURO, PRETO } from '../src/lib/mark.ts'
+import { ogArquivoDe, ROUTES } from '../src/lib/routes.ts'
 
 const PUBLIC = path.resolve(import.meta.dirname, '../public')
 
@@ -55,12 +56,17 @@ function svgDaMarca({ traco, fundo = null, margem = 0, raioFundo = 0 }) {
 }
 
 /**
- * A imagem de compartilhamento.
+ * A imagem de compartilhamento — uma por rota.
  *
  * Ela é o site inteiro reduzido a um retângulo: o monograma, o nome e a frase
  * que separa a Delamayer dos concorrentes. Sem foto de gente sorrindo com
  * cartão de crédito — o assunto é dívida, e o clichê do estoque contradiz o
  * tom do resto.
+ *
+ * O texto grande muda por rota (`ogLinhas` em src/lib/routes.ts). Antes as
+ * cinco páginas dividiam a mesma arte, e o efeito prático era ruim: um link
+ * colado no WhatsApp é lido pela imagem antes do texto, então cinco páginas com
+ * a mesma peça pareciam a mesma página.
  *
  * A tipografia usa a pilha genérica do sistema porque o renderizador de SVG do
  * sharp não carrega as fontes do projeto. É a única peça da marca em que isso
@@ -68,7 +74,9 @@ function svgDaMarca({ traco, fundo = null, margem = 0, raioFundo = 0 }) {
  * ~200 px de largura, onde a diferença entre Sora e a sans do sistema não é
  * perceptível.
  */
-function svgDoOg() {
+function svgDoOg({ linhas, nota }) {
+  const [primeira, segunda] = linhas
+
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
   <defs>
     ${DEGRADE}
@@ -99,13 +107,18 @@ function svgDoOg() {
 
     <rect x="0" y="330" width="640" height="1" fill="#3a2f1c"/>
 
-    <text x="0" y="392" fill="#edeff2" font-size="40" font-weight="600">Do CPF travado</text>
-    <text x="0" y="444" fill="#edeff2" font-size="40" font-weight="600">à chave do apartamento.</text>
+    <text x="0" y="392" fill="#edeff2" font-size="40" font-weight="600">${escapar(primeira)}</text>
+    <text x="0" y="444" fill="#edeff2" font-size="40" font-weight="600">${escapar(segunda)}</text>
 
-    <text x="0" y="512" fill="#8d95a1" font-size="24">Diagnóstico de crédito · Regularização direta</text>
-    <text x="0" y="548" fill="#8d95a1" font-size="24">Rating bancário · Goiânia/GO</text>
+    <text x="0" y="512" fill="#8d95a1" font-size="24">${escapar(nota)}</text>
+    <text x="0" y="548" fill="#8d95a1" font-size="24">delamayer.com.br · Goiânia/GO</text>
   </g>
 </svg>`
+}
+
+/** XML não perdoa `&` nem `<` soltos dentro de um <text>. */
+function escapar(texto) {
+  return texto.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 }
 
 async function main() {
@@ -138,11 +151,29 @@ async function main() {
     console.log(`  ${alvo.nome}`)
   }
 
-  // ── Open Graph
-  await sharp(Buffer.from(svgDoOg()))
-    .png({ compressionLevel: 9 })
-    .toFile(path.join(PUBLIC, 'og.png'))
-  console.log('  og.png')
+  // ── Open Graph, uma peça por rota.
+  //
+  // O nome do arquivo sai de `ogArquivoDe`, a MESMA função que o plugin do Vite
+  // usa para escrever a meta tag. Derivar o nome nos dois lugares por conta
+  // própria é como uma tag acaba apontando para um arquivo que não existe.
+  const home = ROUTES[0]
+  const vistas = new Set()
+
+  for (const rota of ROUTES) {
+    const arquivo = ogArquivoDe(rota)
+    if (vistas.has(arquivo)) continue
+    vistas.add(arquivo)
+
+    // Rota sem texto próprio (a política de privacidade, que ninguém
+    // compartilha) cai na arte da home em vez de exigir uma peça inútil.
+    const linhas = rota.ogLinhas ?? home.ogLinhas
+    const nota = rota.ogNota ?? home.ogNota
+
+    await sharp(Buffer.from(svgDoOg({ linhas, nota })))
+      .png({ compressionLevel: 9 })
+      .toFile(path.join(PUBLIC, arquivo))
+    console.log(`  ${arquivo}`)
+  }
 
   console.log('\nMarca gerada a partir de src/lib/mark.ts.')
 }
