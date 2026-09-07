@@ -1,0 +1,32 @@
+# Atualizações agrupadas, uma vez por semana.
+#
+# Agrupar é o ponto: um PR por dependência produz vinte PRs por mês num
+# projeto deste tamanho, e a reação a vinte PRs de bot é fechar todos sem ler.
+# Três PRs agrupados por ecossistema é uma revisão que cabe numa segunda-feira.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 3
+    groups:
+      producao:
+        dependency-type: production
+        update-types: [minor, patch]
+      desenvolvimento:
+        dependency-type: development
+        update-types: [minor, patch]
+    commit-message:
+      prefix: 'chore(deps)'
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns: ['*']
+    commit-message:
+      prefix: 'chore(ci)'

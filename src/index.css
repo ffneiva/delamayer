@@ -1,0 +1,713 @@
+@import "tailwindcss";
+
+/* Fontes self-hosted (subsets latin + latin-ext), geradas por scripts/fetch-fonts.mjs.
+   Ficam inline aqui — e não como @import de public/ — para que o Vite não tente
+   resolver o caminho em tempo de build. */
+
+@font-face {
+  font-family: "Sora";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/sora-latin-ext-400.woff2) format("woff2");
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Sora";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/sora-latin-400.woff2) format("woff2");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Sora";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(/fonts/sora-latin-ext-600.woff2) format("woff2");
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Sora";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(/fonts/sora-latin-600.woff2) format("woff2");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Sora";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(/fonts/sora-latin-ext-700.woff2) format("woff2");
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Sora";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(/fonts/sora-latin-700.woff2) format("woff2");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url(/fonts/inter-latin-ext-300_700.woff2) format("woff2");
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url(/fonts/inter-latin-300_700.woff2) format("woff2");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-latin-ext-400.woff2) format("woff2");
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-latin-400.woff2) format("woff2");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-latin-ext-500.woff2) format("woff2");
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(/fonts/jetbrains-mono-latin-500.woff2) format("woff2");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   Design tokens — "ouro sobre obsidiana"
+   ---------------------------------------------------------------------------
+   A paleta inteira sai do arquivo da marca: preto absoluto de fundo, o ouro do
+   monograma e a prata do logotipo. Nenhuma cor de acento foi inventada.
+
+   Uma decisão explícita: **não existe verde nem vermelho de status.** É o
+   reflexo automático em produto financeiro, e aqui seria um erro — a página
+   fala com quem já ouviu "não" e associa vermelho a recusa. O que separa bom
+   de ruim é a temperatura (ouro vivo × ouro apagado), não o matiz.
+   ─────────────────────────────────────────────────────────────────────────── */
+@theme {
+  /* Fundos, do mais profundo ao mais claro */
+  --color-obsidian: #050506;
+  --color-ink: #0a0a0c;
+  --color-vault: #101013;
+  --color-surface: #16161a;
+  --color-edge: #232329;
+
+  /* Ouro — amostrado do monograma (ver src/lib/mark.ts) */
+  --color-gold-50: #fbf3e0;
+  --color-gold-100: #f3dfae;
+  --color-gold-200: #e8cb8a;
+  --color-gold-300: #d9ae5b;
+  --color-gold-400: #d4a855;
+  --color-gold-500: #c2913c;
+  --color-gold-600: #b07c24;
+  --color-gold-700: #8a5f1c;
+  --color-gold-800: #5d3f13;
+  --color-gold-900: #33220a;
+
+  /* Prata — o cromo do logotipo "DELAMAYER" */
+  --color-plat-50: #fafbfc;
+  --color-plat-100: #edeff2;
+  --color-plat-200: #d7dbe1;
+  --color-plat-300: #b6bcc6;
+  --color-plat-400: #8d95a1;
+  --color-plat-500: #6b7280;
+  --color-plat-600: #4d525c;
+  --color-plat-700: #35383f;
+  --color-plat-800: #212227;
+  --color-plat-900: #131418;
+
+  --font-display: "Sora", "Segoe UI", system-ui, sans-serif;
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", monospace;
+
+  /* Saída suave e longa — o gesto de "destravar", não o de "aparecer". */
+  --ease-vault: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-swipe: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   Base
+   ─────────────────────────────────────────────────────────────────────────── */
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* `clip` e não `hidden`: os dois cortam o transbordo lateral, mas `hidden`
+       transforma o elemento em contêiner de rolagem e quebra `position: sticky`
+       em tudo que estiver dentro — e este site usa sticky em três lugares. */
+    overflow-x: clip;
+    /* Lenis assume o controle do scroll; sem isto os dois brigam pelo mesmo eixo. */
+    &.lenis-smooth {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    background-color: var(--color-obsidian);
+    color: var(--color-plat-200);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv02", "cv03", "cv04", "ss01";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+
+  /* Números tabulares em tudo que é dado: preço, score, estatística. Sem isto
+     as colunas dançam quando o valor muda de largura. */
+  [data-numero] {
+    font-variant-numeric: tabular-nums;
+  }
+
+  ::selection {
+    background: var(--color-gold-300);
+    color: var(--color-obsidian);
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-obsidian);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-plat-800);
+    border-radius: 999px;
+    border: 3px solid var(--color-obsidian);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-gold-800);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-gold-300);
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   Utilitários de marca
+   ─────────────────────────────────────────────────────────────────────────── */
+@utility container-x {
+  width: 100%;
+  margin-inline: auto;
+  max-width: 84rem;
+  padding-inline: 1.25rem;
+  @media (width >= 48rem) {
+    padding-inline: 2.5rem;
+  }
+  @media (width >= 80rem) {
+    padding-inline: 3.5rem;
+  }
+}
+
+/** Texto em ouro escovado — o mesmo tratamento do monograma. */
+@utility gold {
+  background-image: linear-gradient(
+    168deg,
+    #fbf3e0 0%,
+    #f3dfae 14%,
+    #d9ae5b 38%,
+    #b07c24 54%,
+    #e8cb8a 74%,
+    #fbf3e0 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/** Texto em prata polida — o tratamento do logotipo "DELAMAYER". */
+@utility chrome {
+  background-image: linear-gradient(
+    177deg,
+    #ffffff 0%,
+    #d7dbe1 18%,
+    #6b7280 38%,
+    #fafbfc 50%,
+    #5c626c 62%,
+    #cdd2d9 82%,
+    #ffffff 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/**
+ * Prata polida com varredura — o mesmo tratamento do logotipo "DELAMAYER".
+ *
+ * A varredura roda **uma vez**, quando o título entra na tela (a classe
+ * `metal-in` é adicionada pelo <SplitHeading>). Um brilho em laço infinito
+ * numa página com onze títulos significaria onze elementos repintando texto a
+ * 60 quadros por segundo o tempo todo — e `background-clip: text` é justamente
+ * o tipo de pintura que o compositor não consegue acelerar.
+ *
+ * O degradê é majoritariamente claro de propósito: as faixas escuras dão a
+ * leitura de metal, mas o texto precisa continuar com contraste de título.
+ */
+@utility metal {
+  background-image: linear-gradient(
+    177deg,
+    #ffffff 0%,
+    #e2e6eb 16%,
+    #ffffff 32%,
+    #aeb5c0 45%,
+    #ffffff 58%,
+    #d7dbe1 76%,
+    #ffffff 100%
+  );
+  background-size: 100% 320%;
+  background-position: 0% 42%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/** A mesma varredura, em ouro — para o complemento do título. */
+@utility metal-ouro {
+  background-image: linear-gradient(
+    177deg,
+    #f3dfae 0%,
+    #c2913c 18%,
+    #fbf3e0 34%,
+    #a2742a 48%,
+    #e8cb8a 62%,
+    #b07c24 80%,
+    #f3dfae 100%
+  );
+  background-size: 100% 320%;
+  background-position: 0% 42%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/** Fio de ouro usado como divisor entre seções. */
+@utility hairline {
+  height: 1px;
+  background-image: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-gold-800) 20%,
+    var(--color-gold-500) 50%,
+    var(--color-gold-800) 80%,
+    transparent
+  );
+}
+
+@utility label-mono {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-gold-600);
+}
+
+/** Cartão de vidro escuro — a superfície padrão de todo conteúdo. */
+@utility card {
+  border: 1px solid var(--color-edge);
+  border-radius: 1rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0));
+  backdrop-filter: blur(6px);
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   Movimento
+   ---------------------------------------------------------------------------
+   As animações que valem para o site inteiro moram aqui, em CSS. O GSAP fica
+   reservado ao que depende da posição do scroll (ver hooks/useGsap.ts); o
+   `motion` fica reservado ao que precisa animar a SAÍDA de um elemento — a
+   única coisa que CSS puro não faz, porque o nó já saiu da árvore.
+
+   Princípio único: **estado escondido nunca sobrevive a uma falha.** Toda
+   animação de entrada é `both` a partir de um estado invisível apenas quando
+   uma classe de "armado" existe. Sem ela, o conteúdo nasce visível.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+@keyframes sheen {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 0% 300%;
+  }
+}
+
+.animate-sheen {
+  background-size: 100% 300%;
+  animation: sheen 9s linear infinite;
+}
+
+@keyframes marquee-x {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes grain-shift {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  10% {
+    transform: translate(-4%, -3%);
+  }
+  30% {
+    transform: translate(3%, -5%);
+  }
+  50% {
+    transform: translate(-2%, 4%);
+  }
+  70% {
+    transform: translate(4%, 2%);
+  }
+  90% {
+    transform: translate(-3%, 3%);
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.92);
+    opacity: 0.65;
+  }
+  70% {
+    transform: scale(1.65);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.65);
+    opacity: 0;
+  }
+}
+
+/* ── Esqueletos ──────────────────────────────────────────────────────────
+   O brilho corre da esquerda para a direita numa faixa estreita, e não como
+   um pulso de opacidade na caixa inteira. A diferença é que a faixa comunica
+   direção — "está vindo" — enquanto o pulso comunica só "está parado".
+
+   `background-size` maior que a caixa é o que permite animar `background-
+   position` sem tocar em layout: tudo roda no compositor.                   */
+@keyframes skeleton-sweep {
+  from {
+    background-position: -140% 0;
+  }
+  to {
+    background-position: 240% 0;
+  }
+}
+
+.skeleton {
+  background-color: var(--color-surface);
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(212, 168, 85, 0.09) 45%,
+    rgba(212, 168, 85, 0.16) 50%,
+    rgba(212, 168, 85, 0.09) 55%,
+    transparent 100%
+  );
+  background-size: 220% 100%;
+  background-repeat: no-repeat;
+  animation: skeleton-sweep 1.6s var(--ease-swipe) infinite;
+  border-radius: 0.5rem;
+}
+
+/* ── Abertura da página ──────────────────────────────────────────────────
+   Os atrasos abaixo somam ~2,3 s e precisam bater com DURACAO_MS em
+   components/Preloader.tsx. Se um mudar sem o outro, ou a cortina sobe cedo
+   demais (e revela o hero ainda escondido) ou tarde demais (e o visitante
+   olha para uma tela preta depois da animação já ter acabado).             */
+@keyframes preloader-mark-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.86) rotate(-6deg);
+  }
+  26%,
+  62% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  76% {
+    opacity: 0;
+    transform: scale(1.04) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* A barra que corre sob o monograma é literalmente a diagonal do símbolo,
+   percorrendo o caminho de um corte. */
+@keyframes preloader-cut {
+  0%,
+  40% {
+    transform: translateX(-130%) skewX(-24deg);
+    opacity: 0;
+  }
+  52% {
+    opacity: 1;
+  }
+  78% {
+    transform: translateX(130%) skewX(-24deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(130%) skewX(-24deg);
+    opacity: 0;
+  }
+}
+
+@keyframes preloader-curtain-up {
+  0%,
+  68% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-101%);
+  }
+}
+
+@keyframes preloader-curtain-down {
+  0%,
+  68% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(101%);
+  }
+}
+
+.preloader-mark {
+  animation: preloader-mark-in 2.3s var(--ease-vault) both;
+}
+.preloader-cut {
+  animation: preloader-cut 2.3s var(--ease-swipe) both;
+}
+.preloader-top {
+  animation: preloader-curtain-up 2.3s var(--ease-swipe) both;
+}
+.preloader-bottom {
+  animation: preloader-curtain-down 2.3s var(--ease-swipe) both;
+}
+
+/* ── Entrada do herói ────────────────────────────────────────────────────
+   Só começa quando a cortina saiu: o React acrescenta `hero-ready`.         */
+@keyframes hero-line-up {
+  from {
+    transform: translateY(120%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-rule {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.hero-ready [data-hero-line] > span {
+  animation: hero-line-up 1.15s var(--ease-vault) both;
+}
+.hero-ready [data-hero-line]:nth-of-type(2) > span {
+  animation-delay: 0.08s;
+}
+.hero-ready [data-hero-line]:nth-of-type(3) > span {
+  animation-delay: 0.16s;
+}
+
+.hero-ready [data-hero-fade] {
+  animation: hero-fade-up 1.1s var(--ease-vault) both;
+  animation-delay: 0.42s;
+}
+.hero-ready [data-hero-fade]:nth-of-type(2) {
+  animation-delay: 0.5s;
+}
+.hero-ready [data-hero-fade]:nth-of-type(3) {
+  animation-delay: 0.58s;
+}
+.hero-ready [data-hero-fade]:nth-of-type(4) {
+  animation-delay: 0.66s;
+}
+
+.hero-ready [data-hero-rule] {
+  animation: hero-rule 1.3s var(--ease-vault) both;
+  animation-delay: 0.34s;
+}
+
+/* Antes de `hero-ready`, o título fica atrás da máscara — mas SÓ quando o
+   preloader existe para revelá-lo. Sem `hero-armed`, nada é escondido: é a
+   garantia de que uma falha na abertura nunca apaga o <h1>. */
+.hero-armed:not(.hero-ready) [data-hero-line] > span {
+  transform: translateY(120%);
+}
+.hero-armed:not(.hero-ready) [data-hero-fade] {
+  opacity: 0;
+}
+.hero-armed:not(.hero-ready) [data-hero-rule] {
+  transform: scaleX(0);
+}
+
+/* ── Menu ────────────────────────────────────────────────────────────────
+   O escalonamento é nth-child em vez de stagger do GSAP: são poucos itens
+   fixos, e um seletor resolve o que antes exigia uma linha do tempo.        */
+@keyframes menu-panel-in {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes menu-item-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.menu-panel {
+  animation: menu-panel-in 720ms var(--ease-vault) both;
+}
+.menu-item {
+  animation: menu-item-in 620ms var(--ease-vault) both;
+}
+.menu-item:nth-child(1) {
+  animation-delay: 0.3s;
+}
+.menu-item:nth-child(2) {
+  animation-delay: 0.36s;
+}
+.menu-item:nth-child(3) {
+  animation-delay: 0.42s;
+}
+.menu-item:nth-child(4) {
+  animation-delay: 0.48s;
+}
+.menu-item:nth-child(5) {
+  animation-delay: 0.54s;
+}
+.menu-item:nth-child(6) {
+  animation-delay: 0.6s;
+}
+.menu-item:nth-child(7) {
+  animation-delay: 0.66s;
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   Acessibilidade — nada aqui é essencial para ler o site
+   ─────────────────────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* O esqueleto sem animação vira um bloco cinza parado, que lê como "quebrado".
+     Um contraste levemente mais alto devolve a leitura de "carregando". */
+  .skeleton {
+    background-image: none;
+    background-color: var(--color-edge);
+  }
+}
