@@ -6,17 +6,27 @@ import { SkeletonCena } from './Skeleton'
 const BrandScene = lazy(() => import('./BrandScene'))
 
 /**
- * A cena WebGL, montada só quando ela está de fato na tela.
+ * A cena WebGL: montada uma vez, PAUSADA quando sai da tela.
  *
- * O site usa o monograma em 3D em dois lugares — o herói e o fecho —, e um
- * navegador tem um teto de contextos WebGL simultâneos (na prática, ~16 por
- * aba, e o mais antigo é derrubado quando estoura). Dois contextos vivos o
- * tempo todo não estouram nada, mas mantêm dois loops de render girando numa
- * página em que só um está visível.
+ * O site usa o monograma em 3D em dois lugares — o herói e o fecho — e nenhum
+ * dos dois pode ficar renderizando enquanto a pessoa lê o meio da página.
  *
- * O `IntersectionObserver` resolve: a cena nasce quando entra no campo de visão
- * e é desmontada quando sai — o que também libera a GPU enquanto a pessoa lê o
- * meio da página.
+ * ── O que não funcionou ─────────────────────────────────────────────────────
+ *
+ * A primeira versão desmontava a cena ao sair do campo de visão e a remontava
+ * ao voltar. Economizava GPU, e custava caro em outro lugar: cada remontagem
+ * cria um contexto WebGL novo, recozinha o cubemap do estúdio no
+ * `PMREMGenerator` e reconstrói a geometria extrudada. Dava meio segundo de
+ * buraco toda vez que se rolava de volta ao herói, e de novo ao chegar no
+ * fecho — exatamente nos dois momentos em que a peça é o assunto.
+ *
+ * ── O que funciona ──────────────────────────────────────────────────────────
+ *
+ * Montar na primeira vez que a cena chega perto da tela e **nunca desmontar**.
+ * O que é ligado e desligado é o laço de render: `frameloop="never"` faz o R3F
+ * parar de desenhar por completo — zero trabalho de GPU, zero `useFrame` — sem
+ * destruir nada. Voltar a `"always"` retoma no quadro seguinte, com o contexto,
+ * o ambiente e a geometria ainda de pé.
  *
  * ── Por que ela roda no celular ─────────────────────────────────────────────
  *
@@ -75,6 +85,8 @@ export function Cena3D({ className, escala = 1, giroPorScroll = 0 }: Props) {
   const desktop = useIsDesktop()
   const reduzido = useReducedMotion()
   const [visivel, setVisivel] = useState(false)
+  // Uma vez montada, fica. Ver o cabeçalho: remontar é o que causava o buraco.
+  const [jaMontou, setJaMontou] = useState(false)
   const [temWebGL, setTemWebGL] = useState(false)
 
   // A checagem toca no DOM, então só pode acontecer depois da montagem.
@@ -88,10 +100,14 @@ export function Cena3D({ className, escala = 1, giroPorScroll = 0 }: Props) {
     if (!el) return
 
     const io = new IntersectionObserver(
-      ([entrada]) => setVisivel(entrada.isIntersecting),
-      // Margem generosa: a cena começa a carregar antes de aparecer, para o
-      // primeiro quadro já estar pronto quando ela entra de verdade.
-      { rootMargin: '250px 0px' },
+      ([entrada]) => {
+        setVisivel(entrada.isIntersecting)
+        if (entrada.isIntersecting) setJaMontou(true)
+      },
+      // Uma tela inteira de antecedência. A montagem custa alguns quadros
+      // (contexto, cubemap, extrusão) e é melhor gastá-los enquanto a cena
+      // ainda está fora de vista do que na hora em que ela aparece.
+      { rootMargin: '800px 0px' },
     )
     io.observe(el)
     return () => io.disconnect()
@@ -104,9 +120,14 @@ export function Cena3D({ className, escala = 1, giroPorScroll = 0 }: Props) {
        `absolute`. O efeito era a cena virar item do flex do herói e empurrar o
        texto para fora da tela. O <Canvas> do R3F já se posiciona sozinho. */
     <div ref={ref} aria-hidden className={cn(className)}>
-      {permitido && visivel ? (
+      {permitido && jaMontou ? (
         <Suspense fallback={<SkeletonCena className="h-full w-full" />}>
-          <BrandScene escala={escala} giroPorScroll={giroPorScroll} compacto={!desktop} />
+          <BrandScene
+            escala={escala}
+            giroPorScroll={giroPorScroll}
+            compacto={!desktop}
+            ativo={visivel}
+          />
         </Suspense>
       ) : (
         <SkeletonCena className="h-full w-full" />

@@ -39,10 +39,49 @@ type Props = {
 export function Nav({ onSection, onNavigate, path }: Props) {
   const [aberto, setAberto] = useState(false)
   const [encolhido, setEncolhido] = useState(false)
+  const [escondido, setEscondido] = useState(false)
   const estado = estadoAtual()
 
+  /**
+   * O cabeçalho recua ao descer e volta ao subir.
+   *
+   * Numa página desta altura, uma barra fixa fica no caminho da leitura o tempo
+   * todo. Recuando na descida ela devolve ~70 px de tela para o conteúdo; e
+   * como subir é o gesto de quem está procurando alguma coisa, é exatamente aí
+   * que a navegação precisa reaparecer.
+   *
+   * Duas guardas contra a barra piscando:
+   *
+   * · **Zona de segurança no topo.** Perto do topo ela nunca some — sumir na
+   *   primeira rolada, quando o logotipo ainda está sendo visto, parece defeito.
+   *
+   * · **Acúmulo de direção, e não o último evento.** Reagir ao delta de um
+   *   evento só falha com scroll suave: o Lenis chega ao destino com uma
+   *   desaceleração que às vezes passa alguns pixels e volta, e esse último
+   *   movimento negativo revelava a barra no fim de toda descida. Aqui a
+   *   direção só troca depois de LIMIAR pixels acumulados no novo sentido, o
+   *   que ignora o ricochete sem ignorar a intenção.
+   */
   useEffect(() => {
-    const aoRolar = () => setEncolhido(window.scrollY > 24)
+    let anterior = window.scrollY
+    let acumulado = 0
+    const LIMIAR = 28
+
+    const aoRolar = () => {
+      const y = window.scrollY
+      setEncolhido(y > 24)
+
+      const movimento = y - anterior
+      anterior = y
+
+      // Trocou de sentido: zera o acumulador e recomeça a contar.
+      if (Math.sign(movimento) !== Math.sign(acumulado)) acumulado = 0
+      acumulado += movimento
+
+      if (acumulado > LIMIAR) setEscondido(y > 260)
+      else if (acumulado < -LIMIAR) setEscondido(false)
+    }
+
     aoRolar()
     window.addEventListener('scroll', aoRolar, { passive: true })
     return () => window.removeEventListener('scroll', aoRolar)
@@ -83,6 +122,9 @@ export function Nav({ onSection, onNavigate, path }: Props) {
           encolhido
             ? 'border-b border-edge/80 bg-obsidian/80 py-3 backdrop-blur-xl'
             : 'border-b border-transparent py-5',
+          // Com o menu aberto a barra fica, sempre: é dela que sai o botão de
+          // fechar, e escondê-la deixaria o painel sem saída visível.
+          escondido && !aberto && '-translate-y-full',
         )}
       >
         <div className="container-x flex items-center justify-between gap-4">

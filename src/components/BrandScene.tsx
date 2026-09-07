@@ -395,12 +395,12 @@ function Monograma({ escala, ocupacao, giroPorScroll }: MonogramaProps) {
   const geometrias = useGeometrias()
 
   /**
-   * Um material POR fita, e nao um compartilhado.
+   * Um material POR fita, e não um compartilhado.
    *
-   * O motivo e o brilho de montagem: cada fita esfria no seu tempo, e
-   * `emissiveIntensity` e propriedade do material. Com um material so, as tres
-   * apagariam juntas — e o escalonamento da entrada, que e o efeito inteiro,
-   * deixaria de ser visivel.
+   * O motivo é o brilho de montagem: cada fita esfria no seu tempo, e
+   * `emissiveIntensity` é propriedade do material. Com um material só, as três
+   * apagariam juntas — e o escalonamento da entrada, que é o efeito inteiro,
+   * deixaria de ser visível.
    */
   const materiais = useMemo(
     () =>
@@ -408,8 +408,8 @@ function Monograma({ escala, ocupacao, giroPorScroll }: MonogramaProps) {
         () =>
           new THREE.MeshStandardMaterial({
             color: '#e8be6b',
-            // 0,88 e nao 1: metal puro nao tem cor difusa nenhuma, so reflexo —
-            // e no pior angulo de giro isso deixava a peca cinza. A fracao de
+            // 0,88 e não 1: metal puro não tem cor difusa nenhuma, só reflexo —
+            // e no pior ângulo de giro isso deixava a peça cinza. A fração de
             // difusa que sobra garante que ela seja dourada sempre.
             metalness: 0.88,
             roughness: 0.24,
@@ -434,14 +434,21 @@ function Monograma({ escala, ocupacao, giroPorScroll }: MonogramaProps) {
     const desdeAEntrada = t - inicio.current
 
     /**
-     * Quanto a peca se abre de novo ao sair da tela.
+     * Quanto a peça está desmontada por causa da rolagem.
      *
-     * `posicao` e -1 quando a cena esta saindo por cima. As fitas voltam pelo
-     * caminho por onde vieram — a montagem tocada ao contrario. E um fecho para
-     * o gesto de abertura, e acontece exatamente quando ninguem mais esta
-     * olhando a peca de frente, entao nao custa nada em legibilidade.
+     * `posicao` vale 0 com a cena centralizada e cresce em módulo conforme ela
+     * se afasta — negativo saindo por cima, positivo ainda chegando por baixo.
+     * As fitas se separam pelo caminho por onde vieram nos DOIS sentidos, e a
+     * zona morta no meio garante que a peça fique inteira enquanto está sendo
+     * olhada de frente.
+     *
+     * Antes isto só valia para `posicao` negativo, e a consequência era que a
+     * peça do fecho só se montava na PRIMEIRA vez — aquela montagem vinha da
+     * animação de entrada, que roda uma vez por montagem. Agora ela é dirigida
+     * pela rolagem, então desfaz e refaz sempre que se sobe e desce.
      */
-    const separacao = Math.max(0, -posicao.current) * 0.5
+    const ZONA_MORTA = 0.32
+    const separacao = Math.max(0, Math.abs(posicao.current) - ZONA_MORTA) * 0.75
 
     // ── Montagem: cada fita vem da sua direção e trava no lugar ──────────────
     for (let i = 0; i < ENTRADA.length; i++) {
@@ -459,7 +466,7 @@ function Monograma({ escala, ocupacao, giroPorScroll }: MonogramaProps) {
 
       // A fita chega incandescente e esfria ao assentar. O expoente concentra o
       // brilho no fim do voo: com decaimento linear ela pareceria uma luz sendo
-      // apagada, e nao metal perdendo calor.
+      // apagada, e não metal perdendo calor.
       materiais[i].emissiveIntensity = (1 - p) ** 2 * 1.1
     }
 
@@ -726,9 +733,17 @@ type Props = {
    * custa fill rate, que é o gargalo num aparelho de bolso.
    */
   compacto?: boolean
+  /**
+   * `false` congela o laço de render sem destruir nada.
+   *
+   * É o que permite manter a cena montada fora da tela sem gastar GPU: o
+   * contexto, o cubemap do estúdio e a geometria continuam de pé, e voltar a
+   * desenhar custa um quadro. Ver o cabeçalho de components/Cena3D.
+   */
+  ativo?: boolean
 }
 
-function Cena({ escala, giroPorScroll, compacto }: Required<Props>) {
+function Cena({ escala, giroPorScroll, compacto }: Required<Omit<Props, 'ativo'>>) {
   // No celular a cena ocupa a largura toda do herói; no desktop, 52% dela.
   const ocupacao = compacto ? 0.42 : 0.5
 
@@ -752,7 +767,12 @@ function Cena({ escala, giroPorScroll, compacto }: Required<Props>) {
   )
 }
 
-export default function BrandScene({ escala = 1, giroPorScroll = 0, compacto = false }: Props) {
+export default function BrandScene({
+  escala = 1,
+  giroPorScroll = 0,
+  compacto = false,
+  ativo = true,
+}: Props) {
   return (
     <Canvas
       // dpr limitado: em telas 3x o custo por fragmento triplica sem ganho
@@ -765,6 +785,7 @@ export default function BrandScene({ escala = 1, giroPorScroll = 0, compacto = f
         powerPreference: compacto ? 'default' : 'high-performance',
       }}
       camera={{ position: [0, 0.3, 6.4], fov: 34 }}
+      frameloop={ativo ? 'always' : 'never'}
       style={{ pointerEvents: 'none' }}
     >
       <Cena escala={escala} giroPorScroll={giroPorScroll} compacto={compacto} />

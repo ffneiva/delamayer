@@ -44,6 +44,46 @@ function anguloDaLetra(indice: number) {
   return ANGULO_INICIAL + (ABERTURA * (invertido + 0.5)) / TOTAL
 }
 
+/**
+ * Fração de cada trecho gasta ANDANDO. O resto é descanso.
+ *
+ * Com movimento linear, o ponteiro atravessa as seis letras em velocidade
+ * constante e nenhuma delas fica parada tempo suficiente para ser lida — na
+ * prática, F e E passavam batido antes de a pessoa terminar de olhar. Andando
+ * em 40% do trecho e descansando nos outros 60%, cada letra ganha uma pausa
+ * proporcional, e o gesto passa a ser "de degrau em degrau" em vez de um
+ * deslize contínuo.
+ */
+const FRACAO_ANDANDO = 0.4
+
+/** easeInOutCubic: sai e chega devagar, o que faz a parada parecer intencional. */
+function suavizar(t: number): number {
+  return t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2
+}
+
+/**
+ * Traduz o progresso da rolagem (0 a 1) na posição do ponteiro.
+ *
+ * Devolve o ângulo em graus e o índice da letra em destaque, contando de F (0)
+ * até A (5) — a mesma direção em que o ponteiro anda.
+ */
+function posicaoDoPonteiro(progresso: number) {
+  // São TOTAL letras, logo TOTAL−1 trechos entre elas.
+  const passo = clamp(progresso, 0, 1) * (TOTAL - 1)
+  const trecho = Math.min(Math.floor(passo), TOTAL - 2)
+  const dentroDoTrecho = passo - trecho
+
+  const avanco = suavizar(clamp(dentroDoTrecho / FRACAO_ANDANDO, 0, 1))
+  const continuo = trecho + avanco
+
+  return {
+    indice: Math.round(continuo),
+    // O ponteiro aponta para o CENTRO da faixa de cada letra, e não para a
+    // divisa entre elas — daí o meio passo somado.
+    angulo: ANGULO_INICIAL + (ABERTURA * (continuo + 0.5)) / TOTAL,
+  }
+}
+
 function caminhoDoArco(deGraus: number, ateGraus: number, raio: number) {
   const p1 = polar(deGraus, raio)
   const p2 = polar(ateGraus, raio)
@@ -70,20 +110,20 @@ export function RatingDial({ className }: { className?: string }) {
         ease: 'none',
         scrollTrigger: {
           trigger: escopo.current,
-          start: 'top 78%',
-          end: 'bottom 42%',
+          // Faixa de rolagem generosa: são seis paradas para ler, e o percurso
+          // anterior (top 78% → bottom 42%) espremia as duas primeiras num
+          // punhado de pixels.
+          start: 'top 88%',
+          end: 'bottom 25%',
           scrub: 0.8,
         },
         onUpdate: () => {
-          // progresso 0 = F (pior), 1 = A (melhor)
-          const angulo = ANGULO_INICIAL + ABERTURA * alvo.progresso
+          const { indice, angulo } = posicaoDoPonteiro(alvo.progresso)
           if (ponteiro.current) {
             ponteiro.current.setAttribute('transform', `rotate(${angulo} ${CENTRO.x} ${CENTRO.y})`)
           }
-
-          // De progresso para índice de RATING_ESCALA (que está de A a F).
-          const faixa = clamp(Math.floor(alvo.progresso * TOTAL), 0, TOTAL - 1)
-          setAtivo(TOTAL - 1 - faixa)
+          // `indice` conta de F (0) para A (5); RATING_ESCALA vai de A a F.
+          setAtivo(TOTAL - 1 - indice)
         },
       })
     },
@@ -189,12 +229,19 @@ export function RatingDial({ className }: { className?: string }) {
       </svg>
 
       {/* A leitura da faixa. `aria-live` para que a troca seja anunciada a quem
-          navega por leitor de tela — sem isso a animação é invisível ali. */}
+          navega por leitor de tela — sem isso a animação é invisível ali.
+
+          A `key` no índice é o que dá a transição: trocá-la faz o React
+          remontar o bloco, e a animação de entrada roda de novo a cada letra.
+          Sem ela, o texto trocaria num corte seco no meio de um movimento
+          suave. */}
       <div aria-live="polite" className="mt-6 min-h-[4.5rem] text-center">
-        <p className="font-display text-2xl text-gold-100">
-          {atual.letra} — {atual.rotulo}
-        </p>
-        <p className="mt-1.5 text-sm text-plat-400">{atual.nota}</p>
+        <div key={ativo} className="animate-[fade-in_420ms_var(--ease-vault)_both]">
+          <p className="font-display text-2xl text-gold-100">
+            {atual.letra} — {atual.rotulo}
+          </p>
+          <p className="mt-1.5 text-sm text-plat-400">{atual.nota}</p>
+        </div>
       </div>
     </div>
   )

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Reveal } from '@/components/Reveal'
 import { SectionHeading } from '@/components/SectionHeading'
+import { useBrilho } from '@/hooks/useBrilho'
 import { SERVICES } from '@/lib/business'
 import { cn } from '@/lib/utils'
 
@@ -22,6 +23,7 @@ import { cn } from '@/lib/utils'
  */
 export function Servicos() {
   const [aberto, setAberto] = useState<string | null>(SERVICES[0].id)
+  const brilho = useBrilho()
 
   return (
     <section id="servicos" className="scroll-mt-24 py-24 md:py-32">
@@ -40,8 +42,9 @@ export function Servicos() {
                 as="li"
                 key={servico.id}
                 delay={i * 0.05}
+                {...brilho}
                 className={cn(
-                  'card overflow-hidden transition-[border-color,background-color] duration-500',
+                  'card brilho overflow-hidden transition-[border-color,background-color] duration-500',
                   expandido ? 'border-gold-800/70 bg-gold-900/[0.07]' : 'hover:border-plat-700',
                 )}
               >

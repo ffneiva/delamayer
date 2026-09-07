@@ -1,3 +1,4 @@
+import { Contador } from '@/components/Contador'
 import { Marquee } from '@/components/Marquee'
 import { Reveal } from '@/components/Reveal'
 import { EVIDENCIAS } from '@/lib/business'
@@ -35,12 +36,10 @@ export function Numeros() {
         <ul className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {EVIDENCIAS.map((evidencia, i) => (
             <Reveal as="li" key={evidencia.id} delay={i * 0.07}>
-              <p
-                data-numero
-                className="gold font-display text-[clamp(2.2rem,4.6vw,3.1rem)] leading-none font-semibold"
-              >
-                {evidencia.valor}
-              </p>
+              <Contador
+                texto={evidencia.valor}
+                className="gold block font-display text-[clamp(2.2rem,4.6vw,3.1rem)] leading-none font-semibold"
+              />
               <p className="mt-3 text-sm leading-relaxed text-plat-400">{evidencia.legenda}</p>
             </Reveal>
           ))}

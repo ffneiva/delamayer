@@ -346,6 +346,36 @@
   color: transparent;
 }
 
+/**
+ * Brilho que segue o cursor dentro do elemento.
+ *
+ * A posicao vem de duas variaveis CSS que o hook useBrilho escreve no no, e o
+ * desenho e um `::after` — nao um segundo elemento no JSX. Sao dois motivos:
+ * o pseudo-elemento nao entra na arvore de acessibilidade (nao precisa de
+ * aria-hidden) e nao pode receber evento, entao nao ha risco de ele roubar o
+ * clique do cartao que esta iluminando.
+ *
+ * `--bo` comeca em 0: sem o cursor por perto, nao ha brilho.
+ */
+@utility brilho {
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: var(--bo, 0);
+    transition: opacity 400ms var(--ease-vault);
+    background: radial-gradient(
+      22rem circle at var(--bx, 50%) var(--by, 50%),
+      rgba(212, 168, 85, 0.09),
+      transparent 60%
+    );
+  }
+}
+
 /** Fio de ouro usado como divisor entre seções. */
 @utility hairline {
   height: 1px;

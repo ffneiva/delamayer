@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { Reveal } from '@/components/Reveal'
 import { SectionHeading } from '@/components/SectionHeading'
+import { useBrilho } from '@/hooks/useBrilho'
 import { useGsap } from '@/hooks/useGsap'
 import { useIsDesktop, useReducedMotion } from '@/hooks/useMediaQuery'
 import { METODO } from '@/lib/business'
@@ -35,6 +36,7 @@ export function Metodo() {
   const desktop = useIsDesktop()
   const reduzido = useReducedMotion()
   const horizontal = desktop && !reduzido
+  const brilho = useBrilho()
 
   useGsap(
     (gsap) => {
@@ -98,7 +100,8 @@ export function Metodo() {
               as="li"
               key={etapa.numero}
               delay={horizontal ? 0 : i * 0.08}
-              className="card flex flex-col p-7 lg:w-[24rem] lg:shrink-0 lg:p-9"
+              {...brilho}
+              className="card brilho flex flex-col p-7 lg:w-[24rem] lg:shrink-0 lg:p-9"
             >
               <div className="flex items-baseline gap-4">
                 <span
