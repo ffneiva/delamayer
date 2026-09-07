@@ -26,6 +26,11 @@ const MASCARA = 'linear-gradient(90deg, transparent, #000 8%, #000 92%, transpar
 export function Marquee({ children, duracao = 34, inverso = false, className }: Props) {
   return (
     <div
+      // O transbordo aqui é o efeito, não um defeito: a faixa é mais larga que
+      // a tela por definição. O atributo diz isso ao teste de recorte
+      // (tests/e2e/acessibilidade), que de outro modo apontaria a marquise
+      // toda vez.
+      data-transbordo-intencional
       className={cn('group relative flex overflow-hidden', className)}
       style={{ maskImage: MASCARA, WebkitMaskImage: MASCARA }}
     >

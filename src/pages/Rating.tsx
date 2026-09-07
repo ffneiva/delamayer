@@ -2,7 +2,8 @@ import { BotaoWhatsApp, ButtonLink } from '@/components/Button'
 import { PageHero } from '@/components/PageHero'
 import { RatingDial } from '@/components/RatingDial'
 import { Reveal } from '@/components/Reveal'
-import { BUSINESS, FAQ, RATING_ESCALA, SCORE_VS_RATING } from '@/lib/business'
+import { TabelaComparativa } from '@/components/TabelaComparativa'
+import { BUSINESS, FAQ, RATING_ESCALA } from '@/lib/business'
 import { linkWhatsApp } from '@/lib/diagnostico'
 import { Faq } from '@/sections/Faq'
 import { Midia } from '@/sections/Midia'
@@ -74,40 +75,7 @@ export function Rating({ onNavigate }: { onNavigate: (path: string) => void }) {
       <section className="pb-8">
         <div className="container-x">
           <Reveal>
-            <div className="card overflow-x-auto">
-              <table className="w-full min-w-[38rem] text-left text-sm">
-                <caption className="sr-only">
-                  Comparação entre o score de crédito e o rating bancário
-                </caption>
-                <thead>
-                  <tr className="border-b border-edge">
-                    <th scope="col" className="label-mono px-5 py-4 font-normal">
-                      Critério
-                    </th>
-                    <th scope="col" className="px-5 py-4 font-display text-base text-plat-100">
-                      Score de crédito
-                    </th>
-                    <th scope="col" className="px-5 py-4 font-display text-base text-gold-200">
-                      Rating bancário
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {SCORE_VS_RATING.map((linha) => (
-                    <tr key={linha.criterio} className="border-b border-edge/60 last:border-0">
-                      <th
-                        scope="row"
-                        className="px-5 py-4 align-top font-normal whitespace-nowrap text-plat-500"
-                      >
-                        {linha.criterio}
-                      </th>
-                      <td className="px-5 py-4 align-top text-plat-300">{linha.score}</td>
-                      <td className="px-5 py-4 align-top text-gold-100/90">{linha.rating}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <TabelaComparativa />
           </Reveal>
         </div>
       </section>

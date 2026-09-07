@@ -159,9 +159,31 @@ function montarAmbiente(gl: THREE.WebGLRenderer): THREE.Texture {
  */
 function AmbienteDeEstudio() {
   const gl = useThree((s) => s.gl)
+  const cena = useThree((s) => s.scene)
   const textura = useMemo(() => montarAmbiente(gl), [gl])
 
   useEffect(() => () => textura.dispose(), [textura])
+
+  /**
+   * O estúdio inteiro gira devagar em torno da peça.
+   *
+   * É o efeito de melhor retorno da cena, e custa uma linha: o cubemap é cozido
+   * uma vez só, e girá-lo é trocar um uniforme por quadro. O que o olho vê é o
+   * reflexo VARRENDO a superfície — as faixas de luz correndo pelo bisel — em
+   * vez de um brilho fixo que só se move quando o objeto se move. É a diferença
+   * entre uma peça de metal e uma foto de uma peça.
+   *
+   * Sentido contrário ao da deriva do monograma, de propósito: girando juntos,
+   * o reflexo ficaria estático em relação à superfície e o efeito sumiria.
+   */
+  useFrame((estado) => {
+    // `environmentRotation` chegou no r163. A guarda existe porque a cena é
+    // carregada sob demanda, e um three.js mais antigo em cache do navegador
+    // derrubaria a cena inteira num TypeError.
+    if (cena.environmentRotation) {
+      cena.environmentRotation.y = -estado.clock.elapsedTime * 0.055
+    }
+  })
 
   return <primitive object={textura} attach="environment" />
 }
@@ -278,6 +300,55 @@ function usePosicaoNaTela(gl: THREE.WebGLRenderer) {
   return posicao
 }
 
+/**
+ * Uma luz pontual que persegue o cursor.
+ *
+ * O environment map dá o reflexo do estúdio, que é fixo em relação ao mundo.
+ * Esta luz dá o realce que responde à MÃO de quem está olhando: ela desliza
+ * pelo bisel conforme o mouse anda, e é o que transforma a peça de
+ * "renderizada" em "presente".
+ *
+ * Sem ponteiro — celular, tablet —, ela orbita sozinha. O movimento é o mesmo;
+ * o que muda é quem o comanda.
+ */
+function LuzDoPonteiro({ compacto }: { compacto: boolean }) {
+  const luz = useRef<THREE.PointLight>(null)
+  const ponteiro = usePonteiroDaJanela()
+  const viewport = useThree((s) => s.viewport)
+
+  useFrame((estado, delta) => {
+    const l = luz.current
+    if (!l) return
+
+    let alvoX: number
+    let alvoY: number
+
+    if (compacto) {
+      const t = estado.clock.elapsedTime
+      alvoX = Math.cos(t * 0.42) * viewport.width * 0.42
+      alvoY = Math.sin(t * 0.31) * viewport.height * 0.34
+    } else {
+      alvoX = ponteiro.current.x * viewport.width * 0.62
+      alvoY = ponteiro.current.y * viewport.height * 0.55
+    }
+
+    const k = 1 - 0.004 ** delta
+    l.position.x += (alvoX - l.position.x) * k
+    l.position.y += (alvoY - l.position.y) * k
+  })
+
+  return (
+    <pointLight
+      ref={luz}
+      position={[0, 0, 3.2]}
+      intensity={26}
+      distance={16}
+      decay={2}
+      color="#fff3d6"
+    />
+  )
+}
+
 /** Largura aproximada do monograma, em unidades de cena. */
 const LARGURA_MARCA = 2.1
 
@@ -323,31 +394,54 @@ function Monograma({ escala, ocupacao, giroPorScroll }: MonogramaProps) {
   const ajuste = useEscalaAjustada(ocupacao)
   const geometrias = useGeometrias()
 
-  const ouro = useMemo(
+  /**
+   * Um material POR fita, e nao um compartilhado.
+   *
+   * O motivo e o brilho de montagem: cada fita esfria no seu tempo, e
+   * `emissiveIntensity` e propriedade do material. Com um material so, as tres
+   * apagariam juntas — e o escalonamento da entrada, que e o efeito inteiro,
+   * deixaria de ser visivel.
+   */
+  const materiais = useMemo(
     () =>
-      new THREE.MeshStandardMaterial({
-        color: '#e8be6b',
-        // 0,88 e não 1: metal puro não tem cor difusa nenhuma, só reflexo — e
-        // no pior ângulo de giro isso deixava a peça cinza. A fração de difusa
-        // que sobra garante que ela seja dourada sempre.
-        metalness: 0.88,
-        roughness: 0.24,
-        envMapIntensity: 2.8,
-      }),
+      ENTRADA.map(
+        () =>
+          new THREE.MeshStandardMaterial({
+            color: '#e8be6b',
+            // 0,88 e nao 1: metal puro nao tem cor difusa nenhuma, so reflexo —
+            // e no pior angulo de giro isso deixava a peca cinza. A fracao de
+            // difusa que sobra garante que ela seja dourada sempre.
+            metalness: 0.88,
+            roughness: 0.24,
+            envMapIntensity: 2.8,
+            emissive: new THREE.Color('#ffb44a'),
+            emissiveIntensity: 0,
+          }),
+      ),
     [],
   )
 
   useEffect(() => {
     return () => {
-      ouro.dispose()
+      for (const m of materiais) m.dispose()
       for (const g of geometrias) g.dispose()
     }
-  }, [ouro, geometrias])
+  }, [materiais, geometrias])
 
   useFrame((estado, delta) => {
     if (!inicio.current) inicio.current = estado.clock.elapsedTime
     const t = estado.clock.elapsedTime
     const desdeAEntrada = t - inicio.current
+
+    /**
+     * Quanto a peca se abre de novo ao sair da tela.
+     *
+     * `posicao` e -1 quando a cena esta saindo por cima. As fitas voltam pelo
+     * caminho por onde vieram — a montagem tocada ao contrario. E um fecho para
+     * o gesto de abertura, e acontece exatamente quando ninguem mais esta
+     * olhando a peca de frente, entao nao custa nada em legibilidade.
+     */
+    const separacao = Math.max(0, -posicao.current) * 0.5
 
     // ── Montagem: cada fita vem da sua direção e trava no lugar ──────────────
     for (let i = 0; i < ENTRADA.length; i++) {
@@ -356,12 +450,17 @@ function Monograma({ escala, ocupacao, giroPorScroll }: MonogramaProps) {
       // easeOutQuint: a fita chega rápido e desacelera longo, que é o que faz
       // parecer que ela "assenta" em vez de simplesmente parar.
       const p = 1 - (1 - bruto) ** 5
-      const resto = 1 - p
+      const deslocamento = 1 - p + separacao
 
       const malha = fitas.current[i]
       if (!malha) continue
-      malha.position.set(de[0] * resto, de[1] * resto, de[2] * resto)
-      malha.rotation.set(giro[0] * resto, giro[1] * resto, giro[2] * resto)
+      malha.position.set(de[0] * deslocamento, de[1] * deslocamento, de[2] * deslocamento)
+      malha.rotation.set(giro[0] * deslocamento, giro[1] * deslocamento, giro[2] * deslocamento)
+
+      // A fita chega incandescente e esfria ao assentar. O expoente concentra o
+      // brilho no fim do voo: com decaimento linear ela pareceria uma luz sendo
+      // apagada, e nao metal perdendo calor.
+      materiais[i].emissiveIntensity = (1 - p) ** 2 * 1.1
     }
 
     // ── Orientação: deriva lenta + ponteiro + posição na tela ────────────────
@@ -406,7 +505,7 @@ function Monograma({ escala, ocupacao, giroPorScroll }: MonogramaProps) {
                 fitas.current[i] = m
               }}
               geometry={geometria}
-              material={ouro}
+              material={materiais[i]}
             />
           ))}
         </group>
@@ -639,6 +738,7 @@ function Cena({ escala, giroPorScroll, compacto }: Required<Props>) {
       <ambientLight intensity={0.35} color="#ffe9c2" />
       <directionalLight position={[3, 5, 6]} intensity={2.4} color="#fff3d8" />
       <directionalLight position={[-5, -1, 3]} intensity={1.1} color="#ffd08a" />
+      <LuzDoPonteiro compacto={compacto} />
 
       <Halo escala={escala} />
       <PoeiraDeOuro total={compacto ? 70 : 150} raio={2.2} tamanho={0.022} velocidade={0.045} />

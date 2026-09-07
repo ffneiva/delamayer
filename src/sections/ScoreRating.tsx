@@ -2,7 +2,7 @@ import { ButtonLink } from '@/components/Button'
 import { RatingDial } from '@/components/RatingDial'
 import { Reveal } from '@/components/Reveal'
 import { SectionHeading } from '@/components/SectionHeading'
-import { SCORE_VS_RATING } from '@/lib/business'
+import { TabelaComparativa } from '@/components/TabelaComparativa'
 
 /**
  * Score × Rating — a seção que carrega o posicionamento inteiro.
@@ -12,10 +12,9 @@ import { SCORE_VS_RATING } from '@/lib/business'
  * indicadores, eles discordam, e é a discordância que produz a recusa que
  * ninguém entende.
  *
- * A tabela é uma `<table>` de verdade, e não uma grade de `<div>`. São dados
- * comparáveis em duas dimensões — critério e indicador —, exatamente o caso
- * para o qual a tag existe; num leitor de tela, a versão em div viraria uma
- * lista de doze frases soltas sem dizer qual pertence a qual coluna.
+ * A comparação vive em `<TabelaComparativa>`, que é compartilhada com a página
+ * /rating — as duas mostram exatamente os mesmos dados, e mantê-las em dois
+ * lugares garantia que um dia divergissem.
  */
 export function ScoreRating() {
   return (
@@ -34,43 +33,7 @@ export function ScoreRating() {
 
         <div className="mt-16 grid gap-14 lg:grid-cols-[1.15fr_1fr] lg:items-start lg:gap-20">
           <Reveal>
-            <div className="card overflow-hidden">
-              <table className="w-full text-left text-sm">
-                <caption className="sr-only">
-                  Comparação entre o score de crédito e o rating bancário
-                </caption>
-                <thead>
-                  <tr className="border-b border-edge">
-                    <th scope="col" className="label-mono px-5 py-4 font-normal">
-                      Critério
-                    </th>
-                    <th scope="col" className="px-5 py-4 font-display text-base text-plat-100">
-                      Score
-                    </th>
-                    <th scope="col" className="px-5 py-4 font-display text-base text-gold-200">
-                      Rating
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {SCORE_VS_RATING.map((linha) => (
-                    <tr
-                      key={linha.criterio}
-                      className="border-b border-edge/60 transition-colors duration-400 last:border-0 hover:bg-white/[0.018]"
-                    >
-                      <th
-                        scope="row"
-                        className="px-5 py-4 align-top font-normal text-plat-500 whitespace-nowrap"
-                      >
-                        {linha.criterio}
-                      </th>
-                      <td className="px-5 py-4 align-top text-plat-300">{linha.score}</td>
-                      <td className="px-5 py-4 align-top text-gold-100/90">{linha.rating}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <TabelaComparativa />
           </Reveal>
 
           <div>

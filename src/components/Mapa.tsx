@@ -105,7 +105,14 @@ export function Mapa({ className }: { className?: string }) {
   const pronto = tiles.length > 0 && carregados >= Math.min(tiles.length, 4)
 
   return (
-    <div className={cn('relative overflow-hidden rounded-2xl border border-edge', className)}>
+    <div
+      // Um mapa de tiles desenha mais do que mostra: a grade é montada em
+      // múltiplos de 256 px e recortada na moldura. O atributo diz isso ao
+      // teste de recorte (tests/e2e/acessibilidade), que de outro modo
+      // apontaria o mapa como conteúdo cortado.
+      data-transbordo-intencional
+      className={cn('relative overflow-hidden rounded-2xl border border-edge', className)}
+    >
       <div ref={caixaRef} className="absolute inset-0 bg-vault">
         {/* Grade de fundo enquanto os tiles não chegam. Ela tem a mesma
             densidade visual do mapa filtrado, então a troca não pisca. */}

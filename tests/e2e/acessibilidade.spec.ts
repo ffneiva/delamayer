@@ -83,6 +83,73 @@ test.describe('nenhum botão fica sem nome acessível', () => {
   }
 })
 
+/**
+ * Conteúdo cortado — o irmão silencioso do estouro horizontal.
+ *
+ * A varredura de responsividade media `document.scrollWidth`, e não pegou o bug
+ * real: a tabela de score × rating ficava mais larga que o cartão, o
+ * `overflow-hidden` do cartão CORTAVA a coluna "Rating" fora da tela, e como o
+ * documento não rolava, a métrica dizia que estava tudo bem.
+ *
+ * A pergunta certa não é "a página rola de lado?", e sim "existe caixa recortando
+ * o próprio conteúdo?". Quem transborda de propósito se declara com
+ * `data-transbordo-intencional`.
+ */
+test.describe('nada é cortado horizontalmente', () => {
+  // A varredura mexe com layout em três larguras e espera a cena 3D montar;
+  // 30 s é apertado para isso num runner frio.
+  test.setTimeout(60_000)
+
+  for (const largura of [320, 390, 768]) {
+    test(`em ${largura}px`, async ({ page }) => {
+      await page.setViewportSize({ width: largura, height: 900 })
+      await page.goto('/', { waitUntil: 'domcontentloaded' })
+      // Só o suficiente para a cortina sair e as seções revelarem.
+      await page.waitForTimeout(2600)
+      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
+      await page.waitForTimeout(900)
+      await page.evaluate(() => window.scrollTo(0, 0))
+      await page.waitForTimeout(300)
+
+      const cortados = await page.evaluate(() => {
+        const achados: string[] = []
+
+        for (const el of document.querySelectorAll<HTMLElement>('body *')) {
+          // A leitura barata primeiro. `getComputedStyle` em todos os ~1.500
+          // elementos da home força recálculo de estilo e estourava o tempo do
+          // teste; só um punhado passa por este filtro.
+          const excesso = el.scrollWidth - el.clientWidth
+          // 2 px de folga: arredondamento de subpixel em borda produz
+          // diferenças de 1 px que não são recorte de nada.
+          if (excesso <= 2) continue
+
+          if (el.closest('[data-transbordo-intencional]')) continue
+          if (el.closest('[aria-hidden="true"]')) continue
+
+          const estilo = getComputedStyle(el)
+
+          // A assinatura do `sr-only`: esconder visualmente um texto que o
+          // leitor de tela precisa ler. Recortar ali é o objetivo, não o
+          // defeito — e checar pela ASSINATURA, e não pelo nome da classe,
+          // continua valendo se alguém trocar o utilitário por outro.
+          const recorteDeLeitorDeTela =
+            estilo.clip === 'rect(0px, 0px, 0px, 0px)' || estilo.clipPath === 'inset(50%)'
+          if (recorteDeLeitorDeTela) continue
+
+          const overflowX = estilo.overflowX
+          if (overflowX !== 'hidden' && overflowX !== 'clip') continue
+
+          achados.push(`<${el.tagName.toLowerCase()} class="${el.className}"> corta ${excesso}px`)
+        }
+
+        return achados
+      })
+
+      expect(cortados, cortados.join(' | ')).toEqual([])
+    })
+  }
+})
+
 test.describe('o menu', () => {
   test('abre, fecha com Escape e devolve a rolagem', async ({ page }) => {
     await page.goto('/rating/')
