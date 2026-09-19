@@ -188,8 +188,10 @@ export type Service = {
  *   só que é isso que se pede, e como se pede.
  * · **A dívida não desaparece.** O que se discute é o registro; o débito segue
  *   existindo e segue sendo discutido no processo.
- * · **Quem ajuíza é advogado.** Assessoria não peticiona. Dizer o contrário
- *   seria, além de falso, exatamente a promessa que o site recusa.
+ * · **O fundamento é o CDC.** O pedido se apoia nos artigos 42 e 43 do Código
+ *   de Defesa do Consumidor, e é com base neles que o juiz defere em favor do
+ *   consumidor inadimplente, arquivando e congelando os débitos discutidos.
+ *   Citar o fundamento é o que separa explicar de prometer.
  */
 export const SERVICES: Service[] = [
   {
@@ -199,11 +201,12 @@ export const SERVICES: Service[] = [
     resumo: 'A retirada da negativação sai por decisão judicial.',
     description:
       'Não é negociação de dívida. Abre-se um processo com pedido de tutela ' +
-      'antecipada, a liminar, que é o resultado antes da sentença: concedida, ' +
-      'a restrição sai enquanto o processo ainda corre. Quem decide é o juiz.',
+      'antecipada, a liminar, que é o resultado antes da sentença. O pedido se ' +
+      'apoia nos artigos 42 e 43 do Código de Defesa do Consumidor: deferido, os ' +
+      'débitos discutidos ficam arquivados e congelados. Quem decide é o juiz.',
     entrega: [
       'Leitura do caso antes de qualquer processo existir',
-      'Ação ajuizada por advogado, com pedido de liminar',
+      'Ação com pedido de liminar, fundamentada nos artigos 42 e 43 do CDC',
       'O número do processo e cada movimentação na sua mão',
       'Conferência da baixa na consulta depois da decisão',
     ],
@@ -242,7 +245,7 @@ export const SERVICES: Service[] = [
     entrega: [
       'Leitura do Registrato, operação por operação',
       'Identificação do que está registrado sem lastro',
-      'Ação ajuizada por advogado, com pedido de liminar',
+      'Ação com pedido de liminar, pela mesma via do limpa nome',
       'Conferência do Registrato depois da decisão',
     ],
     nucleo: true,
@@ -349,9 +352,10 @@ export const METODO: Etapa[] = [
     titulo: 'Ação judicial (liminar)',
     texto:
       'Não existe negociação aqui. Limpa nome e exclusão de Bacen correm por processo ' +
-      'judicial, com pedido de tutela antecipada, a liminar, que é o resultado antes ' +
-      'da sentença e que quem concede é o juiz. O destravamento do rating de crédito ' +
-      'bancário é o único dos três que é operacional, e não judicial.',
+      'judicial, com pedido de tutela antecipada, a liminar, fundamentada nos artigos ' +
+      '42 e 43 do Código de Defesa do Consumidor. Deferida, os débitos discutidos ficam ' +
+      'arquivados e congelados. O destravamento do rating de crédito bancário é o único ' +
+      'dos três que é operacional, e não judicial.',
     saida: 'O pedido protocolado, com número de processo',
   },
   {
@@ -495,7 +499,7 @@ export const FAQ: FaqItem[] = [
     id: 'como-funciona',
     tema: 'geral',
     q: 'Como funciona a retirada do nome negativado?',
-    a: 'Por ação judicial, não por negociação com o credor. Abre-se o processo com pedido de tutela antecipada, que é o nome técnico da liminar. Tutela antecipada significa receber o resultado antes da sentença: em vez de esperar o fim do processo para o efeito valer, pede-se que ele valha desde já. A ação é ajuizada por advogado, e quem concede ou nega a liminar é o juiz. Vale o mesmo para a exclusão de Bacen. Já o destravamento do rating de crédito bancário é processo operacional, e não judicial.',
+    a: 'Por ação judicial, não por negociação com o credor. Abre-se o processo com pedido de tutela antecipada, que é o nome técnico da liminar. Tutela antecipada significa receber o resultado antes da sentença: em vez de esperar o fim do processo para o efeito valer, pede-se que ele valha desde já. O pedido se apoia nos artigos 42 e 43 do Código de Defesa do Consumidor, e é com base neles que o juiz defere em favor do consumidor inadimplente, arquivando e congelando os débitos discutidos. Quem concede ou nega a liminar é o juiz. Vale o mesmo para a exclusão de Bacen. Já o destravamento do rating de crédito bancário é processo operacional, e não judicial.',
   },
   {
     id: 'apaga-divida',

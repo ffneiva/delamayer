@@ -120,15 +120,15 @@ export function Footer({ onNavigate, onSection }: Props) {
             <strong className="font-medium text-plat-500">Transparência.</strong> A {BUSINESS.name}{' '}
             presta assessoria de crédito. Não somos instituição financeira e não concedemos crédito.
             A retirada de negativação e a exclusão de registro no Banco Central se dão pela via
-            judicial: a ação é ajuizada por advogado, com pedido de tutela antecipada, e a concessão
-            ou não da liminar é decisão exclusiva do juiz, e não há como prometer resultado nem
-            prazo. O destravamento do rating de crédito bancário é processo operacional, não
-            judicial. A dívida em si não é apagada; o que se discute é o registro. Também não
-            aumentamos score de crédito, o que não é possível a ninguém: o score responde ao
-            histórico de pagamento do titular. Resultados variam conforme o caso e nenhuma aprovação
-            de crédito é garantida. A consulta ao Serasa e o Registrato do Banco Central são
-            gratuitos e podem ser feitos por você mesmo. Atendimento presencial somente com hora
-            marcada.
+            judicial, com pedido de tutela antecipada fundamentado nos artigos 42 e 43 do Código de
+            Defesa do Consumidor. A concessão ou não da liminar é decisão exclusiva do juiz, e não
+            há como prometer resultado nem prazo. O destravamento do rating de crédito bancário é
+            processo operacional, não judicial. A dívida em si não é apagada; o que se discute é o
+            registro. Também não aumentamos score de crédito, o que não é possível a ninguém: o
+            score responde ao histórico de pagamento do titular. Resultados variam conforme o caso e
+            nenhuma aprovação de crédito é garantida. A consulta ao Serasa e o Registrato do Banco
+            Central são gratuitos e podem ser feitos por você mesmo. Atendimento presencial somente
+            com hora marcada.
           </p>
 
           <div className="mt-6 flex flex-wrap items-center justify-between gap-4 text-xs text-plat-600">
