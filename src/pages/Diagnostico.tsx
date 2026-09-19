@@ -21,9 +21,9 @@ export function Diagnostico({ onNavigate }: { onNavigate: (path: string) => void
         onNavigate={onNavigate}
       >
         <p>
-          Não substitui a consulta ao seu CPF, que exige a sua autorização e acontece na conversa. O
-          que isto faz é aplicar, em cinco cliques, a mesma triagem que abre todo atendimento, e te
-          dar o vocabulário para perguntar a coisa certa.
+          É o relato dos sintomas, não o exame: a consulta ao seu CPF exige a sua autorização e
+          acontece na conversa. O que isto faz é aplicar, em cinco cliques, a mesma triagem que abre
+          todo atendimento, e te dar o vocabulário para perguntar a coisa certa.
         </p>
       </PageHero>
 

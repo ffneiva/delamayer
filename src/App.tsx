@@ -4,6 +4,7 @@ import { Cursor } from '@/components/Cursor'
 import { Footer } from '@/components/Footer'
 import { Nav } from '@/components/Nav'
 import { Preloader } from '@/components/Preloader'
+import { SaidaCta } from '@/components/SaidaCta'
 import { WhatsAppFab } from '@/components/WhatsAppFab'
 import { useRouteAnnounce } from '@/hooks/useRouteAnnounce'
 import { useRouteMeta } from '@/hooks/useRouteMeta'
@@ -26,7 +27,6 @@ import { Metodo } from '@/sections/Metodo'
 import { Midia } from '@/sections/Midia'
 import { Numeros } from '@/sections/Numeros'
 import { ScoreRating } from '@/sections/ScoreRating'
-import { Servicos } from '@/sections/Servicos'
 import { Solucoes } from '@/sections/Solucoes'
 
 /**
@@ -163,7 +163,6 @@ export default function App() {
             <ScoreRating />
             <Metodo />
             <DiagnosticoCta />
-            <Servicos />
             <Faq />
             <Localizacao />
             <FinalCta />
@@ -171,6 +170,7 @@ export default function App() {
         )}
       </div>
 
+      <SaidaCta rota={route.path} />
       <Footer onNavigate={navigate} onSection={irParaSecao} />
       <WhatsAppFab />
     </>

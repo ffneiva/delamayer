@@ -13,7 +13,7 @@ import { BUSINESS } from './business.ts'
  * Duas regras que o teste em tests/unit/diagnostico.test.ts protege:
  *
  *  1. **Toda combinação possível de respostas produz um resultado.** Sem
- *     `undefined`, sem caso não previsto. São 3×3×2×4×4 = 288 combinações; o
+ *     `undefined`, sem caso não previsto. São 3×3×2×4×3 = 216 combinações; o
  *     teste percorre todas.
  *
  *  2. **O resultado nunca promete.** Nenhum texto daqui afirma prazo, valor ou
@@ -85,7 +85,6 @@ export const PERGUNTAS: Pergunta[] = [
       { id: 'imovel', label: 'Financiar um imóvel' },
       { id: 'credito', label: 'Voltar a ter crédito' },
       { id: 'pj', label: 'Capital de giro para a empresa' },
-      { id: 'consorcio', label: 'Entrar num consórcio' },
     ],
   },
 ]
@@ -95,7 +94,7 @@ export type Respostas = {
   negativado: 'sim' | 'nao' | 'talvez'
   recusa: 'sim' | 'nao'
   score: 'alto' | 'medio' | 'baixo' | 'talvez'
-  objetivo: 'imovel' | 'credito' | 'pj' | 'consorcio'
+  objetivo: 'imovel' | 'credito' | 'pj'
 }
 
 export type RespostasParciais = Partial<Respostas>
@@ -208,20 +207,16 @@ export function diagnosticar(r: Respostas): Leitura {
         'preparo: chegar ao pedido de crédito com o cadastro, o rating de crédito bancário e a ' +
         'comprovação de renda ' +
         'no melhor estado que eles podem estar.',
-      primeiroPasso:
-        querImovel || r.objetivo === 'consorcio'
-          ? 'Simular capacidade real de pagamento e definir o que precisa acontecer nos meses que ' +
-            'antecedem a proposta, inclusive o que NÃO fazer, como abrir consultas desnecessárias.'
-          : 'Mapear o relacionamento com cada banco e a ordem em que mexer nos limites, para o ' +
-            'rating de crédito bancário subir antes do pedido, e não depois da recusa.',
-      servicos:
-        r.objetivo === 'consorcio'
-          ? ['consorcio', 'diagnostico', 'rating']
-          : querImovel
-            ? ['imobiliario', 'diagnostico', 'rating']
-            : ehPj
-              ? ['pj', 'rating', 'diagnostico']
-              : ['rating', 'diagnostico'],
+      primeiroPasso: querImovel
+        ? 'Simular capacidade real de pagamento e definir o que precisa acontecer nos meses que ' +
+          'antecedem a proposta, inclusive o que NÃO fazer, como abrir consultas desnecessárias.'
+        : 'Mapear o relacionamento com cada banco e a ordem em que mexer nos limites, para o ' +
+          'rating de crédito bancário subir antes do pedido, e não depois da recusa.',
+      servicos: querImovel
+        ? ['imobiliario', 'diagnostico', 'rating']
+        : ehPj
+          ? ['pj', 'rating', 'diagnostico']
+          : ['rating', 'diagnostico'],
     }
   }
 
@@ -267,7 +262,6 @@ const RESUMO: Record<keyof Respostas, Record<string, string>> = {
     imovel: 'quero financiar um imóvel',
     credito: 'quero voltar a ter crédito',
     pj: 'preciso de capital de giro para a empresa',
-    consorcio: 'quero entrar num consórcio',
   },
 }
 

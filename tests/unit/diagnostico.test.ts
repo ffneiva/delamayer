@@ -17,7 +17,7 @@ import {
  * site se transformar no que ele critica.
  */
 
-/** Todas as combinações possíveis de respostas. 3 × 3 × 2 × 4 × 4 = 288. */
+/** Todas as combinações possíveis de respostas. 3 × 3 × 2 × 4 × 3 = 216. */
 function todasAsCombinacoes(): Respostas[] {
   const combinacoes: Respostas[] = []
   const [divida, negativado, recusa, score, objetivo] = PERGUNTAS.map((p) =>
@@ -47,8 +47,8 @@ function todasAsCombinacoes(): Respostas[] {
 const TODAS = todasAsCombinacoes()
 
 describe('cobertura da triagem', () => {
-  it('gera as 288 combinações previstas', () => {
-    expect(TODAS).toHaveLength(288)
+  it('gera as 216 combinações previstas', () => {
+    expect(TODAS).toHaveLength(216)
   })
 
   it('devolve uma leitura completa para toda combinação', () => {
@@ -155,7 +155,7 @@ describe('as regras de prioridade clínica', () => {
   it('sem recusa e sem restrição é preparação, não incêndio', () => {
     expect(diagnosticar(base).id).toBe('preventivo')
     expect(diagnosticar({ ...base, objetivo: 'imovel' }).servicos[0]).toBe('imobiliario')
-    expect(diagnosticar({ ...base, objetivo: 'consorcio' }).servicos[0]).toBe('consorcio')
+    expect(diagnosticar({ ...base, objetivo: 'pj' }).servicos[0]).toBe('pj')
   })
 
   it('"não sei" em ponto decisivo devolve "precisa de consulta", e não um chute', () => {

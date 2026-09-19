@@ -73,7 +73,7 @@ export function Footer({ onNavigate, onSection }: Props) {
                 <li key={servico.id}>
                   <button
                     type="button"
-                    onClick={() => onSection('servicos')}
+                    onClick={() => onSection('solucoes')}
                     className="text-left text-plat-400 transition-colors hover:text-gold-200"
                   >
                     {servico.name}

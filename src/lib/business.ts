@@ -283,19 +283,6 @@ export const SERVICES: Service[] = [
     tag: 'Ponte para o imóvel',
   },
   {
-    id: 'consorcio',
-    name: 'Consórcio e carta de crédito',
-    resumo: 'O caminho sem juros para quem tem tempo.',
-    description:
-      'Para quem tem prazo, o consórcio troca juros por lance, e exige o mesmo ' +
-      'cuidado com o cadastro na hora da contemplação.',
-    entrega: [
-      'Comparação entre consórcio e financiamento no seu caso',
-      'O que a administradora analisa na contemplação',
-      'Planejamento do lance',
-    ],
-  },
-  {
     id: 'pj',
     name: 'CNPJ e MEI',
     resumo: 'Empresa com restrição não levanta capital de giro.',
@@ -312,9 +299,6 @@ export const SERVICES: Service[] = [
 
 /** Os três que abrem a página e ocupam o menu do topo. */
 export const SERVICOS_NUCLEO = SERVICES.filter((s) => s.nucleo)
-
-/** O que entra no atendimento além do núcleo. */
-export const SERVICOS_APOIO = SERVICES.filter((s) => !s.nucleo)
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Método — as quatro etapas do atendimento
@@ -341,10 +325,10 @@ export const METODO: Etapa[] = [
     numero: '02',
     titulo: 'Análise da consulta',
     texto:
-      'Negativação, rating de crédito bancário e registro no Banco Central são três ' +
-      'problemas diferentes, e cada um tem caminho próprio. É a análise que diz qual ' +
-      'dos três é o seu. Tratar tudo como "nome sujo" é o que faz alguém pagar a ' +
-      'dívida errada primeiro.',
+      'Funciona como num consultório: você chega com os sintomas, e o diagnóstico vem ' +
+      'depois do exame. Negativação, rating de crédito bancário e registro no Banco ' +
+      'Central são três problemas diferentes, e cada um tem caminho próprio. Tratar ' +
+      'tudo como "nome sujo" é o que faz alguém tomar o remédio errado.',
     saida: 'Qual dos três caminhos é o do seu caso',
   },
   {

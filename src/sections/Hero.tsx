@@ -31,7 +31,7 @@ import { cn } from '@/lib/utils'
  * WebGL não existir, se o aparelho pedir movimento reduzido, o que fica na tela
  * é exatamente a mesma dobra, sem o enfeite.
  */
-const LINHAS = ['Do CPF negativado', 'ao financiamento', 'aprovado.']
+const LINHAS = ['Do CPF/CNPJ negativado', 'ao financiamento', 'aprovado.']
 
 export function Hero({ ready }: { ready: boolean }) {
   const reduzido = useReducedMotion()
@@ -54,7 +54,14 @@ export function Hero({ ready }: { ready: boolean }) {
           {BUSINESS.address.city} · {BUSINESS.address.state}
         </p>
 
-        <h1 className="max-w-[16ch] font-display text-[clamp(2.35rem,8.2vw,6.2rem)] leading-[0.98] font-semibold">
+        {/* O tamanho caiu de 6.2rem para 5rem no topo da escala.
+            A peça 3D ocupa a metade direita no desktop, e com o título
+            no tamanho anterior a última linha encostava nela. Diminuir
+            o texto foi a escolha certa em vez de encolher a peça: o D é
+            o que segura a dobra, e o argumento cabe menor sem perder
+            força. O piso de 2.2rem é o que faz "Do CPF/CNPJ negativado",
+            que tem 23 caracteres, caber numa tela de 320 px. */}
+        <h1 className="max-w-[15ch] font-display text-[clamp(2.2rem,6.8vw,5rem)] leading-[1.02] font-semibold">
           {LINHAS.map((linha, i) => (
             <span
               key={linha}
