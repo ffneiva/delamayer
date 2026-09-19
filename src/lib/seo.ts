@@ -60,7 +60,7 @@ function videoNode(caminho: string) {
     inLanguage: 'pt-BR',
     isFamilyFriendly: true,
     publisher: { '@id': ID_NEGOCIO },
-    about: { '@type': 'Thing', name: 'Rating bancário e score de crédito' },
+    about: { '@type': 'Thing', name: 'Rating de crédito bancário e score de crédito' },
   }
 }
 
@@ -108,7 +108,7 @@ function nosDaRota(caminho: string) {
     const perguntas = FAQ.filter((f) => f.tema === 'rating')
     return [
       trilha(caminho),
-      paginaNode(caminho, 'Rating bancário e score de crédito'),
+      paginaNode(caminho, 'Rating de crédito bancário e score de crédito'),
       faqNode(`${canonicalFor(rota)}#faq`, perguntas),
       videoNode(caminho),
     ]
