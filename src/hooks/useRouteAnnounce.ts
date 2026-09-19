@@ -22,7 +22,7 @@ export function useRouteAnnounce(route: Route) {
       return
     }
 
-    setAviso(`${route.label} — ${route.title}`)
+    setAviso(`${route.label}: ${route.title}`)
     alvoRef.current?.focus({ preventScroll: true })
   }, [route])
 

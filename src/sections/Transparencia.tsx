@@ -38,7 +38,7 @@ export function Transparencia() {
       <div className="container-x relative">
         <SectionHeading etiqueta="Transparência" titulo="O que a gente" complemento="não faz.">
           <p>
-            Quatro promessas que você encontra por aí e não encontra aqui — porque cumprir é
+            Quatro promessas que você encontra por aí e não encontra aqui, porque cumprir é
             impossível.
           </p>
         </SectionHeading>

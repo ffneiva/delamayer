@@ -30,7 +30,7 @@ export function Solucoes() {
         <SectionHeading etiqueta="O que a gente faz" titulo="Três frentes," complemento="nomeadas.">
           <p>
             Nenhuma delas passa por negociação de dívida. Limpa nome e exclusão de Bacen correm por
-            processo judicial, com pedido de liminar — a tutela antecipada, que é o resultado antes
+            processo judicial, com pedido de liminar, a tutela antecipada, que é o resultado antes
             da sentença. O destravamento do rating de crédito bancário é o único operacional: ali
             não se abre processo, se trabalha o relacionamento com o banco.
           </p>

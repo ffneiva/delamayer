@@ -21,10 +21,10 @@ import { useReducedMotion } from '@/hooks/useMediaQuery'
  *   `opacity: 0` transformaria uma falha de biblioteca em página em branco.
  */
 const TEXTO =
-  'A maioria das pessoas descobre que tem um problema de crédito no pior momento ' +
-  'possível: na frente do gerente, com a proposta na mão. E ouve uma explicação ' +
-  'que não explica nada — “o sistema não aprovou”. O sistema tem nome, tem escala ' +
-  'e tem motivo. Descobrir qual é o seu é a primeira coisa que a gente faz.'
+  'Quando o banco nega, o gerente não explica. Diz que o sistema não aprovou. ' +
+  'Mas o sistema tem nome: uma negativação, um registro no Banco Central ou o seu ' +
+  'rating de crédito bancário travado. Três problemas diferentes, três caminhos ' +
+  'diferentes. Descobrir qual é o seu é a primeira coisa que a gente faz.'
 
 export function Manifesto() {
   const escopo = useRef<HTMLDivElement>(null)

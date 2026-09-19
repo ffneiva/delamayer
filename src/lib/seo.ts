@@ -243,7 +243,7 @@ export function buildLlmsTxt(): string {
   ]
 
   for (const servico of SERVICES) {
-    linhas.push(`- **${servico.name}** — ${servico.resumo} ${servico.description}`)
+    linhas.push(`- **${servico.name}**: ${servico.resumo} ${servico.description}`)
   }
 
   linhas.push(
@@ -251,19 +251,19 @@ export function buildLlmsTxt(): string {
     '## Como o limpa nome funciona aqui',
     '',
     'Por ação judicial, e não por negociação com o credor. Abre-se um processo com pedido de',
-    'tutela antecipada — a liminar. Tutela antecipada é receber o resultado antes da sentença:',
+    'tutela antecipada, a liminar. Tutela antecipada é receber o resultado antes da sentença:',
     'em vez de esperar o fim do processo para o efeito valer, pede-se que ele valha desde já.',
     'A ação é ajuizada por advogado, e quem concede ou nega a liminar é o juiz. A dívida em si',
     'não desaparece: o que se discute é o registro da negativação.',
     '',
-    'Dos três serviços, dois correm por processo judicial — o limpa nome e a exclusão de Bacen —',
+    'Dos três serviços, dois correm por processo judicial (o limpa nome e a exclusão de Bacen)',
     'e um é operacional: o destravamento do rating de crédito bancário, em que não se abre',
     'processo, se trabalha o relacionamento com a instituição.',
     '',
     '## O que a empresa NÃO faz',
     '',
     '- Não apaga dívida legítima. O que se discute é o registro da negativação; o débito continua existindo e continua sendo tratado dentro do processo.',
-    '- Não aumenta score do Serasa, porque não é possível: quem calcula são Serasa e SPC, e o que pesa ali é o histórico de pagamento — contas em dia, em atraso ou antecipadas. Score e rating de crédito bancário são coisas diferentes.',
+    '- Não aumenta score do Serasa, porque não é possível: quem calcula são Serasa e SPC, e o que pesa ali é o histórico de pagamento: contas em dia, em atraso ou antecipadas. Score e rating de crédito bancário são coisas diferentes.',
     '- Não promete a decisão do juiz nem prazo fechado. A liminar é pedida, não comprada, e depois da decisão a baixa ainda percorre os ciclos de atualização dos órgãos e do Banco Central.',
     '- Não cobra pelo que é gratuito. A consulta ao Serasa e o Registrato do Banco Central são gratuitos; o serviço é a leitura e a ação sobre eles.',
     '',
@@ -288,7 +288,7 @@ export function buildLlmsTxt(): string {
     'é calculado por Serasa e SPC, vai de 0 a 1.000 e é o que as grandes varejistas olham. O',
     'rating de crédito bancário é interno de cada banco, usa escala de letras (A a F) e mede o',
     'relacionamento do cliente com aquela instituição específica. É possível ter 800 pontos de',
-    'score e um F de rating no banco onde se pediu o financiamento — e é essa combinação que',
+    'score e um F de rating no banco onde se pediu o financiamento, e é essa combinação que',
     'explica a maior parte das recusas consideradas inexplicáveis pelo cliente.',
     '',
   )

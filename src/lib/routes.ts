@@ -60,7 +60,7 @@ export const ROUTES: Route[] = [
     label: 'Score × Rating',
     title: 'Score alto e crédito negado? O rating de crédito bancário explica',
     description:
-      'O score é calculado por Serasa e SPC; o rating de crédito bancário é interno do banco, vai de A a F e mede só o seu relacionamento com ele. Entenda por que os dois discordam — e o que fazer quando isso trava o seu crédito.',
+      'O score é calculado por Serasa e SPC; o rating de crédito bancário é interno do banco, vai de A a F e mede só o seu relacionamento com ele. Entenda por que os dois discordam, e o que fazer quando isso trava o seu crédito.',
     ogLinhas: ['Score alto,', 'crédito negado.'],
     ogNota: 'O índice que o banco usa e não aparece em consulta',
   },
@@ -69,7 +69,7 @@ export const ROUTES: Route[] = [
     label: 'Imóvel',
     title: 'Financiamento imobiliário com o nome negativado · Delamayer Goiânia',
     description:
-      'Tirar a restrição do CPF é o primeiro passo para financiar um imóvel — não o último. Veja o que o banco analisa além do nome limpo e como chegar à proposta com renda, entrada e rating já resolvidos.',
+      'Tirar a restrição do CPF é o primeiro passo para financiar um imóvel, não o último. Veja o que o gerente analisa além do nome limpo, na ordem em que ele analisa, e como chegar à proposta com tudo resolvido.',
     ogLinhas: ['Nome limpo é o', 'primeiro passo.'],
     ogNota: 'O que o banco analisa além da restrição',
   },

@@ -63,7 +63,7 @@ export class ErrorBoundary extends Component<Props, State> {
             O site travou, mas o atendimento não.
           </h1>
           <p style={{ margin: '0 0 2rem', lineHeight: 1.6, color: '#8d95a1' }}>
-            Recarregue a página — e, se continuar assim, fale direto pelo WhatsApp. A consulta é a
+            Recarregue a página e, se continuar assim, fale direto pelo WhatsApp. A consulta é a
             mesma, com site ou sem ele.
           </p>
           <a

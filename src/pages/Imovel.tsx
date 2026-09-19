@@ -19,34 +19,34 @@ import { Faq } from '@/sections/Faq'
  */
 const ANALISE = [
   {
-    titulo: 'Restrição ativa',
+    titulo: 'O nome está limpo?',
     texto:
-      'Negativação, protesto ou pendência em aberto reprovam a análise antes de qualquer outra coisa ser olhada. É o único item da lista que é eliminatório sozinho.',
+      'É o primeiro filtro e o único que reprova sozinho. Repare no que ele não é: o gerente olha se existe restrição, e não a sua pontuação no Serasa. Negativação, protesto ou pendência em aberto param a análise antes de qualquer outra coisa ser olhada.',
   },
   {
-    titulo: 'Renda comprovável',
+    titulo: 'A parcela cabe?',
     texto:
-      'O banco não financia sobre o quanto você ganha, e sim sobre o quanto você consegue comprovar no formato que ele aceita. Autônomo e MEI costumam perder aqui, não por falta de renda.',
+      'Renda comprovável no formato que o banco aceita, e quanto dela já está comprometida. A parcela precisa caber num teto, em geral em torno de 30% da renda familiar. Entrada maior e uso de FGTS derrubam a parcela e o risco percebido.',
   },
   {
-    titulo: 'Comprometimento da renda',
+    titulo: 'Como é a sua movimentação bancária',
     texto:
-      'A parcela precisa caber num teto — em geral em torno de 30% da renda familiar. Outros financiamentos ativos entram nessa conta e reduzem o valor aprovado.',
+      'O que entra e o que sai da conta todo mês. Conta parada diz tão pouco quanto conta apertada, e o gerente lê as duas coisas. É o dado que mais contradiz o que o cliente acha de si mesmo.',
   },
   {
-    titulo: 'Rating interno',
+    titulo: 'Você paga em dia, atrasado ou antecipado',
     texto:
-      'A mesma nota de A a F que decide cartão e empréstimo decide a taxa do financiamento. Meio ponto de juro num contrato de 30 anos é dezenas de milhares de reais.',
+      'O histórico de pagamento é o mesmo comportamento que move o score, e é com ele que o banco estima como você vai se comportar ao longo de um contrato de trinta anos.',
   },
   {
-    titulo: 'Entrada e FGTS',
+    titulo: 'Você é cliente daquele banco',
     texto:
-      'Quanto maior a entrada, menor o risco percebido — e melhor a taxa. O FGTS pode compor a entrada, amortizar ou pagar parcelas, com regras próprias para cada uso.',
+      'Conta, cartão, seguro, aplicação. É esse consumo que forma o rating de crédito bancário, a nota de A a F que decide a sua taxa. Meio ponto de juro em trinta anos é dezenas de milhares de reais.',
   },
   {
     titulo: 'O imóvel em si',
     texto:
-      'A avaliação do banco, a documentação da construtora e a situação da matrícula reprovam propostas com o comprador aprovado. Vale conferir antes de assinar qualquer coisa.',
+      'A avaliação do banco, a documentação da construtora e a situação da matrícula reprovam propostas com o comprador já aprovado. Vale conferir antes de assinar qualquer coisa.',
   },
 ]
 
@@ -62,10 +62,10 @@ export function Imovel({ onNavigate }: { onNavigate: (path: string) => void }) {
         onNavigate={onNavigate}
       >
         <p>
-          Regularizar o CPF tira o obstáculo eliminatório do caminho — e só isso. Depois dele vêm
-          renda comprovável, comprometimento, rating de crédito bancário e a documentação do imóvel.
-          Chegar ao banco com os cinco resolvidos é a diferença entre uma proposta aprovada e uma
-          recusa que fica registrada.
+          Tirar a restrição do CPF resolve o primeiro filtro, e só ele. Depois vêm a parcela que
+          cabe, a sua movimentação bancária, o histórico de pagamento, o relacionamento com aquele
+          banco e a documentação do imóvel. Chegar com tudo isso resolvido é a diferença entre uma
+          proposta aprovada e uma recusa que fica registrada.
         </p>
       </PageHero>
 
@@ -74,11 +74,10 @@ export function Imovel({ onNavigate }: { onNavigate: (path: string) => void }) {
         <div className="container-x">
           <Reveal>
             <p className="label-mono mb-5 flex items-center gap-3">
-              <span aria-hidden className="h-px w-8 bg-gold-700" />
-              Seis itens da análise
+              <span aria-hidden className="h-px w-8 bg-gold-700" />A ordem do gerente
             </p>
             <h2 className="max-w-3xl font-display text-[clamp(1.8rem,4vw,2.8rem)] leading-tight text-plat-50">
-              O que o banco realmente avalia numa proposta de financiamento
+              O que o gerente analisa, na ordem em que ele analisa
             </h2>
           </Reveal>
 
@@ -132,7 +131,7 @@ export function Imovel({ onNavigate }: { onNavigate: (path: string) => void }) {
                     },
                     {
                       t: 'Leitura do rating de crédito bancário',
-                      d: 'Mostra em qual instituição a sua análise tende a ir melhor — e por quê.',
+                      d: 'Mostra em qual instituição a sua análise tende a ir melhor, e por quê.',
                     },
                     {
                       t: 'Simulação de capacidade',
@@ -140,7 +139,7 @@ export function Imovel({ onNavigate }: { onNavigate: (path: string) => void }) {
                     },
                     {
                       t: 'Encaminhamento',
-                      d: `Quem atende na ${BUSINESS.shortName} também atua como corretor de imóveis, então a conversa não termina na aprovação — segue até a escolha do imóvel.`,
+                      d: `Quem atende na ${BUSINESS.shortName} também atua como corretor de imóveis, então a conversa não termina na aprovação: segue até a escolha do imóvel.`,
                     },
                   ].map((passo, i) => (
                     <li key={passo.t} className="flex gap-5">
@@ -181,7 +180,7 @@ export function Imovel({ onNavigate }: { onNavigate: (path: string) => void }) {
               </h2>
               <p className="mx-auto mt-5 max-w-xl text-[0.98rem] leading-relaxed text-plat-400">
                 A conversa começa pela consulta do CPF e pela renda que dá para comprovar. Em uma
-                conversa já dá para dizer o que falta — e quanto tempo, mais ou menos, isso leva.
+                conversa já dá para dizer o que falta, e quanto tempo, mais ou menos, isso leva.
               </p>
 
               <div className="mt-9 flex flex-wrap items-center justify-center gap-4">

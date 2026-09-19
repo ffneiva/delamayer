@@ -121,7 +121,7 @@ export function Footer({ onNavigate, onSection }: Props) {
             presta assessoria de crédito. Não somos instituição financeira e não concedemos crédito.
             A retirada de negativação e a exclusão de registro no Banco Central se dão pela via
             judicial: a ação é ajuizada por advogado, com pedido de tutela antecipada, e a concessão
-            ou não da liminar é decisão exclusiva do juiz — não há como prometer resultado nem
+            ou não da liminar é decisão exclusiva do juiz, e não há como prometer resultado nem
             prazo. O destravamento do rating de crédito bancário é processo operacional, não
             judicial. A dívida em si não é apagada; o que se discute é o registro. Também não
             aumentamos score de crédito, o que não é possível a ninguém: o score responde ao

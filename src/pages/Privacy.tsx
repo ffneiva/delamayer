@@ -19,20 +19,20 @@ const SECOES = [
     titulo: 'O que este site coleta',
     corpo: [
       'Quase nada. Não há formulário de cadastro, não há login e não existe banco de dados: o site é um conjunto de arquivos estáticos servidos por uma CDN.',
-      'O diagnóstico interativo é o único ponto em que você digita alguma coisa — e as respostas nunca saem do seu navegador. Elas são usadas para montar um texto e, se você clicar no botão, esse texto vira uma mensagem de WhatsApp que você mesmo envia. Fechar a aba apaga tudo.',
+      'O diagnóstico interativo é o único ponto em que você digita alguma coisa, e as respostas nunca saem do seu navegador. Elas são usadas para montar um texto e, se você clicar no botão, esse texto vira uma mensagem de WhatsApp que você mesmo envia. Fechar a aba apaga tudo.',
     ],
   },
   {
     titulo: 'Medição de audiência',
     corpo: [
       'Se estiver configurada, a tag do Google Analytics registra páginas visitadas, origem do acesso e cliques nos botões de WhatsApp, com o endereço IP anonimizado. Serve para saber quais páginas funcionam e de onde vêm as pessoas.',
-      'Métricas de desempenho (tempo de carregamento, estabilidade visual) também podem ser enviadas — são números sobre o site, não sobre você.',
+      'Métricas de desempenho (tempo de carregamento, estabilidade visual) também podem ser enviadas: são números sobre o site, não sobre você.',
     ],
   },
   {
     titulo: 'Serviços de terceiros',
     corpo: [
-      'O mapa do Google e o vídeo do YouTube só são carregados depois que você clica para abri-los. Até esse clique, nenhuma requisição sai daqui para eles — foi uma escolha de projeto, não uma exigência legal.',
+      'O mapa do Google e o vídeo do YouTube só são carregados depois que você clica para abri-los. Até esse clique, nenhuma requisição sai daqui para eles. Foi uma escolha de projeto, não uma exigência legal.',
       'Ao clicar em qualquer botão de WhatsApp, você sai deste site e passa a ser regido pela política de privacidade da Meta.',
       'Monitoramento de erros (Sentry), quando ativo, registra falhas de JavaScript com informações técnicas do navegador. Gravação de tela está desativada de propósito.',
     ],
@@ -40,7 +40,7 @@ const SECOES = [
   {
     titulo: 'Dados do atendimento',
     corpo: [
-      `Os dados que você compartilha durante o atendimento — CPF, documentos, informações sobre dívidas — são tratados fora deste site, no WhatsApp e nos sistemas da ${BUSINESS.name}, e usados exclusivamente para prestar o serviço que você contratou.`,
+      `Os dados que você compartilha durante o atendimento (CPF, documentos, informações sobre dívidas) são tratados fora deste site, no WhatsApp e nos sistemas da ${BUSINESS.name}, e usados exclusivamente para prestar o serviço que você contratou.`,
       'Consultas ao seu CPF em birôs de crédito e ao Registrato do Banco Central só são feitas com a sua autorização expressa.',
     ],
   },
@@ -91,7 +91,7 @@ export function Privacy({ onNavigate }: { onNavigate: (path: string) => void }) 
 
             <Reveal className="border-t border-edge pt-10">
               <p className="text-sm leading-relaxed text-plat-500">
-                Responsável pelo tratamento: {BUSINESS.name} — {BUSINESS.address.venue},{' '}
+                Responsável pelo tratamento: {BUSINESS.name}, {BUSINESS.address.venue},{' '}
                 {BUSINESS.address.street}, {BUSINESS.address.district}, {BUSINESS.address.city}/
                 {BUSINESS.address.state}, CEP {BUSINESS.address.zip}. Contato:{' '}
                 {BUSINESS.phoneDisplay}.

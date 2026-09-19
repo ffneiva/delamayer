@@ -32,8 +32,8 @@ export function NaoEncontrada({ onNavigate }: { onNavigate: (path: string) => vo
           </h1>
 
           <p className="mx-auto mt-5 max-w-md text-[0.98rem] leading-relaxed text-plat-400">
-            Pode ser um link antigo ou um erro de digitação. As páginas do site estão logo abaixo —
-            e o WhatsApp funciona de qualquer jeito.
+            Pode ser um link antigo ou um erro de digitação. As páginas do site estão logo abaixo: e
+            o WhatsApp funciona de qualquer jeito.
           </p>
 
           <nav aria-label="Páginas do site" className="mt-10">

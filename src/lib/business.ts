@@ -32,7 +32,7 @@ export const BUSINESS = {
 
   address: {
     venue: 'Stay Coworking',
-    street: 'Rua 22, nº 431 — Qd. H10, Lt. 24',
+    street: 'Rua 22, nº 431, Qd. H10, Lt. 24',
     district: 'Setor Oeste',
     city: 'Goiânia',
     state: 'GO',
@@ -92,7 +92,7 @@ export const SCHEDULE: DaySchedule[] = [
 ]
 
 export const SCHEDULE_SUMMARY = [
-  { days: 'Segunda a sexta', hours: '8h — 18h' },
+  { days: 'Segunda a sexta', hours: '8h às 18h' },
   { days: 'Sábado e domingo', hours: 'Fechado' },
 ]
 
@@ -133,13 +133,13 @@ export const EVIDENCIAS: Evidencia[] = [
   {
     id: 'meses',
     valor: '18 meses',
-    legenda: 'seguidos de alta — é recorde da série histórica',
+    legenda: 'seguidos de alta, recorde da série histórica',
     fonte: 'Serasa Experian · junho de 2026',
   },
   {
     id: 'faixa',
     valor: '35,7%',
-    legenda: 'estão entre 41 e 60 anos — a idade de comprar o primeiro imóvel',
+    legenda: 'estão entre 41 e 60 anos, a idade de comprar o primeiro imóvel',
     fonte: 'Serasa Experian · junho de 2026',
   },
 ]
@@ -199,7 +199,7 @@ export const SERVICES: Service[] = [
     resumo: 'A retirada da negativação sai por decisão judicial.',
     description:
       'Não é negociação de dívida. Abre-se um processo com pedido de tutela ' +
-      'antecipada — a liminar —, que é o resultado antes da sentença: concedida, ' +
+      'antecipada, a liminar, que é o resultado antes da sentença: concedida, ' +
       'a restrição sai enquanto o processo ainda corre. Quem decide é o juiz.',
     entrega: [
       'Leitura do caso antes de qualquer processo existir',
@@ -217,8 +217,8 @@ export const SERVICES: Service[] = [
     curto: 'Rating de crédito bancário',
     resumo: 'O índice que o banco usa e que ninguém te mostra.',
     description:
-      'O rating de crédito bancário é interno, vai de A a F e cada banco calcula o seu — ' +
-      'é por isso que dá para ter score bom e crédito negado. Dos três serviços, é o único ' +
+      'O rating de crédito bancário é interno, vai de A a F e cada banco calcula o seu. ' +
+      'É por isso que dá para ter score bom e crédito negado. Dos três serviços, é o único ' +
       'operacional: aqui não se abre processo, se trabalha o relacionamento com a instituição.',
     entrega: [
       'Leitura do relacionamento com cada instituição',
@@ -284,7 +284,7 @@ export const SERVICES: Service[] = [
     name: 'Consórcio e carta de crédito',
     resumo: 'O caminho sem juros para quem tem tempo.',
     description:
-      'Para quem tem prazo, o consórcio troca juros por lance — e exige o mesmo ' +
+      'Para quem tem prazo, o consórcio troca juros por lance, e exige o mesmo ' +
       'cuidado com o cadastro na hora da contemplação.',
     entrega: [
       'Comparação entre consórcio e financiamento no seu caso',
@@ -330,8 +330,8 @@ export const METODO: Etapa[] = [
     numero: '01',
     titulo: 'Consulta detalhada',
     texto:
-      'Você manda o CPF ou o CNPJ pelo WhatsApp e a consulta detalhada sai na hora — ' +
-      'na conversa, não numa ficha para alguém retornar depois.',
+      'Você manda o CPF ou o CNPJ pelo WhatsApp e a consulta detalhada sai na hora, ' +
+      'na conversa, e não numa ficha para alguém retornar depois.',
     saida: 'Tudo o que consta no seu CPF e no seu CNPJ',
   },
   {
@@ -340,7 +340,7 @@ export const METODO: Etapa[] = [
     texto:
       'Negativação, rating de crédito bancário e registro no Banco Central são três ' +
       'problemas diferentes, e cada um tem caminho próprio. É a análise que diz qual ' +
-      'dos três é o seu — tratar tudo como "nome sujo" é o que faz alguém pagar a ' +
+      'dos três é o seu. Tratar tudo como "nome sujo" é o que faz alguém pagar a ' +
       'dívida errada primeiro.',
     saida: 'Qual dos três caminhos é o do seu caso',
   },
@@ -349,7 +349,7 @@ export const METODO: Etapa[] = [
     titulo: 'Ação judicial (liminar)',
     texto:
       'Não existe negociação aqui. Limpa nome e exclusão de Bacen correm por processo ' +
-      'judicial, com pedido de tutela antecipada — a liminar, que é o resultado antes ' +
+      'judicial, com pedido de tutela antecipada, a liminar, que é o resultado antes ' +
       'da sentença e que quem concede é o juiz. O destravamento do rating de crédito ' +
       'bancário é o único dos três que é operacional, e não judicial.',
     saida: 'O pedido protocolado, com número de processo',
@@ -387,7 +387,7 @@ export const NAO_FAZEMOS = [
   {
     titulo: 'Não aumentamos seu score do Serasa',
     texto:
-      'Ninguém aumenta — não é possível contratar aumento de score. Quem calcula são ' +
+      'Ninguém aumenta, porque não é possível contratar aumento de score. Quem calcula são ' +
       'Serasa e SPC, e o que pesa é o seu histórico de pagamento: em dia, em atraso ou ' +
       'antecipado. Quem cobra para "subir score" cobra pelo que não controla.',
   },
@@ -402,7 +402,7 @@ export const NAO_FAZEMOS = [
     titulo: 'Não cobramos pelo que é gratuito',
     texto:
       'O Registrato e a consulta ao Serasa são gratuitos, e você mesmo pode tirar. ' +
-      'O trabalho é ler aquilo e virar ordem de ação — é isso que se cobra.',
+      'O trabalho é ler aquilo e virar ordem de ação, e é isso que se cobra.',
   },
 ]
 
@@ -470,7 +470,7 @@ export const MIDIA = {
   tituloOriginal: 'SBT & Delamayer: A Diferença entre o SCORE e o RATING de Crédito Bancário',
   chamada:
     'A explicação que virou pauta de TV aberta: por que o crédito é negado mesmo ' +
-    'com score alto — e onde procurar a trava.',
+    'com score alto, e onde procurar a trava.',
   url: 'https://www.youtube.com/watch?v=lF44FdFNcn4',
   youtubeId: 'lF44FdFNcn4',
   /** ISO 8601, como o schema.org espera. */
@@ -495,37 +495,43 @@ export const FAQ: FaqItem[] = [
     id: 'como-funciona',
     tema: 'geral',
     q: 'Como funciona a retirada do nome negativado?',
-    a: 'Por ação judicial, não por negociação com o credor. Abre-se o processo com pedido de tutela antecipada — que é o nome técnico da liminar. Tutela antecipada significa receber o resultado antes da sentença: em vez de esperar o fim do processo para o efeito valer, pede-se que ele valha desde já. A ação é ajuizada por advogado, e quem concede ou nega a liminar é o juiz. Vale o mesmo para a exclusão de Bacen. Já o destravamento do rating de crédito bancário é processo operacional, e não judicial.',
+    a: 'Por ação judicial, não por negociação com o credor. Abre-se o processo com pedido de tutela antecipada, que é o nome técnico da liminar. Tutela antecipada significa receber o resultado antes da sentença: em vez de esperar o fim do processo para o efeito valer, pede-se que ele valha desde já. A ação é ajuizada por advogado, e quem concede ou nega a liminar é o juiz. Vale o mesmo para a exclusão de Bacen. Já o destravamento do rating de crédito bancário é processo operacional, e não judicial.',
   },
   {
     id: 'apaga-divida',
     tema: 'geral',
     q: 'Vocês apagam a dívida do meu nome?',
-    a: 'Não. O que se discute é o registro da negativação, não o débito em si: a dívida continua existindo e continua sendo tratada dentro do processo. O que se pede ao juiz é a tutela antecipada — se concedida, a restrição sai enquanto a ação ainda corre. Quem promete fazer dívida desaparecer está prometendo o que a lei não permite.',
+    a: 'Não. O que se discute é o registro da negativação, não o débito em si: a dívida continua existindo e continua sendo tratada dentro do processo. O que se pede ao juiz é a tutela antecipada. Concedida, a restrição sai enquanto a ação ainda corre. Quem promete fazer dívida desaparecer está prometendo o que a lei não permite.',
   },
   {
     id: 'aumenta-score',
     tema: 'rating',
     q: 'Vocês aumentam o meu score do Serasa?',
-    a: 'Não, e ninguém aumenta: não existe contratar aumento de score. Quem calcula são Serasa e SPC, e o que mais pesa ali é o seu histórico de pagamento — contas em dia, em atraso ou antecipadas. O que se resolve aqui é outra coisa: a restrição registrada no seu nome, o rating de crédito bancário e o registro no Banco Central. Aliás, score alto com crédito negado é justamente o caso mais comum no atendimento.',
+    a: 'Não, e ninguém aumenta: não existe contratar aumento de score. Quem calcula são Serasa e SPC, e o que mais pesa ali é o seu histórico de pagamento: contas em dia, em atraso ou antecipadas. O que se resolve aqui é outra coisa: a restrição registrada no seu nome, o rating de crédito bancário e o registro no Banco Central. Aliás, score alto com crédito negado é justamente o caso mais comum no atendimento.',
   },
   {
     id: 'bacen',
     tema: 'geral',
     q: 'O que é a exclusão de Bacen?',
-    a: 'O Banco Central mantém o SCR, o Sistema de Informações de Crédito, onde as instituições registram as operações e o que está em atraso. Esse registro não aparece na consulta do Serasa, mas é lido por qualquer banco na análise — e explica boa parte das recusas de quem está com o nome limpo. Você mesmo pode ver o seu, de graça, no Registrato. A exclusão de Bacen trata desse registro e, como o limpa nome, corre pela via judicial, com pedido de liminar.',
+    a: 'O Banco Central mantém o SCR, o Sistema de Informações de Crédito, onde as instituições registram as operações e o que está em atraso. Esse registro não aparece na consulta do Serasa, mas é lido por qualquer banco na análise, e explica boa parte das recusas de quem está com o nome limpo. Você mesmo pode ver o seu, de graça, no Registrato. A exclusão de Bacen trata desse registro e, como o limpa nome, corre pela via judicial, com pedido de liminar.',
+  },
+  {
+    id: 'aumentar-score',
+    tema: 'rating',
+    q: 'Como eu faço para aumentar o meu score?',
+    a: 'Pagando as contas em dia, e com tempo. O score responde ao seu histórico de pagamento: em dia, em atraso ou antecipado. Não existe atalho contratado, e quem vende "aumento de score" está cobrando por algo que não controla. Mas vale a parte que quase ninguém ouve: aprovação de financiamento não depende da sua pontuação no Serasa. O gerente olha primeiro se o nome está limpo, e depois o seu rating de crédito bancário, que é outro indicador e tem outro dono.',
   },
   {
     id: 'score-vs-rating',
     tema: 'rating',
     q: 'Meu score subiu, mas o banco negou o crédito. Como isso é possível?',
-    a: 'Porque são dois indicadores diferentes, com donos diferentes. O score é calculado por Serasa e SPC e é o que as grandes varejistas olham; o rating de crédito bancário é interno do banco, vai de A a F e mede o relacionamento que você tem com aquela instituição específica. Dá para ter 800 pontos no Serasa e um F no banco onde você pediu o financiamento — e é o rating de crédito bancário que decide ali.',
+    a: 'Porque são dois indicadores diferentes, com donos diferentes. O score é calculado por Serasa e SPC e é o que as grandes varejistas olham; o rating de crédito bancário é interno do banco, vai de A a F e mede o relacionamento que você tem com aquela instituição específica. Dá para ter 800 pontos no Serasa e um F no banco onde você pediu o financiamento, e é o rating de crédito bancário que decide ali.',
   },
   {
     id: 'prazo',
     tema: 'geral',
     q: 'Quanto tempo leva para o meu nome ficar limpo?',
-    a: 'Depende do caso e do Judiciário. O pedido de liminar é apreciado pelo juiz, e o tempo dessa apreciação não é nosso. Depois da decisão, a baixa ainda percorre os ciclos de atualização dos órgãos de proteção ao crédito e do Banco Central. No diagnóstico você recebe a estimativa do seu caso — nunca uma promessa de data fechada.',
+    a: 'Depende do caso e do Judiciário. O pedido de liminar é apreciado pelo juiz, e o tempo dessa apreciação não é nosso. Depois da decisão, a baixa ainda percorre os ciclos de atualização dos órgãos de proteção ao crédito e do Banco Central. No diagnóstico você recebe a estimativa do seu caso, nunca uma promessa de data fechada.',
   },
   {
     id: 'consulta-paga',
@@ -537,13 +543,13 @@ export const FAQ: FaqItem[] = [
     id: 'presencial',
     tema: 'geral',
     q: 'Preciso ir até o escritório?',
-    a: 'Não. Todo o atendimento acontece por WhatsApp, do diagnóstico ao acompanhamento. O escritório fica no Stay Coworking, no Setor Oeste, e recebe quem prefere resolver pessoalmente — mas somente com hora marcada, combinada antes pelo WhatsApp.',
+    a: 'Não. Todo o atendimento acontece por WhatsApp, do diagnóstico ao acompanhamento. O escritório fica no Stay Coworking, no Setor Oeste, e recebe quem prefere resolver pessoalmente, mas somente com hora marcada, combinada antes pelo WhatsApp.',
   },
   {
     id: 'financiar-negativado',
     tema: 'imovel',
     q: 'Consigo financiar um imóvel com o nome negativado?',
-    a: 'Com restrição ativa, a análise de crédito do banco reprova na entrada. Tirar a restrição do caminho é o primeiro passo — mas não é aprovação automática: o banco também olha renda comprovável, comprometimento e o rating de crédito bancário. A preparação para financiamento existe justamente para você chegar ao banco com essas três coisas resolvidas.',
+    a: 'Com restrição ativa, a análise de crédito do banco reprova na entrada. Tirar a restrição do caminho é o primeiro passo, mas não é aprovação automática: o banco também olha renda comprovável, comprometimento e o rating de crédito bancário. A preparação para financiamento existe justamente para você chegar ao banco com essas três coisas resolvidas.',
   },
   {
     id: 'cnpj',
@@ -555,7 +561,7 @@ export const FAQ: FaqItem[] = [
     id: 'dados',
     tema: 'geral',
     q: 'O que acontece com os meus dados?',
-    a: 'Ficam entre você e a Delamayer, usados só para o atendimento que você contratou, conforme a LGPD. Este site não guarda o que você digita: o formulário de diagnóstico monta a mensagem no seu próprio navegador e abre o WhatsApp — nada é enviado para servidor nenhum.',
+    a: 'Ficam entre você e a Delamayer, usados só para o atendimento que você contratou, conforme a LGPD. Este site não guarda o que você digita: o formulário de diagnóstico monta a mensagem no seu próprio navegador e abre o WhatsApp, e nada é enviado para servidor nenhum.',
   },
 ]
 

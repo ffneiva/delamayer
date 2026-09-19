@@ -40,7 +40,7 @@ export const PERGUNTAS: Pergunta[] = [
   {
     id: 'divida',
     titulo: 'Você tem alguma conta em atraso hoje?',
-    motivo: 'Atraso e negativação são coisas diferentes — dá para ter um sem o outro.',
+    motivo: 'Atraso e negativação são coisas diferentes: dá para ter um sem o outro.',
     opcoes: [
       { id: 'sim', label: 'Tenho' },
       { id: 'nao', label: 'Não tenho' },
@@ -60,7 +60,7 @@ export const PERGUNTAS: Pergunta[] = [
   {
     id: 'recusa',
     titulo: 'Levou um "não" do banco nos últimos seis meses?',
-    motivo: 'Cartão, empréstimo, financiamento, aumento de limite — qualquer um conta.',
+    motivo: 'Cartão, empréstimo, financiamento, aumento de limite: qualquer um conta.',
     opcoes: [
       { id: 'sim', label: 'Levei' },
       { id: 'nao', label: 'Não levei' },
@@ -142,8 +142,8 @@ export function diagnosticar(r: Respostas): Leitura {
       etiqueta: 'Restrição ativa',
       titulo: 'Existe uma trava registrada no seu nome',
       leitura:
-        'Enquanto houver restrição ativa, a análise do banco para na primeira consulta — ' +
-        'renda e relacionamento nem chegam a ser avaliados. É o que precisa sair da frente primeiro.',
+        'Enquanto houver restrição ativa, a análise do banco para na primeira consulta. ' +
+        'Renda e relacionamento nem chegam a ser avaliados. É o que precisa sair da frente primeiro.',
       primeiroPasso:
         'Levantar tudo o que está registrado no seu nome e separar o que se discute em juízo do ' +
         'que se resolve fora dele. A via da retirada é judicial: processo com pedido de liminar.',
@@ -168,7 +168,7 @@ export function diagnosticar(r: Respostas): Leitura {
       titulo: 'O score não é o que está te reprovando',
       leitura:
         'Nome sem restrição, score que não reprova e crédito negado assim mesmo: o padrão aponta ' +
-        'para o rating de crédito bancário — a nota de A a F que cada banco calcula sobre o ' +
+        'para o rating de crédito bancário, a nota de A a F que cada banco calcula sobre o ' +
         'relacionamento que você tem com ele, e que não aparece em consulta nenhuma.',
       primeiroPasso:
         'Ler o que consta no Registrato do Banco Central e mapear como cada instituição enxerga ' +
@@ -185,8 +185,8 @@ export function diagnosticar(r: Respostas): Leitura {
       titulo: 'Provavelmente é informação desatualizada',
       leitura:
         'Sem dívida em aberto e sem restrição, a recusa costuma vir de registro que ficou para ' +
-        'trás: operação quitada que continua marcada no SCR do Banco Central — que o Serasa não ' +
-        'mostra e o banco lê —, dado cadastral antigo ou renda não comprovável no formato aceito.',
+        'trás: operação quitada que continua marcada no SCR do Banco Central, que o Serasa não ' +
+        'mostra e o banco lê, ou dado cadastral antigo, ou renda que não se comprova no formato aceito.',
       primeiroPasso:
         'Puxar o Registrato e comparar com o que você sabe ter quitado. A divergência aparece rápido, ' +
         'e é ela que fundamenta o pedido de exclusão do registro no Banco Central.',
@@ -211,7 +211,7 @@ export function diagnosticar(r: Respostas): Leitura {
       primeiroPasso:
         querImovel || r.objetivo === 'consorcio'
           ? 'Simular capacidade real de pagamento e definir o que precisa acontecer nos meses que ' +
-            'antecedem a proposta — inclusive o que NÃO fazer, como abrir consultas desnecessárias.'
+            'antecedem a proposta, inclusive o que NÃO fazer, como abrir consultas desnecessárias.'
           : 'Mapear o relacionamento com cada banco e a ordem em que mexer nos limites, para o ' +
             'rating de crédito bancário subir antes do pedido, e não depois da recusa.',
       servicos:
@@ -232,7 +232,7 @@ export function diagnosticar(r: Respostas): Leitura {
     etiqueta: 'Precisa de consulta',
     titulo: 'Falta o dado que só a consulta mostra',
     leitura:
-      'Com o que você respondeu, dá para dizer que existe alguma coisa travando — mas não qual. ' +
+      'Com o que você respondeu, dá para dizer que existe alguma coisa travando, mas não qual. ' +
       'Chutar aqui seria o mesmo que os sites que prometem resultado antes de olhar o caso.',
     primeiroPasso:
       'A consulta sai na hora, pelo WhatsApp, e é ela que separa negativação de rating de ' +

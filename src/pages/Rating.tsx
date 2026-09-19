@@ -24,12 +24,12 @@ const CAUSAS = [
   {
     titulo: 'Você é cliente novo naquele banco',
     texto:
-      'O rating de crédito bancário mede relacionamento, e relacionamento leva tempo. Um cliente sem histórico não é um cliente ruim — é um cliente desconhecido, e a análise trata os dois quase igual.',
+      'O rating de crédito bancário mede relacionamento, e relacionamento leva tempo. Um cliente sem histórico não é um cliente ruim: é um cliente desconhecido, e a análise trata os dois quase igual.',
   },
   {
     titulo: 'A conta existe, mas está parada',
     texto:
-      'Salário que não cai ali, cartão que não roda, nenhuma aplicação. Do ponto de vista do banco, não há dado nenhum sobre o seu comportamento — e o vazio conta contra.',
+      'Salário que não cai ali, cartão que não roda, nenhuma aplicação. Do ponto de vista do banco, não há dado nenhum sobre o seu comportamento, e o vazio conta contra.',
   },
   {
     titulo: 'Uso do limite perto do teto, todo mês',
@@ -44,7 +44,7 @@ const CAUSAS = [
   {
     titulo: 'Consultas demais ao seu CPF',
     texto:
-      'Pedir crédito em cinco lugares na mesma semana produz cinco consultas registradas. Para a análise, isso lê como procura urgente por dinheiro — e urgência é risco.',
+      'Pedir crédito em cinco lugares na mesma semana produz cinco consultas registradas. Para a análise, isso lê como procura urgente por dinheiro, e urgência é risco.',
   },
   {
     titulo: 'Renda que não se comprova no formato aceito',
@@ -93,7 +93,7 @@ export function Rating({ onNavigate }: { onNavigate: (path: string) => void }) {
               </Reveal>
               <Reveal delay={0.1}>
                 <p className="mt-6 text-[0.98rem] leading-relaxed text-plat-400">
-                  As letras não são padronizadas entre bancos — cada instituição define os próprios
+                  As letras não são padronizadas entre bancos: cada instituição define os próprios
                   cortes. O que se repete é a lógica: quanto mais alta a letra, menor o risco
                   percebido, melhor a taxa e maior o limite. E a passagem de uma letra para outra
                   costuma valer mais, em dinheiro, do que cem pontos de score.
@@ -155,7 +155,7 @@ export function Rating({ onNavigate }: { onNavigate: (path: string) => void }) {
           <Reveal delay={0.4}>
             <p className="mt-12 max-w-3xl text-sm leading-relaxed text-plat-500">
               Nenhuma dessas causas se resolve pagando alguma coisa. Todas se resolvem mudando o que
-              o banco enxerga — e é aí que a ordem das ações importa mais do que o valor delas.
+              o banco enxerga, e é aí que a ordem das ações importa mais do que o valor delas.
             </p>
           </Reveal>
         </div>

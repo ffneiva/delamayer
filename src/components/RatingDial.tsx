@@ -233,7 +233,7 @@ export function RatingDial({ className }: { className?: string }) {
       <div aria-live="polite" className="mt-6 min-h-[4.5rem] text-center">
         <div key={ativo} className="animate-[fade-in_420ms_var(--ease-vault)_both]">
           <p className="font-display text-2xl text-gold-100">
-            {atual.letra} — {atual.rotulo}
+            {atual.letra}: {atual.rotulo}
           </p>
           <p className="mt-1.5 text-sm text-plat-400">{atual.nota}</p>
         </div>

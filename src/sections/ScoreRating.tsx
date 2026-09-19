@@ -27,7 +27,7 @@ export function ScoreRating() {
         >
           <p>
             São dois indicadores, com donos diferentes. Dá para ter 800 pontos no Serasa e um "F" de
-            rating de crédito bancário no banco onde você pediu o financiamento — e é o segundo que
+            rating de crédito bancário no banco onde você pediu o financiamento, e é o segundo que
             decide.
           </p>
         </SectionHeading>
@@ -46,7 +46,7 @@ export function ScoreRating() {
 
             <Reveal delay={0.2}>
               <p className="mt-8 text-center text-sm leading-relaxed text-plat-500">
-                Ele não aparece em consulta nenhuma. O que dá para ler são os sinais que ele deixa —
+                Ele não aparece em consulta nenhuma. O que dá para ler são os sinais que ele deixa:
                 o histórico no Banco Central e os limites que sobem ou somem.
               </p>
             </Reveal>

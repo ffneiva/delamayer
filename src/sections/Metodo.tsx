@@ -86,7 +86,7 @@ export function Metodo() {
           >
             <p>
               A ordem importa mais que a velocidade. Pagar a dívida errada primeiro gasta o dinheiro
-              que destravaria o crédito — e não muda nada na análise.
+              que destravaria o crédito, e não muda nada na análise.
             </p>
           </SectionHeading>
         </div>

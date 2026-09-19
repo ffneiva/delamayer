@@ -24,7 +24,7 @@ export function Localizacao() {
         <SectionHeading etiqueta="Onde ficamos" titulo="Setor Oeste," complemento="Goiânia.">
           <p>
             O atendimento acontece por WhatsApp, do diagnóstico ao acompanhamento. O escritório
-            existe para quem prefere olhar no olho — e recebe somente com hora marcada.
+            existe para quem prefere olhar no olho, e recebe somente com hora marcada.
           </p>
         </SectionHeading>
 
@@ -46,7 +46,7 @@ export function Localizacao() {
                     exatamente aqui que alguém decide atravessar a cidade. */}
                 <p className="mt-5 flex items-start gap-3 rounded-xl border border-gold-800/50 bg-gold-900/[0.08] p-4 text-sm leading-relaxed text-gold-100/90">
                   <span aria-hidden className="mt-2 h-px w-3 shrink-0 bg-gold-500" />
-                  {BUSINESS.agendamento} — combine o horário pelo WhatsApp antes de vir.
+                  {BUSINESS.agendamento}. Combine o horário pelo WhatsApp antes de vir.
                 </p>
 
                 <div className="mt-7 flex flex-wrap gap-3">
@@ -89,7 +89,7 @@ export function Localizacao() {
                       <dt className={cn(i !== hoje && 'text-plat-400')}>{dia.label}</dt>
                       <dd className={cn('tabular-nums', i !== hoje && 'text-plat-300')}>
                         {dia.open && dia.close
-                          ? `${porExtenso(dia.open)} — ${porExtenso(dia.close)}`
+                          ? `${porExtenso(dia.open)} às ${porExtenso(dia.close)}`
                           : 'Fechado'}
                       </dd>
                     </div>

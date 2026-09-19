@@ -150,7 +150,7 @@ export function Nav({ onSection, onNavigate, path }: Props) {
               irParaRota('/')
             }}
             className="shrink-0"
-            aria-label={`${BUSINESS.name} — início`}
+            aria-label={`${BUSINESS.name}, início`}
           >
             <Logo className="text-[1.05rem] md:text-[1.15rem]" />
           </a>

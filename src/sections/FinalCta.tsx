@@ -85,7 +85,7 @@ export function FinalCta() {
 
         <Reveal delay={0.32}>
           <p className="mt-8 text-xs text-plat-600">
-            Atendimento de segunda a sexta, das 8h às 18h — mensagem fora do horário é respondida no
+            Atendimento de segunda a sexta, das 8h às 18h. Mensagem fora do horário é respondida no
             próximo dia útil.
           </p>
         </Reveal>

@@ -33,7 +33,7 @@ export function Servicos() {
       <div className="container-x">
         <SectionHeading etiqueta="Serviços" titulo="O que mais" complemento="entra no caso.">
           <p>
-            Além das três frentes do topo, o que costuma aparecer junto — e que quase sempre começa
+            Além das três frentes do topo, o que costuma aparecer junto, e que quase sempre começa
             no mesmo lugar: o diagnóstico.
           </p>
         </SectionHeading>

@@ -27,7 +27,7 @@ export function DiagnosticoCta() {
               complemento="e uma leitura."
             >
               <p>
-                A mesma triagem que abre todo atendimento, em cinco cliques — para você já chegar
+                A mesma triagem que abre todo atendimento, em cinco cliques, para você já chegar
                 sabendo o que perguntar.
               </p>
             </SectionHeading>
