@@ -38,12 +38,12 @@ export function Transparencia() {
       <div className="container-x relative">
         <SectionHeading etiqueta="Transparência" titulo="O que a gente" complemento="não faz.">
           <p>
-            Três promessas que você encontra por aí e não encontra aqui — porque cumprir é
+            Quatro promessas que você encontra por aí e não encontra aqui — porque cumprir é
             impossível.
           </p>
         </SectionHeading>
 
-        <ul className="mt-14 grid gap-px overflow-hidden rounded-2xl border border-edge bg-edge md:grid-cols-3">
+        <ul className="mt-14 grid gap-px overflow-hidden rounded-2xl border border-edge bg-edge md:grid-cols-2 xl:grid-cols-4">
           {NAO_FAZEMOS.map((item, i) => (
             <Reveal as="li" key={item.titulo} delay={i * 0.09} className="bg-vault p-7 lg:p-9">
               {/* O "×" desenhado, e não o caractere: em fonte display o × de

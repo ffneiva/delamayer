@@ -2,17 +2,20 @@ import { useState } from 'react'
 import { Reveal } from '@/components/Reveal'
 import { SectionHeading } from '@/components/SectionHeading'
 import { useBrilho } from '@/hooks/useBrilho'
-import { SERVICES } from '@/lib/business'
+import { SERVICOS_APOIO } from '@/lib/business'
 import { cn } from '@/lib/utils'
 
 /**
  * Os serviços.
  *
+ * Aqui ficam os serviços de apoio — o núcleo (limpa nome, rating e Bacen) abre
+ * a página, em <Solucoes>, e não se repete.
+ *
  * Cada card abre para revelar o que a pessoa recebe. A escolha de esconder a
- * lista de entregas atrás de um clique não é estética: são seis serviços com
+ * lista de entregas atrás de um clique não é estética: são quatro serviços com
  * três a quatro itens cada, e mostrar tudo de uma vez produziria uma parede de
- * 24 marcadores que ninguém lê. O resumo cabe na varredura; o detalhe fica a
- * um toque de quem se interessou.
+ * marcadores que ninguém lê. O resumo cabe na varredura; o detalhe fica a um
+ * toque de quem se interessou.
  *
  * O que NÃO se esconde é o nome e o resumo — a informação de consulta fica
  * sempre visível, e a escondida é só o aprofundamento.
@@ -22,18 +25,21 @@ import { cn } from '@/lib/utils'
  * chutar um `max-height` que corta o texto quando ele cresce.
  */
 export function Servicos() {
-  const [aberto, setAberto] = useState<string | null>(SERVICES[0].id)
+  const [aberto, setAberto] = useState<string | null>(SERVICOS_APOIO[0].id)
   const brilho = useBrilho()
 
   return (
     <section id="servicos" className="scroll-mt-24 py-24 md:py-32">
       <div className="container-x">
-        <SectionHeading etiqueta="Serviços" titulo="O que a gente" complemento="faz de fato.">
-          <p>Seis frentes, uma porta de entrada. Tudo começa no diagnóstico.</p>
+        <SectionHeading etiqueta="Serviços" titulo="O que mais" complemento="entra no caso.">
+          <p>
+            Além das três frentes do topo, o que costuma aparecer junto — e que quase sempre começa
+            no mesmo lugar: o diagnóstico.
+          </p>
         </SectionHeading>
 
         <ul className="mt-14 grid gap-4 md:grid-cols-2 lg:gap-5">
-          {SERVICES.map((servico, i) => {
+          {SERVICOS_APOIO.map((servico, i) => {
             const expandido = aberto === servico.id
             const painelId = `servico-painel-${servico.id}`
 

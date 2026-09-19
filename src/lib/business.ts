@@ -18,11 +18,11 @@ export const BUSINESS = {
   shortName: 'Delamayer',
   tagline: 'Seu nome limpo, sua liberdade',
   /** A promessa em uma linha. É o que o site inteiro tenta provar. */
-  promessa: 'Do CPF travado à chave do apartamento',
+  promessa: 'Do CPF negativado ao financiamento aprovado',
   description:
-    'Assessoria de crédito em Goiânia. Diagnóstico completo do seu CPF, ' +
-    'regularização direta com o credor e leitura do rating bancário — o índice ' +
-    'que o banco usa e que não aparece no score. Consulta na hora pelo WhatsApp.',
+    'Assessoria de crédito em Goiânia. Limpa nome por ação judicial com pedido de ' +
+    'liminar, destravamento do rating de crédito bancário e exclusão de registro no ' +
+    'Banco Central. Consulta do CPF na hora, pelo WhatsApp.',
 
   url: 'https://delamayer.com.br',
 
@@ -39,6 +39,15 @@ export const BUSINESS = {
     zip: '74120-130',
     country: 'BR',
   },
+  /**
+   * O escritório existe e o endereço é real — mas a operação é de WhatsApp e
+   * audiência, não de balcão. Anunciar um endereço que recebe sem hora marcada
+   * produz o pior resultado possível: a pessoa atravessa a cidade e não
+   * encontra ninguém. O aviso acompanha o endereço em todo lugar onde ele
+   * aparece — seção, rodapé e dados estruturados.
+   */
+  agendamento: 'Atendimento presencial somente com hora marcada',
+
   /** Geocodificado a partir do endereço do perfil no Google Business. */
   geo: { lat: -16.690429, lng: -49.267148 },
   mapsLink: 'https://www.google.com/maps/search/?api=1&query=-16.690429,-49.267148',
@@ -142,16 +151,104 @@ export const EVIDENCIAS: Evidencia[] = [
 export type Service = {
   id: string
   name: string
+  /** Nome curto, para o menu e para os espaços em que o nome inteiro não cabe. */
+  curto?: string
   /** Frase curta que abre o card. */
   resumo: string
   description: string
   /** O que a pessoa recebe, em itens verificáveis. */
   entrega: string[]
+  /**
+   * Os três serviços que a empresa de fato executa — limpa nome, rating e
+   * Bacen. São eles que abrem a página e que ocupam o menu do topo: quem
+   * chega precisa saber o que se faz aqui antes de rolar qualquer coisa.
+   */
+  nucleo?: boolean
   destaque?: boolean
   tag?: string
 }
 
+/**
+ * ── A via é judicial, e isso muda tudo o que está escrito aqui ──────────────
+ *
+ * A retirada do nome negativado não acontece por negociação com o credor.
+ * Acontece por ação judicial com pedido de **tutela antecipada** — a liminar.
+ * Tutela antecipada é o resultado antes da sentença: em vez de esperar o fim
+ * do processo para o efeito valer, pede-se que ele valha desde já.
+ *
+ * Dos três serviços, **dois correm por processo judicial** — o limpa nome e a
+ * exclusão de Bacen — e **um é operacional**: o destravamento do rating de
+ * crédito bancário. A distinção não é detalhe de bastidor: ela muda o que se
+ * pode dizer sobre prazo e sobre quem decide, e por isso aparece no texto de
+ * cada cartão em vez de ficar só aqui.
+ *
+ * Três consequências para o texto deste arquivo, e nenhuma é estilística:
+ *
+ * · **Quem decide é o juiz.** Nenhum texto pode afirmar que a restrição sai —
+ *   só que é isso que se pede, e como se pede.
+ * · **A dívida não desaparece.** O que se discute é o registro; o débito segue
+ *   existindo e segue sendo discutido no processo.
+ * · **Quem ajuíza é advogado.** Assessoria não peticiona. Dizer o contrário
+ *   seria, além de falso, exatamente a promessa que o site recusa.
+ */
 export const SERVICES: Service[] = [
+  {
+    id: 'limpa-nome',
+    name: 'Limpa nome',
+    curto: 'Limpa nome',
+    resumo: 'A retirada da negativação sai por decisão judicial.',
+    description:
+      'Não é negociação de dívida. Abre-se um processo com pedido de tutela ' +
+      'antecipada — a liminar —, que é o resultado antes da sentença: concedida, ' +
+      'a restrição sai enquanto o processo ainda corre. Quem decide é o juiz.',
+    entrega: [
+      'Leitura do caso antes de qualquer processo existir',
+      'Ação ajuizada por advogado, com pedido de liminar',
+      'O número do processo e cada movimentação na sua mão',
+      'Conferência da baixa na consulta depois da decisão',
+    ],
+    nucleo: true,
+    destaque: true,
+    tag: 'Via judicial',
+  },
+  {
+    id: 'rating',
+    name: 'Destravamento do rating de crédito bancário',
+    curto: 'Rating de crédito bancário',
+    resumo: 'O índice que o banco usa e que ninguém te mostra.',
+    description:
+      'O rating de crédito bancário é interno, vai de A a F e cada banco calcula o seu — ' +
+      'é por isso que dá para ter score bom e crédito negado. Dos três serviços, é o único ' +
+      'operacional: aqui não se abre processo, se trabalha o relacionamento com a instituição.',
+    entrega: [
+      'Leitura do relacionamento com cada instituição',
+      'O que trava o seu rating de crédito bancário, banco a banco',
+      'Ordem em que mexer nas contas e nos limites',
+      'O que evitar nos meses que antecedem um pedido de crédito',
+    ],
+    nucleo: true,
+    destaque: true,
+    tag: 'Via operacional',
+  },
+  {
+    id: 'bacen',
+    name: 'Exclusão de Bacen',
+    curto: 'Exclusão de Bacen',
+    resumo: 'O registro que o Serasa não mostra e o banco lê.',
+    description:
+      'O Banco Central mantém o SCR, onde as instituições registram as operações de crédito ' +
+      'e o que está em atraso. Esse registro não aparece na consulta do Serasa, mas é lido em ' +
+      'toda análise. Como o limpa nome, corre por processo judicial, com pedido de liminar.',
+    entrega: [
+      'Leitura do Registrato, operação por operação',
+      'Identificação do que está registrado sem lastro',
+      'Ação ajuizada por advogado, com pedido de liminar',
+      'Conferência do Registrato depois da decisão',
+    ],
+    nucleo: true,
+    destaque: true,
+    tag: 'Via judicial',
+  },
   {
     id: 'diagnostico',
     name: 'Diagnóstico de crédito',
@@ -160,45 +257,12 @@ export const SERVICES: Service[] = [
       'A leitura do que as instituições enxergam quando digitam seu CPF: ' +
       'negativações, protestos, Cadastro Positivo e o que consta no Banco Central.',
     entrega: [
-      'Mapa de todas as pendências, por credor',
+      'Mapa de todas as pendências, uma a uma',
       'O que está pesando de fato no seu score',
       'O que aparece no Banco Central e não aparece no Serasa',
       'Um plano em ordem de prioridade, não uma lista de dívidas',
     ],
-    destaque: true,
     tag: 'Começa aqui',
-  },
-  {
-    id: 'regularizacao',
-    name: 'Regularização direta',
-    resumo: 'Negociação com quem tem poder de dar baixa.',
-    description:
-      'Quem inclui a restrição é o credor — e só ele pode retirá-la. A gente ' +
-      'negocia com ele e acompanha até a baixa constar nos órgãos.',
-    entrega: [
-      'Contato e negociação com o credor',
-      'Condição de pagamento avaliada junto com você',
-      'Acompanhamento até a baixa aparecer na consulta',
-      'Conferência do prazo legal de atualização do cadastro',
-    ],
-    destaque: true,
-    tag: 'Mais procurado',
-  },
-  {
-    id: 'rating',
-    name: 'Rating bancário',
-    resumo: 'O índice que o banco usa e que ninguém te mostra.',
-    description:
-      'Score é público e vale para o mercado inteiro. Rating é interno, vai de A a F ' +
-      'e cada banco calcula o seu. É por isso que dá para ter score bom e crédito negado.',
-    entrega: [
-      'Leitura do relacionamento com cada instituição',
-      'O que move o rating para cima no seu caso',
-      'Ordem em que mexer nas contas e nos limites',
-      'O que evitar nos meses que antecedem um pedido de crédito',
-    ],
-    destaque: true,
-    tag: 'O diferencial',
   },
   {
     id: 'imobiliario',
@@ -233,15 +297,21 @@ export const SERVICES: Service[] = [
     name: 'CNPJ e MEI',
     resumo: 'Empresa com restrição não levanta capital de giro.',
     description:
-      'A mesma leitura aplicada à empresa: restrição no CNPJ, protesto, rating no ' +
-      'banco e o efeito do CPF do sócio na análise.',
+      'A mesma leitura aplicada à empresa: restrição no CNPJ, protesto, rating de ' +
+      'crédito bancário e o efeito do CPF do sócio na análise.',
     entrega: [
       'Diagnóstico do CNPJ e do CPF dos sócios',
-      'Regularização de protesto e negativação',
+      'Ação para retirada de protesto e negativação',
       'Preparação para capital de giro',
     ],
   },
 ]
+
+/** Os três que abrem a página e ocupam o menu do topo. */
+export const SERVICOS_NUCLEO = SERVICES.filter((s) => s.nucleo)
+
+/** O que entra no atendimento além do núcleo. */
+export const SERVICOS_APOIO = SERVICES.filter((s) => !s.nucleo)
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Método — as quatro etapas do atendimento
@@ -258,36 +328,40 @@ export type Etapa = {
 export const METODO: Etapa[] = [
   {
     numero: '01',
-    titulo: 'Consulta',
+    titulo: 'Consulta detalhada',
     texto:
-      'Você manda o CPF pelo WhatsApp e a consulta sai na hora — na conversa, ' +
-      'não numa ficha para alguém retornar depois.',
-    saida: 'A lista real do que consta no seu nome',
+      'Você manda o CPF ou o CNPJ pelo WhatsApp e a consulta detalhada sai na hora — ' +
+      'na conversa, não numa ficha para alguém retornar depois.',
+    saida: 'Tudo o que consta no seu CPF e no seu CNPJ',
   },
   {
     numero: '02',
-    titulo: 'Leitura',
+    titulo: 'Análise da consulta',
     texto:
-      'Negativação, rating do banco e cadastro desatualizado são três problemas ' +
-      'diferentes, e cada um se resolve num lugar. Tratar tudo como "nome sujo" é ' +
-      'o que faz a pessoa pagar a dívida errada primeiro.',
-    saida: 'O motivo exato do "não" que você ouviu',
+      'Negativação, rating de crédito bancário e registro no Banco Central são três ' +
+      'problemas diferentes, e cada um tem caminho próprio. É a análise que diz qual ' +
+      'dos três é o seu — tratar tudo como "nome sujo" é o que faz alguém pagar a ' +
+      'dívida errada primeiro.',
+    saida: 'Qual dos três caminhos é o do seu caso',
   },
   {
     numero: '03',
-    titulo: 'Regularização',
+    titulo: 'Ação judicial (liminar)',
     texto:
-      'Negociação com quem tem poder de dar baixa, na ordem que destrava mais ' +
-      'crédito por real pago. Você aprova cada condição antes do acordo.',
-    saida: 'Acordos fechados e comprovantes na sua mão',
+      'Não existe negociação aqui. Limpa nome e exclusão de Bacen correm por processo ' +
+      'judicial, com pedido de tutela antecipada — a liminar, que é o resultado antes ' +
+      'da sentença e que quem concede é o juiz. O destravamento do rating de crédito ' +
+      'bancário é o único dos três que é operacional, e não judicial.',
+    saida: 'O pedido protocolado, com número de processo',
   },
   {
     numero: '04',
     titulo: 'Acompanhamento',
     texto:
-      'Pagar não é o fim: a baixa precisa chegar aos órgãos e o rating leva alguns ' +
-      'ciclos para responder. A gente acompanha até a consulta mostrar o combinado.',
-    saida: 'A consulta limpa — conferida, não presumida',
+      'A decisão não é o fim: a determinação ainda precisa chegar aos órgãos, e o ' +
+      'rating de crédito bancário leva alguns ciclos para responder. A gente confere ' +
+      'na consulta em vez de presumir que já saiu.',
+    saida: 'A consulta conferida, e não presumida',
   },
 ]
 
@@ -306,14 +380,23 @@ export const NAO_FAZEMOS = [
   {
     titulo: 'Não apagamos dívida legítima',
     texto:
-      'Dívida que existe, existe. Negocia-se valor, prazo e a baixa — com o credor, ' +
-      'que é quem pode. Quem promete apagar sem pagar está vendendo outra coisa.',
+      'A ação trata do registro, não do débito. Dívida que existe continua existindo ' +
+      'e continua sendo discutida no processo. Quem promete fazer dívida sumir está ' +
+      'vendendo outra coisa.',
   },
   {
-    titulo: 'Não damos prazo que não depende de nós',
+    titulo: 'Não aumentamos seu score do Serasa',
     texto:
-      'Depois do acordo, quem comunica os órgãos é o credor, no prazo dele. Dá para ' +
-      'dizer o prazo típico; não dá para garantir "em 7 dias" e cumprir sempre.',
+      'Ninguém aumenta — não é possível contratar aumento de score. Quem calcula são ' +
+      'Serasa e SPC, e o que pesa é o seu histórico de pagamento: em dia, em atraso ou ' +
+      'antecipado. Quem cobra para "subir score" cobra pelo que não controla.',
+  },
+  {
+    titulo: 'Não prometemos a decisão do juiz',
+    texto:
+      'A liminar é pedida, não comprada. Quem concede é o juiz, no tempo do Judiciário. ' +
+      'Dá para explicar como o pedido é feito e o que costuma acontecer; não dá para ' +
+      'prometer o resultado nem a data.',
   },
   {
     titulo: 'Não cobramos pelo que é gratuito',
@@ -332,7 +415,7 @@ export type LinhaComparativa = { criterio: string; score: string; rating: string
 export const SCORE_VS_RATING: LinhaComparativa[] = [
   {
     criterio: 'Quem calcula',
-    score: 'Birôs de crédito (Serasa, SPC, Quod, Boa Vista)',
+    score: 'Serasa e SPC',
     rating: 'Cada banco, com critério próprio',
   },
   { criterio: 'Escala', score: '0 a 1.000 pontos', rating: 'Letras, de A a F' },
@@ -341,7 +424,7 @@ export const SCORE_VS_RATING: LinhaComparativa[] = [
     score: 'Sim, de graça, a qualquer momento',
     rating: 'Não. É interno do banco',
   },
-  { criterio: 'Vale para', score: 'O mercado inteiro', rating: 'Só aquela instituição' },
+  { criterio: 'Vale para', score: 'As grandes varejistas', rating: 'Só aquela instituição' },
   {
     criterio: 'O que mais pesa',
     score: 'Histórico de pagamento e consultas ao CPF',
@@ -354,7 +437,7 @@ export const SCORE_VS_RATING: LinhaComparativa[] = [
   },
 ]
 
-/** As seis letras do rating, do melhor risco ao pior. Alimenta o medidor 3D. */
+/** As seis letras do rating de crédito bancário, do melhor ao pior risco. Alimenta o medidor. */
 export const RATING_ESCALA = [
   { letra: 'A', rotulo: 'Risco mínimo', nota: 'Crédito aprovado com a melhor taxa da mesa' },
   { letra: 'B', rotulo: 'Risco baixo', nota: 'Aprovado, taxa boa, limite folgado' },
@@ -409,40 +492,58 @@ export type FaqItem = { id: string; tema: 'geral' | 'rating' | 'imovel'; q: stri
 
 export const FAQ: FaqItem[] = [
   {
+    id: 'como-funciona',
+    tema: 'geral',
+    q: 'Como funciona a retirada do nome negativado?',
+    a: 'Por ação judicial, não por negociação com o credor. Abre-se o processo com pedido de tutela antecipada — que é o nome técnico da liminar. Tutela antecipada significa receber o resultado antes da sentença: em vez de esperar o fim do processo para o efeito valer, pede-se que ele valha desde já. A ação é ajuizada por advogado, e quem concede ou nega a liminar é o juiz. Vale o mesmo para a exclusão de Bacen. Já o destravamento do rating de crédito bancário é processo operacional, e não judicial.',
+  },
+  {
     id: 'apaga-divida',
     tema: 'geral',
     q: 'Vocês apagam a dívida do meu nome?',
-    a: 'Não. Dívida legítima não se apaga — se negocia. O que a Delamayer faz é encontrar o credor certo, negociar valor e prazo que caibam no seu orçamento e acompanhar até a baixa da restrição constar nos órgãos de proteção ao crédito. Quem promete apagar sem pagar está prometendo o que a lei não permite.',
+    a: 'Não. O que se discute é o registro da negativação, não o débito em si: a dívida continua existindo e continua sendo tratada dentro do processo. O que se pede ao juiz é a tutela antecipada — se concedida, a restrição sai enquanto a ação ainda corre. Quem promete fazer dívida desaparecer está prometendo o que a lei não permite.',
+  },
+  {
+    id: 'aumenta-score',
+    tema: 'rating',
+    q: 'Vocês aumentam o meu score do Serasa?',
+    a: 'Não, e ninguém aumenta: não existe contratar aumento de score. Quem calcula são Serasa e SPC, e o que mais pesa ali é o seu histórico de pagamento — contas em dia, em atraso ou antecipadas. O que se resolve aqui é outra coisa: a restrição registrada no seu nome, o rating de crédito bancário e o registro no Banco Central. Aliás, score alto com crédito negado é justamente o caso mais comum no atendimento.',
+  },
+  {
+    id: 'bacen',
+    tema: 'geral',
+    q: 'O que é a exclusão de Bacen?',
+    a: 'O Banco Central mantém o SCR, o Sistema de Informações de Crédito, onde as instituições registram as operações e o que está em atraso. Esse registro não aparece na consulta do Serasa, mas é lido por qualquer banco na análise — e explica boa parte das recusas de quem está com o nome limpo. Você mesmo pode ver o seu, de graça, no Registrato. A exclusão de Bacen trata desse registro e, como o limpa nome, corre pela via judicial, com pedido de liminar.',
   },
   {
     id: 'score-vs-rating',
     tema: 'rating',
     q: 'Meu score subiu, mas o banco negou o crédito. Como isso é possível?',
-    a: 'Porque são dois indicadores diferentes. O score é do birô de crédito e vale para o mercado inteiro; o rating é interno do banco, vai de A a F e mede o relacionamento que você tem com aquela instituição específica. Score alto com rating ruim é o caso mais comum de recusa inexplicada — e o mais frequente aqui no atendimento.',
+    a: 'Porque são dois indicadores diferentes, com donos diferentes. O score é calculado por Serasa e SPC e é o que as grandes varejistas olham; o rating de crédito bancário é interno do banco, vai de A a F e mede o relacionamento que você tem com aquela instituição específica. Dá para ter 800 pontos no Serasa e um F no banco onde você pediu o financiamento — e é o rating de crédito bancário que decide ali.',
   },
   {
     id: 'prazo',
     tema: 'geral',
     q: 'Quanto tempo leva para o meu nome ficar limpo?',
-    a: 'Depende de quantas pendências existem, de quem é o credor e de quanto tempo ele leva para comunicar a baixa. Depois do pagamento, o credor tem prazo legal para atualizar os órgãos, e o registro no Banco Central acompanha os ciclos do SCR. No diagnóstico você recebe o prazo estimado do seu caso — nunca uma promessa de data fechada.',
+    a: 'Depende do caso e do Judiciário. O pedido de liminar é apreciado pelo juiz, e o tempo dessa apreciação não é nosso. Depois da decisão, a baixa ainda percorre os ciclos de atualização dos órgãos de proteção ao crédito e do Banco Central. No diagnóstico você recebe a estimativa do seu caso — nunca uma promessa de data fechada.',
   },
   {
     id: 'consulta-paga',
     tema: 'geral',
     q: 'A consulta é paga?',
-    a: 'A consulta inicial é feita na conversa, sem custo. Você manda o CPF pelo WhatsApp e recebe a leitura do que está registrado. O que se contrata depois é o trabalho de negociação e acompanhamento, com valor combinado antes de qualquer coisa começar.',
+    a: 'A consulta inicial é feita na conversa, sem custo. Você manda o CPF pelo WhatsApp e recebe a leitura do que está registrado. O que se contrata depois é a condução do caso, com valor combinado antes de qualquer coisa começar.',
   },
   {
     id: 'presencial',
     tema: 'geral',
     q: 'Preciso ir até o escritório?',
-    a: 'Não. Todo o atendimento acontece por WhatsApp, do diagnóstico ao acompanhamento. O escritório fica no Stay Coworking, no Setor Oeste, e está aberto para quem prefere resolver pessoalmente.',
+    a: 'Não. Todo o atendimento acontece por WhatsApp, do diagnóstico ao acompanhamento. O escritório fica no Stay Coworking, no Setor Oeste, e recebe quem prefere resolver pessoalmente — mas somente com hora marcada, combinada antes pelo WhatsApp.',
   },
   {
     id: 'financiar-negativado',
     tema: 'imovel',
     q: 'Consigo financiar um imóvel com o nome negativado?',
-    a: 'Com restrição ativa, a análise de crédito do banco reprova na entrada. Regularizar é o primeiro passo — mas não é garantia automática de aprovação: o banco também olha renda comprovável, comprometimento e o rating interno. A preparação para financiamento existe justamente para você chegar ao banco com essas três coisas resolvidas.',
+    a: 'Com restrição ativa, a análise de crédito do banco reprova na entrada. Tirar a restrição do caminho é o primeiro passo — mas não é aprovação automática: o banco também olha renda comprovável, comprometimento e o rating de crédito bancário. A preparação para financiamento existe justamente para você chegar ao banco com essas três coisas resolvidas.',
   },
   {
     id: 'cnpj',
@@ -463,14 +564,16 @@ export const FAQ: FaqItem[] = [
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const KEYWORDS = [
-  'regularização de nome Goiânia',
-  'limpar nome Goiânia',
-  'assessoria de crédito Goiânia',
-  'rating bancário',
+  'limpa nome Goiânia',
+  'retirar nome do Serasa por liminar',
+  'ação judicial para limpar o nome',
+  'exclusão de Bacen',
+  'destravamento do rating de crédito bancário',
+  'rating de crédito bancário',
   'score de crédito',
-  'consulta de CPF',
+  'assessoria de crédito Goiânia',
+  'consulta de CPF Goiânia',
   'negativado Goiânia',
   'financiamento imobiliário com restrição',
   'Registrato Banco Central',
-  'renegociação de dívidas',
 ] as const

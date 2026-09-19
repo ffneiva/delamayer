@@ -145,18 +145,18 @@ export function diagnosticar(r: Respostas): Leitura {
         'Enquanto houver restrição ativa, a análise do banco para na primeira consulta — ' +
         'renda e relacionamento nem chegam a ser avaliados. É o que precisa sair da frente primeiro.',
       primeiroPasso:
-        'Levantar todas as pendências por credor e descobrir quais delas destravam mais crédito ' +
-        'por real pago. Nem sempre é a maior, e quase nunca é a mais antiga.',
+        'Levantar tudo o que está registrado no seu nome e separar o que se discute em juízo do ' +
+        'que se resolve fora dele. A via da retirada é judicial: processo com pedido de liminar.',
       servicos: ehPj
-        ? ['pj', 'diagnostico', 'regularizacao']
+        ? ['pj', 'diagnostico', 'limpa-nome']
         : querImovel
-          ? ['diagnostico', 'regularizacao', 'imobiliario']
-          : ['diagnostico', 'regularizacao', 'rating'],
+          ? ['diagnostico', 'limpa-nome', 'imobiliario']
+          : ['diagnostico', 'limpa-nome', 'rating'],
     }
   }
 
   // 2. O caso assinatura: score bom, sem negativação — e mesmo assim negado.
-  //    É aqui que o rating bancário aparece, e é o motivo de existir a página
+  //    É aqui que o rating de crédito bancário aparece, e é o motivo da página
   //    /rating. Note que `score: 'medio'` também entra: 400–700 é faixa em que
   //    o birô não reprova, mas o rating interno do banco pode reprovar.
   //    (chegar aqui já garante `negativado !== 'sim'` — o primeiro ramo tratou
@@ -168,7 +168,7 @@ export function diagnosticar(r: Respostas): Leitura {
       titulo: 'O score não é o que está te reprovando',
       leitura:
         'Nome sem restrição, score que não reprova e crédito negado assim mesmo: o padrão aponta ' +
-        'para o rating interno da instituição — a nota de A a F que cada banco calcula sobre o ' +
+        'para o rating de crédito bancário — a nota de A a F que cada banco calcula sobre o ' +
         'relacionamento que você tem com ele, e que não aparece em consulta nenhuma.',
       primeiroPasso:
         'Ler o que consta no Registrato do Banco Central e mapear como cada instituição enxerga ' +
@@ -185,12 +185,14 @@ export function diagnosticar(r: Respostas): Leitura {
       titulo: 'Provavelmente é informação desatualizada',
       leitura:
         'Sem dívida em aberto e sem restrição, a recusa costuma vir de registro que ficou para ' +
-        'trás: operação quitada que continua marcada no SCR do Banco Central, dado cadastral ' +
-        'antigo ou renda não comprovável no formato que o banco aceita.',
+        'trás: operação quitada que continua marcada no SCR do Banco Central — que o Serasa não ' +
+        'mostra e o banco lê —, dado cadastral antigo ou renda não comprovável no formato aceito.',
       primeiroPasso:
-        'Puxar o Registrato e comparar com o que você sabe ter quitado. A divergência aparece rápido ' +
-        'e a correção é pedida ao próprio credor.',
-      servicos: querImovel ? ['diagnostico', 'imobiliario', 'rating'] : ['diagnostico', 'rating'],
+        'Puxar o Registrato e comparar com o que você sabe ter quitado. A divergência aparece rápido, ' +
+        'e é ela que fundamenta o pedido de exclusão do registro no Banco Central.',
+      servicos: querImovel
+        ? ['diagnostico', 'bacen', 'imobiliario']
+        : ['diagnostico', 'bacen', 'rating'],
     }
   }
 
@@ -203,14 +205,15 @@ export function diagnosticar(r: Respostas): Leitura {
       titulo: 'Você está no melhor momento possível para agir',
       leitura:
         'Sem restrição e sem recusa recente, não há incêndio para apagar. O trabalho aqui é de ' +
-        'preparo: chegar ao pedido de crédito com o cadastro, o rating e a comprovação de renda ' +
+        'preparo: chegar ao pedido de crédito com o cadastro, o rating de crédito bancário e a ' +
+        'comprovação de renda ' +
         'no melhor estado que eles podem estar.',
       primeiroPasso:
         querImovel || r.objetivo === 'consorcio'
           ? 'Simular capacidade real de pagamento e definir o que precisa acontecer nos meses que ' +
             'antecedem a proposta — inclusive o que NÃO fazer, como abrir consultas desnecessárias.'
-          : 'Mapear o relacionamento com cada banco e a ordem em que mexer nos limites, para o rating ' +
-            'subir antes do pedido, e não depois da recusa.',
+          : 'Mapear o relacionamento com cada banco e a ordem em que mexer nos limites, para o ' +
+            'rating de crédito bancário subir antes do pedido, e não depois da recusa.',
       servicos:
         r.objetivo === 'consorcio'
           ? ['consorcio', 'diagnostico', 'rating']
@@ -232,9 +235,9 @@ export function diagnosticar(r: Respostas): Leitura {
       'Com o que você respondeu, dá para dizer que existe alguma coisa travando — mas não qual. ' +
       'Chutar aqui seria o mesmo que os sites que prometem resultado antes de olhar o caso.',
     primeiroPasso:
-      'A consulta sai na hora, pelo WhatsApp, e é ela que separa negativação de rating e de ' +
-      'cadastro desatualizado. Sem custo e sem compromisso.',
-    servicos: ehPj ? ['diagnostico', 'pj'] : ['diagnostico', 'regularizacao', 'rating'],
+      'A consulta sai na hora, pelo WhatsApp, e é ela que separa negativação de rating de ' +
+      'crédito bancário e de registro no Banco Central. Sem custo e sem compromisso.',
+    servicos: ehPj ? ['diagnostico', 'pj'] : ['diagnostico', 'limpa-nome', 'rating'],
   }
 }
 

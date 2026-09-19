@@ -25,6 +25,7 @@ import { Midia } from '@/sections/Midia'
 import { Numeros } from '@/sections/Numeros'
 import { ScoreRating } from '@/sections/ScoreRating'
 import { Servicos } from '@/sections/Servicos'
+import { Solucoes } from '@/sections/Solucoes'
 import { Transparencia } from '@/sections/Transparencia'
 
 /**
@@ -137,6 +138,7 @@ export default function App() {
         {isHome && (
           <main id="conteudo">
             {/* A ordem é um argumento, não uma lista.
+                  Solucoes — o que se faz aqui, com nome, antes de qualquer história
                   Numeros  — "não é só você": o problema é de metade do país
                   Midia    — autoridade, cedo: o tema virou pauta em TV aberta
                   Manifesto— por que o "não" do banco nunca vem explicado
@@ -144,6 +146,7 @@ export default function App() {
                   Metodo   — como se resolve, em ordem
                   Diagnostico — a primeira ação possível, ainda na página */}
             <Hero ready={pronto} />
+            <Solucoes />
             <Numeros />
             <Midia />
             <Manifesto />

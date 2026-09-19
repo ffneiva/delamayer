@@ -34,7 +34,7 @@ export function TabelaComparativa({ className }: { className?: string }) {
     <div className={cn('card overflow-hidden', className)}>
       <table className="w-full text-left text-sm max-md:block">
         <caption className="sr-only">
-          Comparação entre o score de crédito e o rating bancário
+          Comparação entre o score de crédito e o rating de crédito bancário
         </caption>
 
         {/* O cabeçalho não faz sentido empilhado: no celular cada célula leva o
@@ -48,8 +48,15 @@ export function TabelaComparativa({ className }: { className?: string }) {
             <th scope="col" className="px-5 py-4 font-display text-base text-plat-100">
               Score
             </th>
+            {/* O nome completo em duas linhas, e não numa só: a coluna é
+                estreita, e uma linha de 26 caracteres empurraria a largura
+                mínima da tabela para além do card — que é exatamente o bug
+                que o teste de transbordo pegou da última vez. */}
             <th scope="col" className="px-5 py-4 font-display text-base text-gold-200">
               Rating
+              <span className="block font-mono text-[0.6rem] tracking-[0.14em] text-gold-500/80 uppercase">
+                de crédito bancário
+              </span>
             </th>
           </tr>
         </thead>
@@ -73,7 +80,9 @@ export function TabelaComparativa({ className }: { className?: string }) {
               </td>
 
               <td className="px-5 py-4 align-top text-gold-100/90 max-md:block max-md:px-0 max-md:pt-3 max-md:pb-0">
-                <span className="label-mono mb-1 hidden max-md:block">Rating</span>
+                <span className="label-mono mb-1 hidden max-md:block">
+                  Rating de crédito bancário
+                </span>
                 {linha.rating}
               </td>
             </tr>

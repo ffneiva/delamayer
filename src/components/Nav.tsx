@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useState } from 'react'
 import { registrarConversaoWhatsApp } from '@/lib/analytics'
-import { BUSINESS } from '@/lib/business'
+import { BUSINESS, SERVICOS_NUCLEO } from '@/lib/business'
 import { linkWhatsApp } from '@/lib/diagnostico'
 import { estadoAtual } from '@/lib/hours'
 import { ROUTES } from '@/lib/routes'
@@ -21,13 +21,28 @@ import { Magnetic } from './Magnetic'
  * é mais barata e não depende de a biblioteca ter carregado.
  */
 
+/**
+ * Os três serviços que a empresa executa, na barra do topo.
+ *
+ * Eles vêm antes de qualquer outra coisa no menu porque é essa a pergunta que
+ * quem chega faz primeiro — "o que vocês fazem?" — e a resposta não pode
+ * depender de rolar a página. O rótulo curto é o que cabe na barra; o nome
+ * inteiro aparece no menu completo, logo abaixo dele.
+ */
+const NUCLEO = SERVICOS_NUCLEO.map((servico) => ({
+  id: `servico-${servico.id}`,
+  rotulo: servico.curto ?? servico.name,
+  /** Só aparece quando difere do rótulo — repetir a mesma frase seria ruído. */
+  detalhe: servico.curto && servico.curto !== servico.name ? servico.name : undefined,
+}))
+
 const SECOES = [
-  { id: 'diagnostico-cta', rotulo: 'Diagnóstico' },
-  { id: 'score-rating', rotulo: 'Score × Rating' },
-  { id: 'metodo', rotulo: 'Método' },
-  { id: 'servicos', rotulo: 'Serviços' },
-  { id: 'transparencia', rotulo: 'O que não fazemos' },
-  { id: 'contato', rotulo: 'Contato' },
+  ...NUCLEO,
+  { id: 'metodo', rotulo: 'Como funciona', detalhe: undefined },
+  { id: 'score-rating', rotulo: 'Score × Rating', detalhe: undefined },
+  { id: 'diagnostico-cta', rotulo: 'Diagnóstico', detalhe: undefined },
+  { id: 'transparencia', rotulo: 'O que não fazemos', detalhe: undefined },
+  { id: 'contato', rotulo: 'Contato', detalhe: undefined },
 ]
 
 type Props = {
@@ -140,34 +155,34 @@ export function Nav({ onSection, onNavigate, path }: Props) {
             <Logo className="text-[1.05rem] md:text-[1.15rem]" />
           </a>
 
-          <nav aria-label="Principal" className="hidden items-center gap-8 lg:flex">
-            {ROUTES.filter((r) => r.path !== '/' && r.path !== '/politica-de-privacidade').map(
-              (rota) => (
-                <a
-                  key={rota.path}
-                  href={rota.path}
-                  onClick={(e) => {
-                    e.preventDefault()
-                    irParaRota(rota.path)
-                  }}
-                  className={cn(
-                    'group relative py-1 text-sm transition-colors duration-300',
-                    path === rota.path ? 'text-gold-200' : 'text-plat-300 hover:text-plat-50',
-                  )}
-                >
-                  {rota.label}
-                  {/* Sublinhado que cresce do centro. `scaleX` no compositor,
-                      e não `width`, que forçaria layout no hover. */}
-                  <span
-                    aria-hidden
-                    className={cn(
-                      'absolute -bottom-0.5 left-0 h-px w-full origin-center bg-gold-400 transition-transform duration-500 ease-[var(--ease-vault)]',
-                      path === rota.path ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100',
-                    )}
-                  />
-                </a>
-              ),
-            )}
+          {/* A barra carrega os serviços, não as rotas. As páginas continuam
+              acessíveis no menu completo e no rodapé — mas o espaço nobre vai
+              para o que a empresa faz, que é o que o visitante veio saber.
+
+              São âncoras de verdade (`/#id`) e não botões: assim funcionam com
+              clique do meio, com "abrir em nova aba" e para o robô, que segue
+              o href. O `preventDefault` só troca o salto seco pela rolagem. */}
+          <nav aria-label="Serviços" className="hidden items-center gap-7 lg:flex">
+            {NUCLEO.map((servico) => (
+              <a
+                key={servico.id}
+                href={`/#${servico.id}`}
+                title={servico.detalhe}
+                onClick={(e) => {
+                  e.preventDefault()
+                  onSection(servico.id)
+                }}
+                className="group relative py-1 text-sm text-plat-300 transition-colors duration-300 hover:text-plat-50"
+              >
+                {servico.rotulo}
+                {/* Sublinhado que cresce do centro. `scaleX` no compositor,
+                    e não `width`, que forçaria layout no hover. */}
+                <span
+                  aria-hidden
+                  className="absolute -bottom-0.5 left-0 h-px w-full origin-center scale-x-0 bg-gold-400 transition-transform duration-500 ease-[var(--ease-vault)] group-hover:scale-x-100"
+                />
+              </a>
+            ))}
           </nav>
 
           <div className="flex items-center gap-3">
@@ -254,15 +269,48 @@ export function Nav({ onSection, onNavigate, path }: Props) {
                         type="button"
                         onClick={() => irParaSecao(secao.id)}
                         data-cursor="Ir"
-                        className="group flex w-full items-baseline gap-5 py-2.5 text-left md:gap-8"
+                        className="group flex w-full items-baseline gap-5 py-2 text-left md:gap-8"
                       >
                         <span className="font-mono text-[0.7rem] text-gold-700 tabular-nums">
                           {String(i + 1).padStart(2, '0')}
                         </span>
-                        <span className="font-display text-[clamp(1.9rem,7vw,4rem)] leading-[1.05] font-semibold text-plat-300 transition-colors duration-400 group-hover:text-gold-100">
-                          {secao.rotulo}
+                        <span className="flex-1">
+                          <span className="block font-display text-[clamp(1.6rem,5.6vw,3.1rem)] leading-[1.05] font-semibold text-plat-300 transition-colors duration-400 group-hover:text-gold-100">
+                            {secao.rotulo}
+                          </span>
+                          {secao.detalhe ? (
+                            <span className="mt-1 block text-[0.8rem] text-plat-500">
+                              {secao.detalhe}
+                            </span>
+                          ) : null}
                         </span>
                       </button>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+
+              {/* As páginas saíram da barra do topo e moram aqui — continuam a
+                  um clique, e continuam sendo links que o robô segue. */}
+              <nav aria-label="Páginas" className="mt-8 border-t border-edge pt-6">
+                <ul className="flex flex-wrap gap-x-7 gap-y-3">
+                  {ROUTES.filter((r) => r.path !== '/').map((rota) => (
+                    <li key={rota.path}>
+                      <a
+                        href={rota.path}
+                        onClick={(e) => {
+                          e.preventDefault()
+                          irParaRota(rota.path)
+                        }}
+                        className={cn(
+                          'text-sm transition-colors duration-300',
+                          path === rota.path
+                            ? 'text-gold-200'
+                            : 'text-plat-400 hover:text-gold-200',
+                        )}
+                      >
+                        {rota.label}
+                      </a>
                     </li>
                   ))}
                 </ul>

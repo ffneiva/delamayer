@@ -2,6 +2,7 @@ import { BotaoWhatsApp, ButtonLink } from '@/components/Button'
 import { Cena3D } from '@/components/Cena3D'
 import { Magnetic } from '@/components/Magnetic'
 import { useReducedMotion } from '@/hooks/useMediaQuery'
+import { scrollToSection } from '@/hooks/useSmoothScroll'
 import { BUSINESS } from '@/lib/business'
 import { linkWhatsApp } from '@/lib/diagnostico'
 import { cn } from '@/lib/utils'
@@ -30,7 +31,7 @@ import { cn } from '@/lib/utils'
  * WebGL não existir, se o aparelho pedir movimento reduzido, o que fica na tela
  * é exatamente a mesma dobra, sem o enfeite.
  */
-const LINHAS = ['Do CPF travado', 'à chave do', 'apartamento.']
+const LINHAS = ['Do CPF negativado', 'ao financiamento', 'aprovado.']
 
 export function Hero({ ready }: { ready: boolean }) {
   const reduzido = useReducedMotion()
@@ -53,7 +54,7 @@ export function Hero({ ready }: { ready: boolean }) {
           {BUSINESS.address.city} · {BUSINESS.address.state}
         </p>
 
-        <h1 className="max-w-[16ch] font-display text-[clamp(2.6rem,8.2vw,6.2rem)] leading-[0.98] font-semibold">
+        <h1 className="max-w-[16ch] font-display text-[clamp(2.35rem,8.2vw,6.2rem)] leading-[0.98] font-semibold">
           {LINHAS.map((linha, i) => (
             <span
               key={linha}
@@ -76,8 +77,13 @@ export function Hero({ ready }: { ready: boolean }) {
         />
 
         <p data-hero-fade className="max-w-lg text-[1.02rem] leading-relaxed text-plat-300 lg:mt-8">
-          Regularizar o nome é o meio, não o fim. A gente lê o que trava o seu crédito, negocia com
-          quem pode dar baixa e acompanha até a consulta mostrar o combinado.
+          Três frentes: <strong className="font-normal text-plat-100">limpa nome</strong>, que sai
+          por ação judicial com pedido de liminar;{' '}
+          <strong className="font-normal text-plat-100">
+            destravamento do rating de crédito bancário
+          </strong>
+          ; e <strong className="font-normal text-plat-100">exclusão de Bacen</strong>, o registro
+          que o Serasa não mostra e o banco lê.
         </p>
 
         <div data-hero-fade className="mt-10 flex flex-wrap items-center gap-4">
@@ -100,14 +106,20 @@ export function Hero({ ready }: { ready: boolean }) {
         {/* Prova social honesta: não há avaliação pública nem depoimento
             verificável, então o que se exibe é o que existe — a matéria em TV
             aberta. Inventar "+500 clientes" seria o começo da ladeira. */}
+        {/* O destino é a seção do vídeo, logo abaixo — não a página /rating.
+            Por ser rolagem dentro da mesma página, o controle certo é um botão:
+            um link que não leva a lugar nenhum mente para o leitor de tela e
+            para quem abre em nova aba. */}
         <p data-hero-fade className="mt-9 max-w-md text-sm text-plat-500">
           O tema virou pauta na TV Serra Dourada, afiliada do SBT em Goiás.{' '}
-          <a
-            href="/rating"
-            className="text-plat-300 underline decoration-gold-800 underline-offset-4 transition-colors hover:text-gold-200"
+          <button
+            type="button"
+            onClick={() => scrollToSection('midia')}
+            data-cursor="Ver"
+            className="text-left text-plat-300 underline decoration-gold-800 underline-offset-4 transition-colors hover:text-gold-200"
           >
-            Entenda por que score e rating discordam
-          </a>
+            Assista à matéria
+          </button>
           .
         </p>
       </div>

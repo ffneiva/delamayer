@@ -24,7 +24,7 @@ const CAUSAS = [
   {
     titulo: 'Você é cliente novo naquele banco',
     texto:
-      'Rating mede relacionamento, e relacionamento leva tempo. Um cliente sem histórico não é um cliente ruim — é um cliente desconhecido, e a análise trata os dois quase igual.',
+      'O rating de crédito bancário mede relacionamento, e relacionamento leva tempo. Um cliente sem histórico não é um cliente ruim — é um cliente desconhecido, e a análise trata os dois quase igual.',
   },
   {
     titulo: 'A conta existe, mas está parada',
@@ -34,12 +34,12 @@ const CAUSAS = [
   {
     titulo: 'Uso do limite perto do teto, todo mês',
     texto:
-      'Pagar em dia mantém o score. Mas viver no limite do cheque especial ou do cartão sinaliza aperto de caixa, e é isso que o rating mede: não se você paga, mas com quanta folga.',
+      'Pagar em dia mantém o score. Mas viver no limite do cheque especial ou do cartão sinaliza aperto de caixa, e é isso que o rating de crédito bancário mede: não se você paga, mas com quanta folga.',
   },
   {
     titulo: 'Operação antiga marcada no SCR',
     texto:
-      'Uma dívida quitada que o credor não atualizou continua aparecendo no Sistema de Informações de Créditos do Banco Central. Ela não afeta o score do birô, mas o banco a enxerga na análise.',
+      'Uma dívida quitada que o credor não atualizou continua aparecendo no Sistema de Informações de Créditos do Banco Central. Ela não aparece na consulta do Serasa, mas o banco a enxerga na análise.',
   },
   {
     titulo: 'Consultas demais ao seu CPF',
@@ -65,9 +65,10 @@ export function Rating({ onNavigate }: { onNavigate: (path: string) => void }) {
         onNavigate={onNavigate}
       >
         <p>
-          Existem dois indicadores medindo você, e eles não conversam. Um é público, vai de 0 a
-          1.000 e você consulta de graça. O outro é interno do banco, vai de A a F e não aparece em
-          lugar nenhum. Quando os dois discordam, quem decide é o segundo.
+          Existem dois indicadores medindo você, e eles não conversam. O score é calculado por
+          Serasa e SPC, vai de 0 a 1.000 e você consulta de graça. O rating de crédito bancário é
+          interno do banco, vai de A a F e não aparece em lugar nenhum. Quando os dois discordam,
+          quem decide é o segundo.
         </p>
       </PageHero>
 
@@ -130,7 +131,7 @@ export function Rating({ onNavigate }: { onNavigate: (path: string) => void }) {
               Seis causas comuns
             </p>
             <h2 className="max-w-3xl font-display text-[clamp(1.8rem,4vw,2.8rem)] leading-tight text-plat-50">
-              Por que um rating fica baixo mesmo sem nenhuma dívida
+              Por que o rating de crédito bancário fica baixo mesmo sem nenhuma dívida
             </h2>
           </Reveal>
 
@@ -165,7 +166,7 @@ export function Rating({ onNavigate }: { onNavigate: (path: string) => void }) {
       <Faq
         itens={perguntas}
         etiqueta="Dúvidas"
-        titulo="Sobre rating,"
+        titulo="Sobre o rating de crédito bancário,"
         complemento="especificamente."
       />
 
@@ -179,13 +180,13 @@ export function Rating({ onNavigate }: { onNavigate: (path: string) => void }) {
               </h2>
               <p className="mx-auto mt-5 max-w-xl text-[0.98rem] leading-relaxed text-plat-400">
                 A leitura do Registrato e do seu histórico separa em minutos o que é negativação, o
-                que é rating e o que é cadastro desatualizado.
+                que é rating de crédito bancário e o que é cadastro desatualizado.
               </p>
 
               <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
                 <BotaoWhatsApp
                   href={linkWhatsApp(
-                    `Olá! Li a página sobre score e rating no site da ${BUSINESS.shortName}. Meu crédito foi negado e quero entender o motivo.`,
+                    `Olá! Li a página sobre score e rating de crédito bancário no site da ${BUSINESS.shortName}. Meu crédito foi negado e quero entender o motivo.`,
                   )}
                   origem="rating"
                 >

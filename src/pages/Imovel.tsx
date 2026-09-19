@@ -63,9 +63,9 @@ export function Imovel({ onNavigate }: { onNavigate: (path: string) => void }) {
       >
         <p>
           Regularizar o CPF tira o obstáculo eliminatório do caminho — e só isso. Depois dele vêm
-          renda comprovável, comprometimento, rating e a documentação do imóvel. Chegar ao banco com
-          os cinco resolvidos é a diferença entre uma proposta aprovada e uma recusa que fica
-          registrada.
+          renda comprovável, comprometimento, rating de crédito bancário e a documentação do imóvel.
+          Chegar ao banco com os cinco resolvidos é a diferença entre uma proposta aprovada e uma
+          recusa que fica registrada.
         </p>
       </PageHero>
 
@@ -131,7 +131,7 @@ export function Imovel({ onNavigate }: { onNavigate: (path: string) => void }) {
                       d: 'Tira do caminho o item eliminatório e acompanha até a baixa constar.',
                     },
                     {
-                      t: 'Leitura do rating',
+                      t: 'Leitura do rating de crédito bancário',
                       d: 'Mostra em qual instituição a sua análise tende a ir melhor — e por quê.',
                     },
                     {

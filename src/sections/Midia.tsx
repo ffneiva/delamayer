@@ -20,7 +20,7 @@ export function Midia() {
   const [tocando, setTocando] = useState(false)
 
   return (
-    <section className="py-24 md:py-32">
+    <section id="midia" className="scroll-mt-24 py-24 md:py-32">
       <div className="container-x">
         <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:gap-16">
           <Reveal>

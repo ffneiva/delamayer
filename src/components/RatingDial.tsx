@@ -135,7 +135,7 @@ export function RatingDial({ className }: { className?: string }) {
         viewBox="0 0 256 150"
         className="w-full"
         role="img"
-        aria-label={`Escala de rating bancário, de A a F. Posição em destaque: ${atual.letra}, ${atual.rotulo}.`}
+        aria-label={`Escala de rating de crédito bancário, de A a F. Posição em destaque: ${atual.letra}, ${atual.rotulo}.`}
       >
         <defs>
           <linearGradient id="dial-ouro" x1="0" y1="0" x2="1" y2="0">

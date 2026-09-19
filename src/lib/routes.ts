@@ -40,27 +40,27 @@ export const ROUTES: Route[] = [
   {
     path: '/',
     label: 'Início',
-    title: 'Delamayer · Regularização de nome e rating bancário em Goiânia',
+    title: 'Limpa nome, rating de crédito bancário e Bacen em Goiânia · Delamayer',
     description:
-      'Assessoria de crédito em Goiânia. Diagnóstico do seu CPF na hora, regularização direta com o credor e leitura do rating bancário — o índice que o banco usa e não aparece no score. Fale pelo WhatsApp.',
-    ogLinhas: ['Do CPF travado', 'à chave do apartamento.'],
-    ogNota: 'Diagnóstico · Regularização direta · Rating bancário',
+      'Limpa nome por ação judicial com pedido de liminar, destravamento do rating de crédito bancário e exclusão de registro no Banco Central. Assessoria de crédito em Goiânia, com consulta do CPF na hora pelo WhatsApp.',
+    ogLinhas: ['Do CPF negativado', 'ao financiamento aprovado.'],
+    ogNota: 'Limpa nome · Rating bancário · Exclusão de Bacen',
   },
   {
     path: '/diagnostico',
     label: 'Diagnóstico',
     title: 'Diagnóstico de crédito grátis · Delamayer, Goiânia',
     description:
-      'Responda cinco perguntas e descubra onde o seu crédito está travado: negativação, rating bancário ou cadastro desatualizado. O resultado vira uma mensagem pronta no WhatsApp da Delamayer.',
+      'Responda cinco perguntas e descubra onde o seu crédito está travado: negativação, rating de crédito bancário ou registro no Banco Central. O resultado vira uma mensagem pronta no WhatsApp da Delamayer.',
     ogLinhas: ['Cinco perguntas', 'e uma leitura honesta.'],
     ogNota: 'Roda no seu navegador · Sem cadastro · Sem servidor',
   },
   {
     path: '/rating',
     label: 'Score × Rating',
-    title: 'Score alto e crédito negado? A diferença entre score e rating bancário',
+    title: 'Score alto e crédito negado? O rating de crédito bancário explica',
     description:
-      'Score é do birô e vale para o mercado inteiro; rating é interno do banco, vai de A a F e mede só o seu relacionamento com ele. Entenda por que os dois discordam — e o que fazer quando isso trava o seu crédito.',
+      'O score é calculado por Serasa e SPC; o rating de crédito bancário é interno do banco, vai de A a F e mede só o seu relacionamento com ele. Entenda por que os dois discordam — e o que fazer quando isso trava o seu crédito.',
     ogLinhas: ['Score alto,', 'crédito negado.'],
     ogNota: 'O índice que o banco usa e não aparece em consulta',
   },
@@ -69,7 +69,7 @@ export const ROUTES: Route[] = [
     label: 'Imóvel',
     title: 'Financiamento imobiliário com o nome negativado · Delamayer Goiânia',
     description:
-      'Regularizar o CPF é o primeiro passo para financiar um imóvel — não o último. Veja o que o banco analisa além do nome limpo e como chegar à proposta com renda, entrada e rating já resolvidos.',
+      'Tirar a restrição do CPF é o primeiro passo para financiar um imóvel — não o último. Veja o que o banco analisa além do nome limpo e como chegar à proposta com renda, entrada e rating já resolvidos.',
     ogLinhas: ['Nome limpo é o', 'primeiro passo.'],
     ogNota: 'O que o banco analisa além da restrição',
   },

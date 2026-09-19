@@ -31,8 +31,8 @@ export function Footer({ onNavigate, onSection }: Props) {
           <div>
             <Logo className="text-[1.3rem]" comAssinatura />
             <p className="mt-6 max-w-xs text-sm leading-relaxed text-plat-400">
-              Assessoria de crédito em {BUSINESS.address.city}. Diagnóstico, regularização direta e
-              leitura de rating bancário.
+              Assessoria de crédito em {BUSINESS.address.city}. Limpa nome e exclusão de Bacen por
+              via judicial, e destravamento do rating de crédito bancário.
             </p>
 
             <a
@@ -92,6 +92,7 @@ export function Footer({ onNavigate, onSection }: Props) {
                 {BUSINESS.address.district} · {BUSINESS.address.city}/{BUSINESS.address.state}
               </p>
               <p>CEP {BUSINESS.address.zip}</p>
+              <p className="pt-2 text-plat-500">{BUSINESS.agendamento}.</p>
             </address>
 
             <dl className="mt-5 space-y-1 text-sm text-plat-400">
@@ -117,12 +118,17 @@ export function Footer({ onNavigate, onSection }: Props) {
         <div className="mt-14 border-t border-edge pt-8">
           <p className="max-w-4xl text-xs leading-relaxed text-plat-600">
             <strong className="font-medium text-plat-500">Transparência.</strong> A {BUSINESS.name}{' '}
-            presta assessoria e intermediação de negociação de dívidas. Não somos instituição
-            financeira, não concedemos crédito e não removemos registros legítimos dos órgãos de
-            proteção ao crédito — a baixa de uma restrição é feita pelo credor, após o acordo, nos
-            prazos previstos em lei. Resultados variam conforme o caso e nenhuma aprovação de
-            crédito é garantida. A consulta ao Serasa e o Registrato do Banco Central são gratuitos
-            e podem ser feitos por você mesmo.
+            presta assessoria de crédito. Não somos instituição financeira e não concedemos crédito.
+            A retirada de negativação e a exclusão de registro no Banco Central se dão pela via
+            judicial: a ação é ajuizada por advogado, com pedido de tutela antecipada, e a concessão
+            ou não da liminar é decisão exclusiva do juiz — não há como prometer resultado nem
+            prazo. O destravamento do rating de crédito bancário é processo operacional, não
+            judicial. A dívida em si não é apagada; o que se discute é o registro. Também não
+            aumentamos score de crédito, o que não é possível a ninguém: o score responde ao
+            histórico de pagamento do titular. Resultados variam conforme o caso e nenhuma aprovação
+            de crédito é garantida. A consulta ao Serasa e o Registrato do Banco Central são
+            gratuitos e podem ser feitos por você mesmo. Atendimento presencial somente com hora
+            marcada.
           </p>
 
           <div className="mt-6 flex flex-wrap items-center justify-between gap-4 text-xs text-plat-600">

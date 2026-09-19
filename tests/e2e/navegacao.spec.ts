@@ -17,7 +17,11 @@ const ROTAS = [
     titulo: /Diagnóstico/,
     canonical: 'https://delamayer.com.br/diagnostico',
   },
-  { caminho: '/rating/', titulo: /rating banc/i, canonical: 'https://delamayer.com.br/rating' },
+  {
+    caminho: '/rating/',
+    titulo: /rating de crédito banc/i,
+    canonical: 'https://delamayer.com.br/rating',
+  },
   { caminho: '/imovel/', titulo: /Financiamento/, canonical: 'https://delamayer.com.br/imovel' },
 ]
 
@@ -140,7 +144,7 @@ test.describe('navegação no cliente', () => {
 
     await page.getByRole('link', { name: 'Score × Rating', exact: true }).first().click()
 
-    await expect(page).toHaveTitle(/rating banc/i)
+    await expect(page).toHaveTitle(/rating de crédito banc/i)
     await expect(page).toHaveURL(/\/rating$/)
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
       'href',

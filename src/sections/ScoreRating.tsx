@@ -22,12 +22,13 @@ export function ScoreRating() {
       <div className="container-x">
         <SectionHeading
           etiqueta="O diferencial"
-          titulo="Score alto e crédito negado"
-          complemento="não é contradição."
+          titulo="Não é o score que trava o financiamento."
+          complemento="É o rating de crédito bancário."
         >
           <p>
-            São dois indicadores, com donos diferentes. Dá para ter 800 pontos no Serasa e um "D" no
-            banco onde você pediu o financiamento.
+            São dois indicadores, com donos diferentes. Dá para ter 800 pontos no Serasa e um "F" de
+            rating de crédito bancário no banco onde você pediu o financiamento — e é o segundo que
+            decide.
           </p>
         </SectionHeading>
 
@@ -38,7 +39,7 @@ export function ScoreRating() {
 
           <div>
             <Reveal delay={0.1}>
-              <p className="label-mono mb-8 text-center">A escala que o banco usa</p>
+              <p className="label-mono mb-8 text-center">A escala do rating de crédito bancário</p>
             </Reveal>
 
             <RatingDial />
