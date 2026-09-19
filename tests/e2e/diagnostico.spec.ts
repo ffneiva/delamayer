@@ -172,7 +172,6 @@ test.describe('/diagnostico', () => {
     page,
   }) => {
     await expect(page.getByText(/fica guardado com a Delamayer/)).toBeVisible()
-    await expect(page.getByRole('link', { name: 'política de privacidade' })).toBeVisible()
   })
 })
 

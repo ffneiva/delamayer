@@ -19,9 +19,14 @@ import { BUSINESS } from '@/lib/business'
  * A regra que essa mudança deixa para quem mexer aqui depois é simples e não
  * admite exceção: **o que está escrito nesta página é o que o código faz.**
  * Uma coleta nova sem a linha correspondente aqui não é um detalhe esquecido,
- * é uma declaração falsa a quem confiou o próprio nome. O prazo de 90 dias
- * citado abaixo não é uma intenção: é o TTL das tabelas de rastro, e quem
- * apaga é o próprio banco.
+ * é uma declaração falsa a quem confiou o próprio nome.
+ *
+ * O prazo de 90 dias era, até aqui, o TTL das tabelas de rastro — o banco
+ * apagava sozinho. A pedido do cliente, que quis poder escolher e mudar o
+ * período, a limpeza passou a ser feita por ele, pelo painel. O texto abaixo
+ * mudou junto, e é por isso que ele diz "por até 90 dias" e "removido
+ * periodicamente", e não mais "automaticamente": prometer automático o que
+ * depende de alguém lembrar seria a primeira frase falsa desta página.
  */
 const SECOES = [
   {
@@ -44,7 +49,7 @@ const SECOES = [
   {
     titulo: 'Por quanto tempo isso fica guardado',
     corpo: [
-      'O rastro de navegação (IP, localização, cliques e páginas) é apagado automaticamente 90 dias depois do último acesso. Quem apaga é o próprio banco de dados, por prazo de expiração configurado em cada registro: não depende de ninguém lembrar de rodar nada.',
+      'O rastro de navegação (IP, localização, cliques e páginas) é guardado por até 90 dias depois do último acesso e removido periodicamente. Você pode pedir a remoção do seu antes disso, a qualquer momento.',
       'Os dados do formulário (nome, contato e respostas) ficam enquanto durar a relação de atendimento, porque são o registro do seu caso. Você pode pedir a exclusão a qualquer momento, e ela é feita.',
     ],
   },

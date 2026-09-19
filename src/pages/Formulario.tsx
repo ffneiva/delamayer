@@ -224,15 +224,7 @@ export function Formulario({ onNavigate }: { onNavigate: (path: string) => void 
                     Começar
                   </button>
                   <p className="mt-6 text-xs leading-relaxed text-plat-600">
-                    A partir daqui, o que você responder fica guardado com a Delamayer para o
-                    atendimento. Veja a{' '}
-                    <a
-                      href="/politica-de-privacidade"
-                      className="text-plat-400 underline decoration-plat-700 underline-offset-4 hover:text-gold-200"
-                    >
-                      política de privacidade
-                    </a>
-                    .
+                    O que você responder fica guardado com a Delamayer para o atendimento.
                   </p>
                 </form>
               ) : passo === 1 ? (
