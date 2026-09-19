@@ -1,4 +1,11 @@
-import { Fragment, type ReactNode, useEffect, useRef, useState } from 'react'
+import {
+  Fragment,
+  type PointerEventHandler,
+  type ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { useReducedMotion } from '@/hooks/useMediaQuery'
 import { cn } from '@/lib/utils'
 
@@ -59,9 +66,29 @@ type Props = {
   /** Deslocamento inicial em pixels. */
   y?: number
   as?: 'div' | 'section' | 'li' | 'article' | 'header' | 'footer'
+  /** Âncora de rolagem — é por ela que o menu do topo aponta para um cartão. */
+  id?: string
+  /**
+   * Os dois manipuladores que `useBrilho()` devolve.
+   *
+   * Precisam estar declarados: espalhar `{...brilho}` num componente que não os
+   * recebe é um erro que o TypeScript não pega em JSX e que não quebra nada —
+   * o cartão simplesmente nunca acende, e ninguém descobre por quê.
+   */
+  onPointerMove?: PointerEventHandler<HTMLElement>
+  onPointerLeave?: PointerEventHandler<HTMLElement>
 }
 
-export function Reveal({ children, className, delay = 0, y = 26, as: Tag = 'div' }: Props) {
+export function Reveal({
+  children,
+  className,
+  delay = 0,
+  y = 26,
+  as: Tag = 'div',
+  id,
+  onPointerMove,
+  onPointerLeave,
+}: Props) {
   const reduzido = useReducedMotion()
   const { ref, visivel } = useEntrou(reduzido)
 
@@ -69,6 +96,9 @@ export function Reveal({ children, className, delay = 0, y = 26, as: Tag = 'div'
     <Tag
       // @ts-expect-error — a união de tags não estreita o tipo da ref, mas todas são HTMLElement
       ref={ref}
+      id={id}
+      onPointerMove={onPointerMove}
+      onPointerLeave={onPointerLeave}
       className={cn('motion-safe:transition-[opacity,transform]', className)}
       style={
         reduzido
