@@ -565,7 +565,7 @@ export const FAQ: FaqItem[] = [
     id: 'dados',
     tema: 'geral',
     q: 'O que acontece com os meus dados?',
-    a: 'Ficam entre você e a Delamayer, usados só para o atendimento que você contratou, conforme a LGPD. Este site não guarda o que você digita: o formulário de diagnóstico monta a mensagem no seu próprio navegador e abre o WhatsApp, e nada é enviado para servidor nenhum.',
+    a: 'Ficam entre você e a Delamayer, usados só para entrar em contato e atender o seu caso, conforme a LGPD. Nada é vendido nem cedido para publicidade. O que você responde no formulário é salvo a cada passo, para a conversa não se perder se você parar no meio, e o registro de navegação é apagado automaticamente em 90 dias. Você pode pedir a exclusão quando quiser, e ela é feita.',
   },
 ]
 

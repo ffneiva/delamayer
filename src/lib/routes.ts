@@ -53,7 +53,16 @@ export const ROUTES: Route[] = [
     description:
       'Responda cinco perguntas e descubra onde o seu crédito está travado: negativação, rating de crédito bancário ou registro no Banco Central. O resultado vira uma mensagem pronta no WhatsApp da Delamayer.',
     ogLinhas: ['Cinco perguntas', 'e uma leitura honesta.'],
-    ogNota: 'Roda no seu navegador · Sem cadastro · Sem servidor',
+    ogNota: 'Cinco perguntas · Sem custo · Resposta na hora',
+  },
+  {
+    path: '/formulario',
+    label: 'Formulário',
+    title: 'Fale com um consultor · Delamayer Soluções Financeiras',
+    description:
+      'Quatro perguntas rápidas — nome, se está limpo, se está negativado e o que quer financiar — e um consultor retorna. São as mesmas perguntas do atendimento, respondidas antes da conversa começar.',
+    ogLinhas: ['Quatro perguntas.', 'E um consultor te chama.'],
+    ogNota: 'As mesmas perguntas do atendimento, adiantadas',
   },
   {
     path: '/rating',
@@ -78,7 +87,7 @@ export const ROUTES: Route[] = [
     label: 'Privacidade',
     title: 'Política de privacidade · Delamayer Soluções Financeiras',
     description:
-      'Como a Delamayer trata dados neste site: o que é coletado, o que nunca sai do seu navegador, quais serviços de terceiros são acionados e como exercer seus direitos pela LGPD.',
+      'Como a Delamayer trata dados neste site: o que é coletado no formulário, o que é registrado sobre a navegação, por quanto tempo fica guardado e como exercer seus direitos pela LGPD.',
   },
 ]
 

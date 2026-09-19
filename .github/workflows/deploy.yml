@@ -216,11 +216,11 @@ jobs:
       - name: 🔎 Conferir o HTML de cada rota
         run: |
           falhou=0
-          for rota in diagnostico rating imovel; do
+          for rota in diagnostico formulario rating imovel; do
             TITULO=$(curl -s --max-time 20 "$SITE_URL/$rota" | grep -o '<title>[^<]*</title>' || echo "")
             echo "  /$rota → $TITULO"
             case "$TITULO" in
-              *Diagn*|*rating*|*Rating*|*Financiamento*) ;;
+              *Diagn*|*consultor*|*rating*|*Rating*|*Financiamento*) ;;
               *) echo "::error::/$rota não está servindo o HTML próprio da rota"; falhou=1 ;;
             esac
           done

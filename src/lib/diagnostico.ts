@@ -277,14 +277,21 @@ const RESUMO: Record<keyof Respostas, Record<string, string>> = {
  * A mensagem é escrita na primeira pessoa do visitante de propósito: quem
  * recebe precisa ler um relato, não um relatório de formulário. E ela cabe na
  * prévia do WhatsApp sem cortar — daí o limite de linhas.
+ *
+ * O nome entra; o e-mail não. Quem atende vai responder ali mesmo, no
+ * WhatsApp, e precisa saber com quem está falando. O e-mail, nessa conversa,
+ * não serve para nada e só ocuparia a prévia — ele fica no registro, que é
+ * onde alguém vai procurá-lo se precisar.
  */
-export function mensagemWhatsApp(r: Respostas, leitura: Leitura): string {
+export function mensagemWhatsApp(r: Respostas, leitura: Leitura, nome?: string): string {
   const itens = (Object.keys(RESUMO) as (keyof Respostas)[])
     .map((chave) => RESUMO[chave][r[chave]])
     .filter(Boolean)
 
   return [
-    `Olá! Fiz o diagnóstico no site da ${BUSINESS.shortName}.`,
+    nome
+      ? `Olá! Aqui é ${nome}. Fiz o diagnóstico no site da ${BUSINESS.shortName}.`
+      : `Olá! Fiz o diagnóstico no site da ${BUSINESS.shortName}.`,
     '',
     `Situação: ${itens.slice(0, 4).join(', ')}.`,
     `Objetivo: ${RESUMO.objetivo[r.objetivo]}.`,
@@ -296,8 +303,8 @@ export function mensagemWhatsApp(r: Respostas, leitura: Leitura): string {
 }
 
 /** URL final do WhatsApp, com a mensagem já codificada. */
-export function linkDiagnostico(r: Respostas, leitura: Leitura): string {
-  return `https://wa.me/${BUSINESS.whatsapp}?text=${encodeURIComponent(mensagemWhatsApp(r, leitura))}`
+export function linkDiagnostico(r: Respostas, leitura: Leitura, nome?: string): string {
+  return `https://wa.me/${BUSINESS.whatsapp}?text=${encodeURIComponent(mensagemWhatsApp(r, leitura, nome))}`
 }
 
 /** Link genérico, para os CTAs que não vêm do diagnóstico. */

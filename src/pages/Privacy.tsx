@@ -7,25 +7,51 @@ import { BUSINESS } from '@/lib/business'
  *
  * Escrita em português comum, e não em juridiquês copiado de gerador. Num site
  * que pergunta sobre a dívida de quem o acessa, esta página é lida por gente
- * de verdade — e a maior parte do que ela tem a dizer é surpreendentemente
- * curta, porque o site quase não coleta nada.
+ * de verdade.
  *
- * O conteúdo aqui descreve o comportamento real do código. Se o diagnóstico um
- * dia passar a enviar dados a um servidor, esta página precisa mudar no mesmo
- * commit.
+ * ── Esta página mudou porque o site mudou ───────────────────────────────────
+ *
+ * Até setembro de 2026 o site não guardava nada: o diagnóstico rodava no
+ * navegador e virava mensagem de WhatsApp. Com a entrada do formulário e do
+ * painel de atendimento, passou a haver coleta de verdade — nome, contato,
+ * respostas, IP, localização aproximada e o caminho percorrido na página.
+ *
+ * A regra que essa mudança deixa para quem mexer aqui depois é simples e não
+ * admite exceção: **o que está escrito nesta página é o que o código faz.**
+ * Uma coleta nova sem a linha correspondente aqui não é um detalhe esquecido,
+ * é uma declaração falsa a quem confiou o próprio nome. O prazo de 90 dias
+ * citado abaixo não é uma intenção: é o TTL das tabelas de rastro, e quem
+ * apaga é o próprio banco.
  */
 const SECOES = [
   {
-    titulo: 'O que este site coleta',
+    titulo: 'O que você informa',
     corpo: [
-      'Quase nada. Não há formulário de cadastro, não há login e não existe banco de dados: o site é um conjunto de arquivos estáticos servidos por uma CDN.',
-      'O diagnóstico interativo é o único ponto em que você digita alguma coisa, e as respostas nunca saem do seu navegador. Elas são usadas para montar um texto e, se você clicar no botão, esse texto vira uma mensagem de WhatsApp que você mesmo envia. Fechar a aba apaga tudo.',
+      'No formulário e no diagnóstico: seu nome, o telefone e o e-mail que você escrever, e as respostas que você escolher sobre a sua situação de crédito. Nada além disso é pedido, e nem CPF nem documento são solicitados nesta página.',
+      'O registro é salvo a cada resposta, e não só no fim. Isso é deliberado e vale a explicação: se você parar no meio, a Delamayer ainda consegue retomar o contato em vez de perder a conversa. O aviso aparece na própria tela, antes da primeira resposta.',
+      'A finalidade é uma só: entrar em contato e atender o seu caso. Estes dados não são vendidos, alugados nem cedidos a terceiros para publicidade.',
+    ],
+  },
+  {
+    titulo: 'O que é registrado sobre a sua navegação',
+    corpo: [
+      'O site registra por onde você passou: páginas e seções vistas, cliques, profundidade de rolagem, quanto tempo ficou, de onde veio, o idioma e o tamanho da tela do aparelho.',
+      'Registra também o endereço IP e a localização aproximada que a rede de entrega informa (cidade, estado e país). Essa localização vem da própria infraestrutura do site, não do GPS do seu aparelho, e é aproximada por natureza.',
+      'Para que serve: entender quais explicações funcionam e avaliar o interesse de quem preencheu o formulário antes de ligar. A base legal é o legítimo interesse (art. 7º, IX, da LGPD) para a análise de audiência, e o seu consentimento, dado ao enviar o formulário, para o que está ligado ao seu nome.',
+      'Um número aleatório é guardado no seu navegador para costurar os passos de uma mesma visita. Ele não é o seu nome, não identifica você sozinho e não atravessa aparelhos. Limpar os dados do site apaga esse número.',
+    ],
+  },
+  {
+    titulo: 'Por quanto tempo isso fica guardado',
+    corpo: [
+      'O rastro de navegação (IP, localização, cliques e páginas) é apagado automaticamente 90 dias depois do último acesso. Quem apaga é o próprio banco de dados, por prazo de expiração configurado em cada registro: não depende de ninguém lembrar de rodar nada.',
+      'Os dados do formulário (nome, contato e respostas) ficam enquanto durar a relação de atendimento, porque são o registro do seu caso. Você pode pedir a exclusão a qualquer momento, e ela é feita.',
     ],
   },
   {
     titulo: 'Medição de audiência',
     corpo: [
-      'Se estiver configurada, a tag do Google Analytics registra páginas visitadas, origem do acesso e cliques nos botões de WhatsApp, com o endereço IP anonimizado. Serve para saber quais páginas funcionam e de onde vêm as pessoas.',
+      'Se estiver configurada, a tag do Google Analytics registra páginas visitadas, origem do acesso e cliques nos botões de WhatsApp, com o endereço IP anonimizado.',
       'Métricas de desempenho (tempo de carregamento, estabilidade visual) também podem ser enviadas: são números sobre o site, não sobre você.',
     ],
   },
@@ -48,13 +74,13 @@ const SECOES = [
     titulo: 'Seus direitos (LGPD)',
     corpo: [
       'A Lei nº 13.709/2018 garante que você possa confirmar a existência de tratamento, acessar seus dados, corrigir dados incompletos ou desatualizados, pedir anonimização ou eliminação, revogar consentimento e ser informado sobre compartilhamentos.',
-      `Para exercer qualquer um desses direitos, escreva para o WhatsApp ${BUSINESS.phoneDisplay}. O pedido é respondido no prazo legal.`,
+      `Para exercer qualquer um desses direitos, escreva para o WhatsApp ${BUSINESS.phoneDisplay}. O pedido é respondido no prazo legal, e a exclusão apaga o registro de verdade, não apenas o esconde.`,
     ],
   },
   {
     titulo: 'Cookies',
     corpo: [
-      'Este site não usa cookies próprios. Os únicos que podem existir vêm da tag do Google, quando configurada, e do YouTube, depois que você clica para assistir ao vídeo.',
+      'Este site não usa cookies próprios. O identificador da visita fica no armazenamento local do navegador, que não é enviado automaticamente a outros sites como um cookie seria. Os cookies que podem existir vêm da tag do Google, quando configurada, e do YouTube, depois que você clica para assistir ao vídeo.',
       'Você pode bloquear cookies nas configurações do navegador sem que nada do site deixe de funcionar.',
     ],
   },
@@ -65,8 +91,8 @@ export function Privacy({ onNavigate }: { onNavigate: (path: string) => void }) 
     <main id="conteudo">
       <PageHero etiqueta="Privacidade" titulo="Política de privacidade" onNavigate={onNavigate}>
         <p>
-          Última atualização: setembro de 2026. Escrita em português comum, porque quem precisa ler
-          isto merece entender de primeira.
+          Última atualização: 19 de setembro de 2026. Escrita em português comum, porque quem
+          precisa ler isto merece entender de primeira.
         </p>
       </PageHero>
 

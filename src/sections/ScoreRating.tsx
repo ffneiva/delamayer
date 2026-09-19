@@ -22,8 +22,8 @@ export function ScoreRating() {
       <div className="container-x">
         <SectionHeading
           etiqueta="O diferencial"
-          titulo="Não é o score que trava o financiamento."
-          complemento="É o rating de crédito bancário."
+          titulo="O Score Serasa não influencia no financiamento."
+          complemento="O que define é o rating de crédito bancário."
         >
           <p>
             São dois indicadores, com donos diferentes. Dá para ter 800 pontos no Serasa e um "F" de

@@ -66,6 +66,8 @@ export type Evento =
   | 'whatsapp_clique'
   | 'diagnostico_iniciado'
   | 'diagnostico_concluido'
+  | 'formulario_iniciado'
+  | 'formulario_concluido'
   | 'instagram_clique'
   | 'rota_mudou'
 

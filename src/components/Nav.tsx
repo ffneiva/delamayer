@@ -41,7 +41,6 @@ const SECOES = [
   { id: 'metodo', rotulo: 'Como funciona', detalhe: undefined },
   { id: 'score-rating', rotulo: 'Score × Rating', detalhe: undefined },
   { id: 'diagnostico-cta', rotulo: 'Diagnóstico', detalhe: undefined },
-  { id: 'transparencia', rotulo: 'O que não fazemos', detalhe: undefined },
   { id: 'contato', rotulo: 'Contato', detalhe: undefined },
 ]
 

@@ -8,8 +8,10 @@ import { WhatsAppFab } from '@/components/WhatsAppFab'
 import { useRouteAnnounce } from '@/hooks/useRouteAnnounce'
 import { useRouteMeta } from '@/hooks/useRouteMeta'
 import { scrollToSection, useSmoothScroll } from '@/hooks/useSmoothScroll'
+import { iniciarRastro } from '@/lib/rastro'
 import { routeFor } from '@/lib/routes'
 import { Diagnostico } from '@/pages/Diagnostico'
+import { Formulario } from '@/pages/Formulario'
 import { Imovel } from '@/pages/Imovel'
 import { NaoEncontrada } from '@/pages/NaoEncontrada'
 import { Privacy } from '@/pages/Privacy'
@@ -26,7 +28,6 @@ import { Numeros } from '@/sections/Numeros'
 import { ScoreRating } from '@/sections/ScoreRating'
 import { Servicos } from '@/sections/Servicos'
 import { Solucoes } from '@/sections/Solucoes'
-import { Transparencia } from '@/sections/Transparencia'
 
 /**
  * Roteador de ~30 linhas.
@@ -66,6 +67,13 @@ export default function App() {
 
   useRouteMeta(route)
   useSmoothScroll()
+
+  // O rastro começa uma vez só, no primeiro render, e nunca é desligado: ele
+  // acompanha a sessão inteira, inclusive as trocas de rota, que ele descobre
+  // sozinho envolvendo o `pushState` (ver lib/rastro.ts).
+  useEffect(() => {
+    iniciarRastro()
+  }, [])
   const { alvoRef, aviso } = useRouteAnnounce(route)
 
   /**
@@ -130,6 +138,7 @@ export default function App() {
           navegação por teclado recomeçar do início do conteúdo novo. */}
       <div ref={alvoRef} tabIndex={-1} className="outline-none">
         {route.path === '/diagnostico' && <Diagnostico onNavigate={navigate} />}
+        {route.path === '/formulario' && <Formulario onNavigate={navigate} />}
         {route.path === '/rating' && <Rating onNavigate={navigate} />}
         {route.path === '/imovel' && <Imovel onNavigate={navigate} />}
         {route.path === '/politica-de-privacidade' && <Privacy onNavigate={navigate} />}
@@ -138,23 +147,23 @@ export default function App() {
         {isHome && (
           <main id="conteudo">
             {/* A ordem é um argumento, não uma lista.
-                  Solucoes — o que se faz aqui, com nome, antes de qualquer história
+                  Midia    — a autoridade primeiro: quem acabou de chegar vê o
+                             tema em TV aberta antes de qualquer promessa nossa
+                  Solucoes — e então o que se faz aqui, com nome
                   Numeros  — "não é só você": o problema é de metade do país
-                  Midia    — autoridade, cedo: o tema virou pauta em TV aberta
                   Manifesto— por que o "não" do banco nunca vem explicado
                   ScoreRating — a explicação, que é o diferencial da empresa
                   Metodo   — como se resolve, em ordem
                   Diagnostico — a primeira ação possível, ainda na página */}
             <Hero ready={pronto} />
+            <Midia />
             <Solucoes />
             <Numeros />
-            <Midia />
             <Manifesto />
             <ScoreRating />
             <Metodo />
             <DiagnosticoCta />
             <Servicos />
-            <Transparencia />
             <Faq />
             <Localizacao />
             <FinalCta />

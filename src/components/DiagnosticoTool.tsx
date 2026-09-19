@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'motion/react'
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { registrar, registrarConversaoWhatsApp } from '@/lib/analytics'
+import { abrirLead, type Bilhete, completarLead } from '@/lib/api'
 import { SERVICES } from '@/lib/business'
 import {
   completo,
@@ -9,27 +10,42 @@ import {
   PERGUNTAS,
   type RespostasParciais,
 } from '@/lib/diagnostico'
+import { anotar, idDoVisitante } from '@/lib/rastro'
 import { cn } from '@/lib/utils'
 import { ButtonLink } from './Button'
 
 /**
  * O diagnóstico interativo.
  *
- * Cinco perguntas, uma leitura, e uma mensagem de WhatsApp com o caso já
- * descrito. A lógica inteira vive em lib/diagnostico.ts e é testada lá; este
- * arquivo cuida só de apresentação e navegação entre passos.
+ * A ordem é deliberada e foi pedida assim: **nome primeiro, perguntas no meio,
+ * contato no fim.** O nome abre porque é o que menos custa responder e é o que
+ * transforma um registro anônimo em alguém para chamar de volta; o telefone e
+ * o e-mail ficam para o fim porque pedi-los antes de entregar qualquer coisa é
+ * a forma mais rápida de perder a pessoa na primeira tela.
+ *
+ * ── O registro nasce antes de terminar ──────────────────────────────────────
+ *
+ * Assim que o nome é informado, um registro é aberto no servidor e vai sendo
+ * completado a cada resposta. O motivo é direto: muita gente responde o
+ * diagnóstico e não chega a clicar no WhatsApp. Antes, essas pessoas
+ * desapareciam. Agora cada passo já está guardado, e quem parou na terceira
+ * pergunta continua sendo alguém que a Delamayer pode retomar.
+ *
+ * Isso é dito na tela, ao lado do campo de nome, e está descrito na política
+ * de privacidade. O site não faz isso escondido.
+ *
+ * Nada disso pode travar o fluxo: as chamadas falham em silêncio (ver
+ * lib/api.ts) e a interface segue como se o servidor não existisse.
  *
  * Duas decisões de interface que valem o comentário:
  *
  * · **Uma pergunta por tela, e avanço automático ao responder.** Um formulário
- *   com as cinco perguntas visíveis parece mais rápido e converte menos: a
- *   pessoa vê o tamanho do compromisso antes de começar. Uma por vez esconde o
- *   fim e mantém o custo percebido de cada passo em um clique.
+ *   com tudo visível parece mais rápido e converte menos: a pessoa vê o
+ *   tamanho do compromisso antes de começar.
  *
- * · **Nada é enviado a lugar nenhum.** O resultado é calculado no navegador e
- *   vira texto de WhatsApp. Não há servidor, não há banco, não há e-mail de
- *   captura — e isso é dito na tela, porque num site sobre dívida a primeira
- *   pergunta silenciosa de quem responde é "onde isso vai parar".
+ * · **A leitura aparece mesmo sem o contato.** O passo de telefone e e-mail
+ *   pode ser pulado. Prender o resultado atrás do cadastro seria cobrar pelo
+ *   que a página prometeu de graça.
  *
  * A animação de saída de cada passo é o motivo de o `motion` existir no
  * projeto: o passo anterior precisa continuar montado enquanto desliza para
@@ -44,27 +60,97 @@ const VARIANTES = {
 
 const TRANSICAO = { duration: 0.42, ease: [0.16, 1, 0.3, 1] as const }
 
+/** Nome, as cinco perguntas, e o contato. */
+const TOTAL = PERGUNTAS.length + 2
+const PASSO_CONTATO = PERGUNTAS.length + 1
+
+const CAMPO =
+  'w-full rounded-xl border border-edge bg-obsidian px-5 py-4 text-[0.97rem] text-plat-100 ' +
+  'placeholder:text-plat-600 transition-colors duration-300 outline-none ' +
+  'focus:border-gold-700 focus:ring-1 focus:ring-gold-800'
+
 export function DiagnosticoTool({ className }: { className?: string }) {
   const [passo, setPasso] = useState(0)
   const [direcao, setDirecao] = useState(1)
   const [respostas, setRespostas] = useState<RespostasParciais>({})
+  const [nome, setNome] = useState('')
+  const [telefone, setTelefone] = useState('')
+  const [email, setEmail] = useState('')
+  const [erro, setErro] = useState<string | null>(null)
 
-  const total = PERGUNTAS.length
-  const terminou = passo >= total
+  // O bilhete vive numa ref, e não em estado: ele não muda nada na tela, e
+  // guardá-lo em estado provocaria um render a cada resposta sem necessidade.
+  const bilhete = useRef<Bilhete | null>(null)
+
+  const terminou = passo >= TOTAL
   const leitura = useMemo(() => (completo(respostas) ? diagnosticar(respostas) : null), [respostas])
 
-  const responder = (id: keyof RespostasParciais, valor: string) => {
-    if (passo === 0) registrar('diagnostico_iniciado')
+  const guardar = (campos: Parameters<typeof completarLead>[1]) => {
+    if (!bilhete.current) return
+    void completarLead(bilhete.current, campos)
+  }
 
-    const proximas = { ...respostas, [id]: valor } as RespostasParciais
-    setRespostas(proximas)
+  const avancar = () => {
     setDirecao(1)
     setPasso((p) => p + 1)
+  }
 
-    if (passo === total - 1) registrar('diagnostico_concluido')
+  const confirmarNome = async () => {
+    const limpo = nome.trim()
+    if (limpo.length < 3) {
+      setErro('Escreva seu nome completo para continuar.')
+      return
+    }
+    setErro(null)
+    registrar('diagnostico_iniciado')
+    anotar('formulario', 'nome-informado')
+
+    // Abre o registro e já o nomeia. Se a API não responder, `bilhete` fica
+    // nulo e todo o resto simplesmente não guarda nada — sem travar ninguém.
+    bilhete.current = await abrirLead('diagnostico', idDoVisitante())
+    guardar({ nome: limpo })
+    avancar()
+  }
+
+  const responder = (id: keyof RespostasParciais, valor: string) => {
+    const proximas = { ...respostas, [id]: valor } as RespostasParciais
+    setRespostas(proximas)
+    guardar({ respostas: proximas as Record<string, string> })
+    anotar('formulario', `resposta:${id}`, valor)
+    avancar()
+
+    if (passo === PERGUNTAS.length) registrar('diagnostico_concluido')
+  }
+
+  const confirmarContato = () => {
+    const tel = telefone.replace(/\D/g, '')
+    if (tel.length > 0 && tel.length < 10) {
+      setErro('O telefone precisa ter DDD e número.')
+      return
+    }
+    if (email.trim() && !/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(email.trim())) {
+      setErro('Confira o e-mail.')
+      return
+    }
+    setErro(null)
+    anotar('formulario', 'contato-informado')
+    guardar({
+      ...(tel ? { telefone: tel } : {}),
+      ...(email.trim() ? { email: email.trim() } : {}),
+      ...(leitura ? { cenario: leitura.id } : {}),
+      concluido: true,
+    })
+    avancar()
+  }
+
+  const pularContato = () => {
+    anotar('formulario', 'contato-pulado')
+    guardar({ ...(leitura ? { cenario: leitura.id } : {}), concluido: true })
+    avancar()
   }
 
   const voltar = () => {
+    setErro(null)
     setDirecao(-1)
     setPasso((p) => Math.max(0, p - 1))
   }
@@ -75,18 +161,23 @@ export function DiagnosticoTool({ className }: { className?: string }) {
     setPasso(0)
   }
 
-  const progresso = Math.min(1, passo / total)
+  const progresso = Math.min(1, passo / TOTAL)
+  const rotulo = terminou
+    ? 'Leitura'
+    : passo === 0
+      ? 'Para começar'
+      : passo === PASSO_CONTATO
+        ? 'Quase lá'
+        : `Pergunta ${passo} de ${PERGUNTAS.length}`
 
   return (
     <div className={cn('card relative overflow-hidden p-6 md:p-9', className)}>
       {/* Barra de progresso determinada. Ela existe para responder "quanto
-          falta" antes que a pessoa precise perguntar — a causa número um de
+          falta" antes que a pessoa precise perguntar: a causa número um de
           abandono num fluxo de passos é não saber o tamanho dele. */}
       <div className="mb-8">
         <div className="mb-3 flex items-baseline justify-between">
-          <span className="label-mono">
-            {terminou ? 'Leitura' : `Pergunta ${passo + 1} de ${total}`}
-          </span>
+          <span className="label-mono">{rotulo}</span>
           {passo > 0 && !terminou ? (
             <button
               type="button"
@@ -157,10 +248,18 @@ export function DiagnosticoTool({ className }: { className?: string }) {
 
             <div className="mt-9 flex flex-wrap items-center gap-4">
               <ButtonLink
-                href={linkDiagnostico(respostas as Parameters<typeof linkDiagnostico>[0], leitura)}
+                href={linkDiagnostico(
+                  respostas as Parameters<typeof linkDiagnostico>[0],
+                  leitura,
+                  nome.trim(),
+                )}
                 externo
                 rotuloCursor="Falar"
-                onClick={() => registrarConversaoWhatsApp('diagnostico')}
+                data-rastro="diagnostico-whatsapp"
+                onClick={() => {
+                  registrarConversaoWhatsApp('diagnostico')
+                  guardar({ enviouWhatsapp: true })
+                }}
               >
                 Levar isto para o WhatsApp
               </ButtonLink>
@@ -178,6 +277,125 @@ export function DiagnosticoTool({ className }: { className?: string }) {
               É uma triagem, não uma consulta. Quem confirma o quadro é a leitura do seu CPF.
             </p>
           </motion.div>
+        ) : passo === 0 ? (
+          <motion.div
+            key="nome"
+            custom={direcao}
+            variants={VARIANTES}
+            initial="entra"
+            animate="centro"
+            exit="sai"
+            transition={TRANSICAO}
+          >
+            <h3 className="font-display text-[clamp(1.35rem,3vw,1.9rem)] leading-snug text-plat-50">
+              Como é o seu nome completo?
+            </h3>
+            <p className="mt-3 text-sm text-plat-500">
+              É por ele que a gente te chama na conversa.
+            </p>
+
+            <form
+              className="mt-7"
+              onSubmit={(e) => {
+                e.preventDefault()
+                void confirmarNome()
+              }}
+            >
+              <input
+                type="text"
+                value={nome}
+                onChange={(e) => setNome(e.target.value)}
+                placeholder="Seu nome completo"
+                autoComplete="name"
+                className={CAMPO}
+                aria-label="Nome completo"
+              />
+              {erro ? <p className="mt-3 text-sm text-gold-300">{erro}</p> : null}
+
+              <button
+                type="submit"
+                data-rastro="diagnostico-comecar"
+                className="mt-5 w-full rounded-xl border border-gold-700 bg-gold-900/30 px-5 py-4 text-[0.97rem] text-gold-100 transition-colors duration-400 hover:border-gold-400 hover:bg-gold-800/40"
+              >
+                Começar
+              </button>
+            </form>
+
+            <p className="mt-6 text-xs leading-relaxed text-plat-600">
+              A partir daqui, o que você responder fica guardado com a Delamayer para o atendimento.
+              Veja a{' '}
+              <a
+                href="/politica-de-privacidade"
+                className="text-plat-400 underline decoration-plat-700 underline-offset-4 hover:text-gold-200"
+              >
+                política de privacidade
+              </a>
+              .
+            </p>
+          </motion.div>
+        ) : passo === PASSO_CONTATO ? (
+          <motion.div
+            key="contato"
+            custom={direcao}
+            variants={VARIANTES}
+            initial="entra"
+            animate="centro"
+            exit="sai"
+            transition={TRANSICAO}
+          >
+            <h3 className="font-display text-[clamp(1.35rem,3vw,1.9rem)] leading-snug text-plat-50">
+              Onde a gente te encontra?
+            </h3>
+            <p className="mt-3 text-sm text-plat-500">
+              Serve para retomar a conversa se ela se perder. Você pode pular.
+            </p>
+
+            <form
+              className="mt-7 grid gap-3"
+              onSubmit={(e) => {
+                e.preventDefault()
+                confirmarContato()
+              }}
+            >
+              <input
+                type="tel"
+                value={telefone}
+                onChange={(e) => setTelefone(e.target.value)}
+                placeholder="WhatsApp com DDD"
+                autoComplete="tel"
+                inputMode="tel"
+                className={CAMPO}
+                aria-label="Telefone com DDD"
+              />
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="E-mail"
+                autoComplete="email"
+                inputMode="email"
+                className={CAMPO}
+                aria-label="E-mail"
+              />
+              {erro ? <p className="text-sm text-gold-300">{erro}</p> : null}
+
+              <button
+                type="submit"
+                data-rastro="diagnostico-ver-leitura"
+                className="mt-2 w-full rounded-xl border border-gold-700 bg-gold-900/30 px-5 py-4 text-[0.97rem] text-gold-100 transition-colors duration-400 hover:border-gold-400 hover:bg-gold-800/40"
+              >
+                Ver a minha leitura
+              </button>
+
+              <button
+                type="button"
+                onClick={pularContato}
+                className="text-sm text-plat-500 transition-colors hover:text-gold-200"
+              >
+                Pular e ver a leitura
+              </button>
+            </form>
+          </motion.div>
         ) : (
           <motion.div
             key={passo}
@@ -190,18 +408,18 @@ export function DiagnosticoTool({ className }: { className?: string }) {
           >
             <fieldset>
               <legend className="font-display text-[clamp(1.35rem,3vw,1.9rem)] leading-snug text-plat-50">
-                {PERGUNTAS[passo].titulo}
+                {PERGUNTAS[passo - 1].titulo}
               </legend>
-              <p className="mt-3 text-sm text-plat-500">{PERGUNTAS[passo].motivo}</p>
+              <p className="mt-3 text-sm text-plat-500">{PERGUNTAS[passo - 1].motivo}</p>
 
               <div className="mt-7 grid gap-3">
-                {PERGUNTAS[passo].opcoes.map((opcao) => {
-                  const selecionada = respostas[PERGUNTAS[passo].id] === opcao.id
+                {PERGUNTAS[passo - 1].opcoes.map((opcao) => {
+                  const selecionada = respostas[PERGUNTAS[passo - 1].id] === opcao.id
                   return (
                     <button
                       key={opcao.id}
                       type="button"
-                      onClick={() => responder(PERGUNTAS[passo].id, opcao.id)}
+                      onClick={() => responder(PERGUNTAS[passo - 1].id, opcao.id)}
                       className={cn(
                         'group flex items-center justify-between gap-4 rounded-xl border px-5 py-4 text-left text-[0.97rem] transition-[border-color,background-color,color] duration-400',
                         selecionada
@@ -224,10 +442,6 @@ export function DiagnosticoTool({ className }: { className?: string }) {
           </motion.div>
         )}
       </AnimatePresence>
-
-      <p className="mt-8 border-t border-edge pt-5 text-xs text-plat-600">
-        Nada do que você responde sai deste navegador.
-      </p>
     </div>
   )
 }
