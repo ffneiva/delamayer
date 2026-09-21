@@ -90,6 +90,23 @@ export function DiagnosticoTool({ className }: { className?: string }) {
     void completarLead(bilhete.current, campos)
   }
 
+  // O registro abre uma vez só: pelo botão "Continuar" ou quando o nome sai do
+  // campo, o que vier primeiro. Quem digita o nome e fecha a aba sem apertar
+  // nada também fica registrado, que é o pedido: se a pessoa preencheu, o
+  // contato dela tem que estar no painel.
+  const abrindo = useRef<Promise<Bilhete | null> | null>(null)
+  const garantirRegistro = () => {
+    abrindo.current ??= abrirLead('diagnostico', idDoVisitante()).then((b) => {
+      bilhete.current = b
+      return b
+    })
+    return abrindo.current
+  }
+  const guardarAoSair = async (campos: Parameters<typeof completarLead>[1]) => {
+    await garantirRegistro()
+    guardar(campos)
+  }
+
   const avancar = () => {
     setDirecao(1)
     setPasso((p) => p + 1)
@@ -107,7 +124,7 @@ export function DiagnosticoTool({ className }: { className?: string }) {
 
     // Abre o registro e já o nomeia. Se a API não responder, `bilhete` fica
     // nulo e todo o resto simplesmente não guarda nada — sem travar ninguém.
-    bilhete.current = await abrirLead('diagnostico', idDoVisitante())
+    await garantirRegistro()
     guardar({ nome: limpo })
     avancar()
   }
@@ -305,6 +322,9 @@ export function DiagnosticoTool({ className }: { className?: string }) {
                 type="text"
                 value={nome}
                 onChange={(e) => setNome(e.target.value)}
+                onBlur={() => {
+                  if (nome.trim().length >= 3) void guardarAoSair({ nome: nome.trim() })
+                }}
                 placeholder="Seu nome completo"
                 autoComplete="name"
                 className={CAMPO}
@@ -353,6 +373,10 @@ export function DiagnosticoTool({ className }: { className?: string }) {
                 type="tel"
                 value={telefone}
                 onChange={(e) => setTelefone(e.target.value)}
+                onBlur={() => {
+                  if (telefone.replace(/\D/g, '').length >= 10)
+                    guardar({ telefone: telefone.replace(/\D/g, '') })
+                }}
                 placeholder="WhatsApp com DDD"
                 autoComplete="tel"
                 inputMode="tel"
@@ -363,6 +387,10 @@ export function DiagnosticoTool({ className }: { className?: string }) {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                onBlur={() => {
+                  if (/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(email.trim()))
+                    guardar({ email: email.trim() })
+                }}
                 placeholder="E-mail"
                 autoComplete="email"
                 inputMode="email"

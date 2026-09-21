@@ -113,6 +113,23 @@ export function Formulario({ onNavigate }: { onNavigate: (path: string) => void 
     void completarLead(bilhete.current, campos)
   }
 
+  // O registro abre uma vez só: pelo botão "Continuar" ou quando o nome sai do
+  // campo, o que vier primeiro. Quem digita o nome e fecha a aba sem apertar
+  // nada também fica registrado, que é o pedido: se a pessoa preencheu, o
+  // contato dela tem que estar no painel.
+  const abrindo = useRef<Promise<Bilhete | null> | null>(null)
+  const garantirRegistro = () => {
+    abrindo.current ??= abrirLead('formulario', idDoVisitante()).then((b) => {
+      bilhete.current = b
+      return b
+    })
+    return abrindo.current
+  }
+  const guardarAoSair = async (campos: Parameters<typeof completarLead>[1]) => {
+    await garantirRegistro()
+    guardar(campos)
+  }
+
   const confirmarNome = async () => {
     const limpado = nome.trim()
     if (limpado.length < 3) {
@@ -122,7 +139,7 @@ export function Formulario({ onNavigate }: { onNavigate: (path: string) => void 
     setErro(null)
     registrar('formulario_iniciado')
     anotar('formulario', 'nome-informado')
-    bilhete.current = await abrirLead('formulario', idDoVisitante())
+    await garantirRegistro()
     guardar({ nome: limpado })
     setPasso(1)
   }
@@ -210,6 +227,9 @@ export function Formulario({ onNavigate }: { onNavigate: (path: string) => void 
                     type="text"
                     value={nome}
                     onChange={(e) => setNome(e.target.value)}
+                    onBlur={() => {
+                      if (nome.trim().length >= 3) void guardarAoSair({ nome: nome.trim() })
+                    }}
                     placeholder="Seu nome completo"
                     autoComplete="name"
                     className={`${CAMPO} mt-6`}
@@ -302,6 +322,10 @@ export function Formulario({ onNavigate }: { onNavigate: (path: string) => void 
                       type="tel"
                       value={telefone}
                       onChange={(e) => setTelefone(e.target.value)}
+                      onBlur={() => {
+                        if (telefone.replace(/\D/g, '').length >= 10)
+                          guardar({ telefone: telefone.replace(/\D/g, '') })
+                      }}
                       placeholder="WhatsApp com DDD"
                       autoComplete="tel"
                       inputMode="tel"
@@ -312,6 +336,10 @@ export function Formulario({ onNavigate }: { onNavigate: (path: string) => void 
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
+                      onBlur={() => {
+                        if (/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(email.trim()))
+                          guardar({ email: email.trim() })
+                      }}
                       placeholder="E-mail"
                       autoComplete="email"
                       inputMode="email"

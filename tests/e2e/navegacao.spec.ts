@@ -167,3 +167,19 @@ test.describe('navegação no cliente', () => {
     )
   })
 })
+
+test.describe('protocolo no WhatsApp', () => {
+  test('o toque num botão do WhatsApp põe o protocolo no fim da mensagem', async ({ page }) => {
+    await page.goto('/rating/')
+    const link = page.locator('main a[href*="wa.me"]:visible').first()
+    await link.scrollIntoViewIfNeeded()
+    // Segura a navegação depois que o site já tratou o clique.
+    await page.evaluate(() =>
+      document.addEventListener('click', (e) => e.preventDefault(), { once: true }),
+    )
+    await link.click()
+    const href = await link.getAttribute('href')
+    const texto = new URLSearchParams(href!.split('?')[1]).get('text') ?? ''
+    expect(texto).toMatch(/\n\nProtocolo: [2-9A-HJ-NP-Z]{5}$/)
+  })
+})

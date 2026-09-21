@@ -28,6 +28,7 @@
  * levou até o contato.
  */
 
+import { linkComProtocolo } from './protocolo.ts'
 import { CHAVE_VISITANTE } from './storage.ts'
 
 type Evento = {
@@ -181,6 +182,12 @@ export function iniciarRastro() {
       // aba é congelada logo em seguida. Esperar o lote de seis segundos é
       // arriscar perder justamente este clique, então ele sai na hora.
       if (destino?.includes('wa.me')) {
+        // O protocolo entra no fim da mensagem agora, no clique, e não no
+        // desenho do botão: vale para todo link do WhatsApp do site, inclusive
+        // os que ainda vão ser criados. Trocar o `href` aqui, na captura, chega
+        // antes de o navegador seguir o link.
+        const id = idDoVisitante()
+        if (id && alvo instanceof HTMLAnchorElement) alvo.href = linkComProtocolo(alvo.href, id)
         anotar('whatsapp', rotulo)
         despachar(true)
       }
