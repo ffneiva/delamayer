@@ -9,12 +9,16 @@ import { WhatsAppFab } from '@/components/WhatsAppFab'
 import { useRouteAnnounce } from '@/hooks/useRouteAnnounce'
 import { useRouteMeta } from '@/hooks/useRouteMeta'
 import { scrollToSection, useSmoothScroll } from '@/hooks/useSmoothScroll'
+import { perguntasDa } from '@/lib/business'
 import { iniciarRastro } from '@/lib/rastro'
 import { routeFor } from '@/lib/routes'
+import { Bacen } from '@/pages/Bacen'
 import { Diagnostico } from '@/pages/Diagnostico'
 import { Formulario } from '@/pages/Formulario'
 import { Imovel } from '@/pages/Imovel'
+import { LimparNome } from '@/pages/LimparNome'
 import { NaoEncontrada } from '@/pages/NaoEncontrada'
+import { NomeSujo } from '@/pages/NomeSujo'
 import { Privacy } from '@/pages/Privacy'
 import { Rating } from '@/pages/Rating'
 import { DiagnosticoCta } from '@/sections/DiagnosticoCta'
@@ -141,6 +145,9 @@ export default function App() {
         {route.path === '/formulario' && <Formulario onNavigate={navigate} />}
         {route.path === '/rating' && <Rating onNavigate={navigate} />}
         {route.path === '/imovel' && <Imovel onNavigate={navigate} />}
+        {route.path === '/limpar-nome' && <LimparNome onNavigate={navigate} />}
+        {route.path === '/nome-sujo' && <NomeSujo onNavigate={navigate} />}
+        {route.path === '/bacen' && <Bacen onNavigate={navigate} />}
         {route.path === '/politica-de-privacidade' && <Privacy onNavigate={navigate} />}
         {route.path === '/404' && <NaoEncontrada onNavigate={navigate} />}
 
@@ -163,7 +170,7 @@ export default function App() {
             <ScoreRating />
             <Metodo />
             <DiagnosticoCta />
-            <Faq />
+            <Faq itens={perguntasDa('home')} />
             <Localizacao />
             <FinalCta />
           </main>

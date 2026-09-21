@@ -1,7 +1,7 @@
 import { BotaoWhatsApp, ButtonLink } from '@/components/Button'
 import { PageHero } from '@/components/PageHero'
 import { Reveal } from '@/components/Reveal'
-import { BUSINESS, FAQ } from '@/lib/business'
+import { BUSINESS, perguntasDa } from '@/lib/business'
 import { linkWhatsApp } from '@/lib/diagnostico'
 import { Faq } from '@/sections/Faq'
 
@@ -51,7 +51,7 @@ const ANALISE = [
 ]
 
 export function Imovel({ onNavigate }: { onNavigate: (path: string) => void }) {
-  const perguntas = FAQ.filter((f) => f.tema === 'imovel')
+  const perguntas = perguntasDa('imovel')
 
   return (
     <main id="conteudo">

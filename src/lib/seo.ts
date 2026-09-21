@@ -1,4 +1,4 @@
-import { BUSINESS, FAQ, KEYWORDS, MIDIA, SERVICES } from './business.ts'
+import { BUSINESS, type FAQ, KEYWORDS, MIDIA, perguntasDa, SERVICES } from './business.ts'
 import { openingHoursSpec } from './hours.ts'
 import { canonicalFor, ROUTES, routeFor } from './routes.ts'
 
@@ -93,7 +93,7 @@ function paginaNode(caminho: string, sobre?: string) {
 /**
  * Nós extras de cada rota.
  *
- * A home carrega o perfil do negócio inteiro e o FAQ completo. As filhas
+ * A home carrega o perfil do negócio inteiro e as perguntas dela. As filhas
  * ganham trilha de navegação, um `WebPage` próprio e — em /rating e /imovel —
  * apenas as perguntas que aquela página de fato exibe.
  */
@@ -101,11 +101,26 @@ function nosDaRota(caminho: string) {
   const rota = routeFor(caminho)
 
   if (rota.path === '/') {
-    return [faqNode(`${BUSINESS.url}/#faq`, FAQ), videoNode('/')]
+    return [faqNode(`${BUSINESS.url}/#faq`, perguntasDa('home')), videoNode('/')]
+  }
+
+  // As páginas-guia: cada uma declara as perguntas que mostra, e só elas.
+  const GUIAS = {
+    '/limpar-nome': ['limpar', 'Como limpar o nome no Serasa e no SPC'],
+    '/nome-sujo': ['consulta', 'Consulta de CPF e CNPJ negativado'],
+    '/bacen': ['bacen', 'SCR e Registrato do Banco Central'],
+  } as const
+  if (rota.path in GUIAS) {
+    const [pagina, sobre] = GUIAS[rota.path as keyof typeof GUIAS]
+    return [
+      trilha(caminho),
+      paginaNode(caminho, sobre),
+      faqNode(`${canonicalFor(rota)}#faq`, perguntasDa(pagina)),
+    ]
   }
 
   if (rota.path === '/rating') {
-    const perguntas = FAQ.filter((f) => f.tema === 'rating')
+    const perguntas = perguntasDa('rating')
     return [
       trilha(caminho),
       paginaNode(caminho, 'Rating de crédito bancário e score de crédito'),
@@ -115,7 +130,7 @@ function nosDaRota(caminho: string) {
   }
 
   if (rota.path === '/imovel') {
-    const perguntas = FAQ.filter((f) => f.tema === 'imovel')
+    const perguntas = perguntasDa('imovel')
     return [
       trilha(caminho),
       paginaNode(caminho, 'Financiamento imobiliário e análise de crédito'),
@@ -146,6 +161,8 @@ export function buildJsonLd(caminho = '/') {
     '@type': 'FinancialService',
     '@id': ID_NEGOCIO,
     name: BUSINESS.name,
+    legalName: BUSINESS.razaoSocial,
+    taxID: BUSINESS.cnpj,
     alternateName: [BUSINESS.shortName, BUSINESS.nomeAnterior],
     description: BUSINESS.description,
     slogan: BUSINESS.tagline,
@@ -236,6 +253,7 @@ export function buildLlmsTxt(): string {
     `> ${BUSINESS.description}`,
     '',
     `Assessoria de crédito com escritório em ${BUSINESS.address.district}, ${BUSINESS.address.city}/${BUSINESS.address.state}.`,
+    `Razão social: ${BUSINESS.razaoSocial}, CNPJ ${BUSINESS.cnpj}.`,
     `Atendimento por WhatsApp: ${BUSINESS.phoneDisplay}. Site: ${BUSINESS.url}`,
     '',
     '## O que a empresa faz',
@@ -293,7 +311,32 @@ export function buildLlmsTxt(): string {
     'score e um F de rating no banco onde se pediu o financiamento, e é essa combinação que',
     'explica a maior parte das recusas consideradas inexplicáveis pelo cliente.',
     '',
+    '## Perguntas e respostas',
+    '',
+    'As perguntas estão escritas como as pessoas as fazem no Google; cada grupo aponta para a',
+    'página do site que a responde por inteiro.',
+    '',
   )
+
+  const GRUPOS: [string, Parameters<typeof perguntasDa>[0]][] = [
+    ['/nome-sujo', 'consulta'],
+    ['/limpar-nome', 'limpar'],
+    ['/bacen', 'bacen'],
+    ['/rating', 'rating'],
+    ['/imovel', 'imovel'],
+    ['/', 'home'],
+  ]
+  const ditas = new Set<string>()
+  for (const [caminho, pagina] of GRUPOS) {
+    const rota = routeFor(caminho)
+    const perguntas = perguntasDa(pagina).filter((f) => !ditas.has(f.id))
+    if (!perguntas.length) continue
+    linhas.push(`### ${rota.label} (${canonicalFor(rota)})`, '')
+    for (const f of perguntas) {
+      ditas.add(f.id)
+      linhas.push(`**${f.q}**`, f.a, '')
+    }
+  }
 
   return linhas.join('\n')
 }

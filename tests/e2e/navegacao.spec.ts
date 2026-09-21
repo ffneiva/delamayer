@@ -23,6 +23,21 @@ const ROTAS = [
     canonical: 'https://delamayer.com.br/rating',
   },
   { caminho: '/imovel/', titulo: /Financiamento/, canonical: 'https://delamayer.com.br/imovel' },
+  {
+    caminho: '/limpar-nome/',
+    titulo: /Como limpar o nome/,
+    canonical: 'https://delamayer.com.br/limpar-nome',
+  },
+  {
+    caminho: '/nome-sujo/',
+    titulo: /Como saber se o nome está sujo/,
+    canonical: 'https://delamayer.com.br/nome-sujo',
+  },
+  {
+    caminho: '/bacen/',
+    titulo: /Banco Central/,
+    canonical: 'https://delamayer.com.br/bacen',
+  },
 ]
 
 test.describe('HTML por rota', () => {

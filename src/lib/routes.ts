@@ -64,6 +64,36 @@ export const ROUTES: Route[] = [
     ogLinhas: ['Quatro perguntas.', 'E um consultor te chama.'],
     ogNota: 'As mesmas perguntas do atendimento, adiantadas',
   },
+  // As três páginas-guia nasceram da pesquisa de palavras-chave do Google
+  // (set. 2026): são as três perguntas mais buscadas do assunto, e o título de
+  // cada uma usa as palavras de quem busca, não as da empresa.
+  {
+    path: '/limpar-nome',
+    label: 'Limpar o nome',
+    title: 'Como limpar o nome: pagar, esperar ou pela Justiça · Delamayer',
+    description:
+      'Os três caminhos para limpar o nome no Serasa e no SPC: pagar ou negociar, esperar o prazo máximo do registro ou entrar na Justiça com pedido de liminar. O que cada um resolve, quanto tempo leva e quando faz sentido.',
+    ogLinhas: ['Limpar o nome', 'tem três caminhos.'],
+    ogNota: 'Pagar · Esperar · Ação judicial com liminar',
+  },
+  {
+    path: '/nome-sujo',
+    label: 'Nome sujo?',
+    title: 'Como saber se o nome está sujo: consulta grátis do CPF e CNPJ',
+    description:
+      'Os cinco lugares oficiais onde você consulta de graça se o CPF ou o CNPJ está negativado: Serasa, SPC, Boa Vista, protesto em cartório e o Registrato do Banco Central. O que cada um mostra, e quanto tempo o nome fica sujo.',
+    ogLinhas: ['Seu nome está sujo?', 'Dá para ver de graça.'],
+    ogNota: 'Serasa · SPC · Boa Vista · Protesto · Banco Central',
+  },
+  {
+    path: '/bacen',
+    label: 'Banco Central',
+    title: 'Como limpar o nome no Banco Central (Registrato e SCR) · Delamayer',
+    description:
+      'Nome limpo no Serasa e crédito negado no banco? O motivo costuma estar no SCR do Banco Central. Como consultar o Registrato de graça, o que significam vencido e prejuízo, e como um registro é corrigido ou excluído.',
+    ogLinhas: ['Nome limpo no Serasa', 'e sujo no Banco Central?'],
+    ogNota: 'Registrato · SCR · Exclusão de Bacen',
+  },
   {
     path: '/rating',
     label: 'Score × Rating',

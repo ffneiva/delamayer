@@ -26,6 +26,10 @@ export const BUSINESS = {
 
   url: 'https://delamayer.com.br',
 
+  /** Como consta no CNPJ e nos contratos. */
+  razaoSocial: 'Delamayer Soluções Financeiras Ltda',
+  cnpj: '54.438.914/0001-68',
+
   phoneDisplay: '(62) 99500-6161',
   /** E.164 sem símbolos — formato exigido pelo wa.me */
   whatsapp: '5562995006161',
@@ -166,6 +170,8 @@ export type Service = {
   nucleo?: boolean
   destaque?: boolean
   tag?: string
+  /** A página que explica o assunto por inteiro, linkada do cartão. */
+  guia?: { href: string; rotulo: string }
 }
 
 /**
@@ -213,6 +219,7 @@ export const SERVICES: Service[] = [
     nucleo: true,
     destaque: true,
     tag: 'Via judicial',
+    guia: { href: '/limpar-nome', rotulo: 'Os três caminhos para limpar o nome' },
   },
   {
     id: 'rating',
@@ -232,6 +239,7 @@ export const SERVICES: Service[] = [
     nucleo: true,
     destaque: true,
     tag: 'Via operacional',
+    guia: { href: '/rating', rotulo: 'Score e rating: a diferença' },
   },
   {
     id: 'bacen',
@@ -251,6 +259,7 @@ export const SERVICES: Service[] = [
     nucleo: true,
     destaque: true,
     tag: 'Via judicial',
+    guia: { href: '/bacen', rotulo: 'Como ler o seu Registrato' },
   },
   {
     id: 'diagnostico',
@@ -472,22 +481,48 @@ export const MIDIA = {
 // Perguntas frequentes
 // ─────────────────────────────────────────────────────────────────────────────
 
-/** `tema` decide em que página a pergunta aparece — e, portanto, em que
- *  página o FAQPage do JSON-LD pode declará-la. Marcar FAQ numa rota que não
- *  mostra aquela pergunta é violação explícita das diretrizes de dados
- *  estruturados, e custa a elegibilidade a resultado rico. */
-export type FaqItem = { id: string; tema: 'geral' | 'rating' | 'imovel'; q: string; a: string }
+/**
+ * As páginas que mostram perguntas.
+ *
+ * `home`, `rating` e `imovel` já existiam. `consulta`, `limpar` e `bacen` são
+ * as páginas de /nome-sujo, /limpar-nome e /bacen, que nasceram da pesquisa
+ * de palavras-chave do Google (setembro de 2026): "como saber se o nome está
+ * sujo", "como limpar o nome" e "como limpar o nome no Banco Central" são,
+ * nessa ordem, as três perguntas mais buscadas do assunto, e nenhuma página
+ * do site as respondia com as palavras de quem busca.
+ */
+type PaginaDePerguntas = 'home' | 'rating' | 'imovel' | 'consulta' | 'limpar' | 'bacen'
+
+/**
+ * `tema` decide em que página a pergunta aparece, e `tambem` a repete em
+ * outras. É o que decide, também, em que página o FAQPage do JSON-LD pode
+ * declará-la: marcar FAQ numa rota que não mostra aquela pergunta é violação
+ * explícita das diretrizes de dados estruturados.
+ *
+ * `geral` aparece na home. As perguntas das páginas novas usam o texto exato
+ * das buscas ("Como saber se meu nome está sujo?"), porque é essa frase que
+ * o buscador e os assistentes de IA procuram casar com uma resposta.
+ */
+export type FaqItem = {
+  id: string
+  tema: 'geral' | 'rating' | 'imovel' | 'consulta' | 'limpar' | 'bacen'
+  tambem?: PaginaDePerguntas[]
+  q: string
+  a: string
+}
 
 export const FAQ: FaqItem[] = [
   {
     id: 'como-funciona',
     tema: 'geral',
+    tambem: ['limpar'],
     q: 'Como funciona a retirada do nome negativado?',
     a: 'Por ação judicial, não por negociação com o credor. Abre-se o processo com pedido de tutela antecipada, que é o nome técnico da liminar. Tutela antecipada significa receber o resultado antes da sentença: em vez de esperar o fim do processo para o efeito valer, pede-se que ele valha desde já. O pedido se apoia nos artigos 42 e 43 do Código de Defesa do Consumidor, e é com base neles que o juiz defere em favor do consumidor inadimplente, arquivando e congelando os débitos discutidos. Quem concede ou nega a liminar é o juiz. Vale o mesmo para a exclusão de Bacen. Já o destravamento do rating de crédito bancário é processo operacional, e não judicial.',
   },
   {
     id: 'apaga-divida',
     tema: 'geral',
+    tambem: ['limpar'],
     q: 'Vocês apagam a dívida do meu nome?',
     a: 'Não. O que se discute é o registro da negativação, não o débito em si: a dívida continua existindo e continua sendo tratada dentro do processo. O que se pede ao juiz é a tutela antecipada. Concedida, a restrição sai enquanto a ação ainda corre. Quem promete fazer dívida desaparecer está prometendo o que a lei não permite.',
   },
@@ -500,6 +535,7 @@ export const FAQ: FaqItem[] = [
   {
     id: 'bacen',
     tema: 'geral',
+    tambem: ['bacen'],
     q: 'O que é a exclusão de Bacen?',
     a: 'O Banco Central mantém o SCR, o Sistema de Informações de Crédito, onde as instituições registram as operações e o que está em atraso. Esse registro não aparece na consulta do Serasa, mas é lido por qualquer banco na análise, e explica boa parte das recusas de quem está com o nome limpo. Você mesmo pode ver o seu, de graça, no Registrato. A exclusão de Bacen trata desse registro e, como o limpa nome, corre pela via judicial, com pedido de liminar.',
   },
@@ -518,12 +554,14 @@ export const FAQ: FaqItem[] = [
   {
     id: 'prazo',
     tema: 'geral',
+    tambem: ['limpar'],
     q: 'Quanto tempo leva para o meu nome ficar limpo?',
     a: 'Depende do caso e do Judiciário. O pedido de liminar é apreciado pelo juiz, e o tempo dessa apreciação não é nosso. Depois da decisão, a baixa ainda percorre os ciclos de atualização dos órgãos de proteção ao crédito e do Banco Central. No diagnóstico você recebe a estimativa do seu caso, nunca uma promessa de data fechada.',
   },
   {
     id: 'consulta-paga',
     tema: 'geral',
+    tambem: ['consulta'],
     q: 'A consulta é paga?',
     a: 'A consulta inicial é feita na conversa, sem custo. Você manda o CPF pelo WhatsApp e recebe a leitura do que está registrado. O que se contrata depois é a condução do caso, com valor combinado antes de qualquer coisa começar.',
   },
@@ -551,13 +589,122 @@ export const FAQ: FaqItem[] = [
     q: 'O que acontece com os meus dados?',
     a: 'Ficam entre você e a Delamayer, usados só para entrar em contato e atender o seu caso, conforme a LGPD. Nada é vendido nem cedido para publicidade. O que você responde no formulário é salvo a cada passo, para a conversa não se perder se você parar no meio, e o registro de navegação é guardado por até 90 dias. Você pode pedir a exclusão quando quiser, e ela é feita.',
   },
+
+  // ── /nome-sujo ──────────────────────────────────────────────────────────
+  {
+    id: 'como-saber-nome-sujo',
+    tema: 'consulta',
+    q: 'Como saber se meu nome está sujo?',
+    a: 'Consultando o CPF nos três cadastros de inadimplentes, que são o Serasa, o SPC Brasil e a Boa Vista, e na pesquisa nacional de protestos dos cartórios. As quatro consultas são gratuitas. Para ver o que os bancos enxergam, consulte também o Registrato do Banco Central, com a sua conta gov.br. Se preferir um lugar só, mande o CPF pelo WhatsApp da Delamayer e receba a consulta detalhada na hora.',
+  },
+  {
+    id: 'consulta-gratis',
+    tema: 'consulta',
+    q: 'Dá para consultar o CPF de graça?',
+    a: 'Dá. Serasa, SPC Brasil, Boa Vista, a pesquisa de protesto e o Registrato do Banco Central deixam você consultar o próprio CPF sem pagar nada. Desconfie de quem cobra só para dizer se o seu nome está sujo.',
+  },
+  {
+    id: 'quanto-tempo-sujo',
+    tema: 'consulta',
+    tambem: ['limpar'],
+    q: 'Quanto tempo o nome fica sujo?',
+    a: 'No máximo cinco anos em cada registro, contados do vencimento da dívida. É o que dizem o artigo 43 do Código de Defesa do Consumidor e a Súmula 323 do STJ. Passado o prazo, o registro tem que sair do cadastro mesmo sem pagamento. A dívida em si não some junto com ele.',
+  },
+  {
+    id: 'limpo-e-negado',
+    tema: 'consulta',
+    tambem: ['bacen'],
+    q: 'Meu nome está limpo no Serasa. Por que o banco negou o crédito?',
+    a: 'Porque o banco não olha só o Serasa. Ele consulta o SCR do Banco Central, onde aparecem atrasos e prejuízos com bancos que não chegam ao Serasa, e o seu rating de crédito bancário, que é interno de cada instituição. Nome limpo é o primeiro filtro da análise, não o único.',
+  },
+  {
+    id: 'consultar-cnpj',
+    tema: 'consulta',
+    q: 'Como saber se o CNPJ da empresa está sujo?',
+    a: 'Pelos mesmos caminhos do CPF: Serasa, SPC e Boa Vista têm consulta de CNPJ, a pesquisa de protesto aceita CNPJ e o Registrato do Banco Central também traz as operações de crédito da empresa. Na análise do crédito da empresa, o banco costuma consultar também o CPF dos sócios, então vale olhar os dois.',
+  },
+
+  // ── /limpar-nome ────────────────────────────────────────────────────────
+  {
+    id: 'limpar-sem-pagar',
+    tema: 'limpar',
+    q: 'Dá para limpar o nome sem pagar a dívida?',
+    a: 'O registro pode sair sem pagamento em dois casos: quando passam os cinco anos do vencimento, e quando o juiz concede a liminar numa ação judicial. Nos dois casos o que sai é a negativação, não a dívida, que continua existindo com o credor. Quem promete fazer a dívida desaparecer está prometendo o que a lei não permite.',
+  },
+  {
+    id: 'limpar-de-graca',
+    tema: 'limpar',
+    q: 'Como limpar o nome de graça?',
+    a: 'Sem custo nenhum, são dois caminhos: esperar o prazo máximo de cinco anos, depois do qual o registro sai sozinho, ou contestar no próprio cadastro uma negativação que não é sua ou de uma dívida já paga. Negociar tem o custo do acordo. A ação judicial com pedido de liminar tem o custo do serviço, combinado antes de começar.',
+  },
+  {
+    id: 'depois-de-pagar',
+    tema: 'limpar',
+    q: 'Paguei a dívida. Em quanto tempo o meu nome fica limpo?',
+    a: 'O credor tem cinco dias úteis, contados do pagamento, para pedir a retirada do registro. É o que diz a Súmula 548 do STJ. Se o prazo passar e o nome continuar sujo, guarde o comprovante e cobre o credor; se não resolver, o Procon e a Justiça são o caminho.',
+  },
+  {
+    id: 'limpar-aumenta-score',
+    tema: 'limpar',
+    q: 'Limpar o nome aumenta o score?',
+    a: 'Ajuda, mas não na hora e não sozinho. O score é calculado por Serasa e SPC a partir do seu histórico de pagamento, e sobe com o tempo, conforme as contas vão sendo pagas em dia. E para financiamento o que mais pesa nem é o score: é o rating de crédito bancário, que é interno de cada banco.',
+  },
+
+  // ── /bacen ──────────────────────────────────────────────────────────────
+  {
+    id: 'limpar-banco-central',
+    tema: 'bacen',
+    q: 'Como limpar o nome no Banco Central?',
+    a: 'Primeiro, veja o que está lá: o Registrato mostra, de graça, tudo o que os bancos informaram sobre você no SCR. Se a informação estiver errada, quem corrige é o banco que a informou, e não o Banco Central. Se estiver certa e travando o seu crédito, o caminho é a exclusão de Bacen, pela via judicial, com pedido de liminar. Quem decide é o juiz.',
+  },
+  {
+    id: 'consultar-registrato',
+    tema: 'bacen',
+    q: 'Como consultar o Registrato?',
+    a: 'No site do Banco Central, entrando com a sua conta gov.br de nível prata ou ouro. O Relatório de Empréstimos e Financiamentos, que é o do SCR, sai na hora e sem custo. No mesmo lugar estão os relatórios de cheques sem fundos e de contas e relacionamentos.',
+  },
+  {
+    id: 'prejuizo-registrato',
+    tema: 'bacen',
+    q: 'O que significa prejuízo no Registrato?',
+    a: 'É a dívida que o banco lançou como perda depois de muito tempo em atraso. Ela continua aparecendo para qualquer banco que consulte o SCR, e é o registro que mais trava novas aprovações, mesmo com o nome limpo no Serasa.',
+  },
+  {
+    id: 'bacen-e-serasa',
+    tema: 'bacen',
+    q: 'Limpar o nome no Serasa limpa também o Banco Central?',
+    a: 'Não. São sistemas diferentes. O Serasa é um cadastro privado de inadimplentes; o SCR é do Banco Central e recebe as informações direto dos bancos. Resolver um não mexe no outro, e é por isso que os dois precisam ser olhados.',
+  },
 ]
+
+/**
+ * As perguntas que uma página mostra, e que só ela declara no JSON-LD.
+ *
+ * A home mostra as de tema `geral`, `rating` e `imovel`: as mesmas que ela
+ * sempre mostrou. As das páginas novas ficam nas páginas novas, onde o
+ * assunto é o da busca que as trouxe.
+ */
+export function perguntasDa(pagina: PaginaDePerguntas): FaqItem[] {
+  if (pagina === 'home') return FAQ.filter((f) => ['geral', 'rating', 'imovel'].includes(f.tema))
+  // As da própria página primeiro: a primeira pergunta é a que a página
+  // responde, e ela abre o acordeão.
+  return [
+    ...FAQ.filter((f) => f.tema === pagina),
+    ...FAQ.filter((f) => f.tema !== pagina && f.tambem?.includes(pagina)),
+  ]
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Palavras-chave — usadas no llms.txt e nas metas
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const KEYWORDS = [
+  // As três perguntas mais buscadas do assunto (Google, set. 2026).
+  'como limpar o nome',
+  'como saber se o nome está sujo',
+  'como limpar o nome no Banco Central',
+  'limpar o nome sem pagar',
+  'consulta CPF grátis',
   'limpa nome Goiânia',
   'retirar nome do Serasa por liminar',
   'ação judicial para limpar o nome',

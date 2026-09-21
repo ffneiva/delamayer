@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { BUSINESS, FAQ, MIDIA, SERVICES } from '@/lib/business'
+import { BUSINESS, FAQ, MIDIA, perguntasDa, SERVICES } from '@/lib/business'
 import { canonicalFor, NAO_ENCONTRADA, ogArquivoDe, ogUrlDe, ROUTES } from '@/lib/routes'
 import { buildJsonLd, buildLlmsTxt } from '@/lib/seo'
 
@@ -47,10 +47,30 @@ describe('estrutura do @graph', () => {
 })
 
 describe('FAQPage só onde as perguntas aparecem', () => {
-  it('a home declara o FAQ completo, que é o que ela renderiza', () => {
+  it('a home declara as perguntas dela, que são as que ela renderiza', () => {
     const faq = grafo('/').find((no) => no['@type'] === 'FAQPage')
     expect(faq).toBeDefined()
-    expect((faq!.mainEntity as unknown[]).length).toBe(FAQ.length)
+    expect((faq!.mainEntity as unknown[]).length).toBe(perguntasDa('home').length)
+  })
+
+  it('cada página-guia declara só as perguntas que mostra', () => {
+    const guias = [
+      ['/nome-sujo', 'consulta'],
+      ['/limpar-nome', 'limpar'],
+      ['/bacen', 'bacen'],
+    ] as const
+    for (const [caminho, pagina] of guias) {
+      const faq = grafo(caminho).find((no) => no['@type'] === 'FAQPage')
+      const nomes = (faq!.mainEntity as { name: string }[]).map((q) => q.name)
+      expect(nomes, caminho).toEqual(perguntasDa(pagina).map((f) => f.q))
+      expect(nomes.length, caminho).toBeGreaterThanOrEqual(4)
+    }
+  })
+
+  it('toda pergunta aparece em pelo menos uma página', () => {
+    const paginas = ['home', 'rating', 'imovel', 'consulta', 'limpar', 'bacen'] as const
+    const mostradas = new Set(paginas.flatMap((p) => perguntasDa(p).map((f) => f.id)))
+    for (const f of FAQ) expect(mostradas.has(f.id), f.id).toBe(true)
   })
 
   it('/rating declara apenas as perguntas de tema "rating"', () => {
@@ -277,5 +297,30 @@ describe('llms.txt', () => {
   it('traz o telefone e o conceito de score × rating', () => {
     expect(texto).toContain(BUSINESS.phoneDisplay)
     expect(texto).toContain('rating')
+  })
+})
+
+describe('llms.txt com as perguntas das buscas', () => {
+  const texto = buildLlmsTxt()
+
+  it('traz as perguntas mais buscadas, com a frase de quem busca', () => {
+    for (const pergunta of [
+      'Como saber se meu nome está sujo?',
+      'Dá para limpar o nome sem pagar a dívida?',
+      'Como limpar o nome no Banco Central?',
+    ]) {
+      expect(texto).toContain(pergunta)
+    }
+  })
+
+  it('cada pergunta aparece uma vez só', () => {
+    for (const f of FAQ) {
+      expect(texto.split(`**${f.q}**`).length - 1, f.id).toBe(1)
+    }
+  })
+
+  it('identifica a empresa pela razão social e pelo CNPJ', () => {
+    expect(texto).toContain(BUSINESS.cnpj)
+    expect(texto).toContain(BUSINESS.razaoSocial)
   })
 })

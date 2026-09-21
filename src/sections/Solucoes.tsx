@@ -76,6 +76,15 @@ export function Solucoes() {
                   </li>
                 ))}
               </ul>
+
+              {servico.guia ? (
+                <a
+                  href={servico.guia.href}
+                  className="mt-auto pt-7 text-sm text-gold-300 underline decoration-gold-800 underline-offset-4 transition-colors hover:text-gold-100 hover:decoration-gold-500"
+                >
+                  {servico.guia.rotulo} →
+                </a>
+              ) : null}
             </Reveal>
           ))}
         </ul>

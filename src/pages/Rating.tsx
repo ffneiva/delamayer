@@ -3,7 +3,7 @@ import { PageHero } from '@/components/PageHero'
 import { RatingDial } from '@/components/RatingDial'
 import { Reveal } from '@/components/Reveal'
 import { TabelaComparativa } from '@/components/TabelaComparativa'
-import { BUSINESS, FAQ, RATING_ESCALA } from '@/lib/business'
+import { BUSINESS, perguntasDa, RATING_ESCALA } from '@/lib/business'
 import { linkWhatsApp } from '@/lib/diagnostico'
 import { Faq } from '@/sections/Faq'
 import { Midia } from '@/sections/Midia'
@@ -54,7 +54,7 @@ const CAUSAS = [
 ]
 
 export function Rating({ onNavigate }: { onNavigate: (path: string) => void }) {
-  const perguntas = FAQ.filter((f) => f.tema === 'rating')
+  const perguntas = perguntasDa('rating')
 
   return (
     <main id="conteudo">

@@ -9,7 +9,16 @@ import { expect, test } from '@playwright/test'
  * acessível, um CTA que perdeu o link.
  */
 
-const ROTAS = ['/', '/diagnostico/', '/rating/', '/imovel/', '/politica-de-privacidade/']
+const ROTAS = [
+  '/',
+  '/diagnostico/',
+  '/limpar-nome/',
+  '/nome-sujo/',
+  '/bacen/',
+  '/rating/',
+  '/imovel/',
+  '/politica-de-privacidade/',
+]
 
 test.describe('estrutura de cada página', () => {
   for (const rota of ROTAS) {
