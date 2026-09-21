@@ -84,13 +84,14 @@ export function Hero({ ready }: { ready: boolean }) {
         />
 
         <p data-hero-fade className="max-w-lg text-[1.02rem] leading-relaxed text-plat-300 lg:mt-8">
-          Três frentes: <strong className="font-normal text-plat-100">limpa nome</strong>, que sai
-          por ação judicial com pedido de liminar;{' '}
+          Três frentes: <strong className="font-normal text-plat-100">limpa nome</strong>, que não é
+          quitação de dívida: é ação judicial com pedido de liminar, e o juiz, ao deferir, ordena
+          aos órgãos de proteção ao crédito que arquivem os débitos;{' '}
           <strong className="font-normal text-plat-100">
             destravamento do rating de crédito bancário
           </strong>
-          ; e <strong className="font-normal text-plat-100">exclusão de Bacen</strong>, o registro
-          que o Serasa não mostra e o banco lê.
+          ; e <strong className="font-normal text-plat-100">exclusão de Bacen</strong>, também por
+          ação judicial, o registro que o Serasa não mostra e o banco lê.
         </p>
 
         <div data-hero-fade className="mt-10 flex flex-wrap items-center gap-4">
@@ -101,7 +102,7 @@ export function Hero({ ready }: { ready: boolean }) {
               )}
               origem="hero"
             >
-              Consulta grátis no WhatsApp
+              Fazer a consulta no WhatsApp
             </BotaoWhatsApp>
           </Magnetic>
 

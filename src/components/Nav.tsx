@@ -214,7 +214,7 @@ export function Nav({ onSection, onNavigate, path }: Props) {
                 data-cursor="Falar"
                 className="hidden rounded-full border border-gold-700/70 bg-gold-900/25 px-5 py-2 text-sm text-gold-100 transition-colors duration-400 hover:border-gold-400 hover:bg-gold-800/40 sm:inline-flex"
               >
-                Consulta grátis
+                Falar no WhatsApp
               </a>
             </Magnetic>
 

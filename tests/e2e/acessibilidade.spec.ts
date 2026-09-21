@@ -47,7 +47,7 @@ test.describe('caminhos até o WhatsApp', () => {
     await page.goto('/')
     await page.waitForTimeout(2600)
 
-    const cta = page.getByRole('link', { name: /Consulta grátis no WhatsApp/ })
+    const cta = page.getByRole('link', { name: /Fazer a consulta no WhatsApp/ })
     await expect(cta).toBeVisible()
 
     const href = await cta.getAttribute('href')

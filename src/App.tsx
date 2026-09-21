@@ -26,7 +26,6 @@ import { Faq } from '@/sections/Faq'
 import { FinalCta } from '@/sections/FinalCta'
 import { Hero } from '@/sections/Hero'
 import { Localizacao } from '@/sections/Localizacao'
-import { Manifesto } from '@/sections/Manifesto'
 import { Metodo } from '@/sections/Metodo'
 import { Midia } from '@/sections/Midia'
 import { Numeros } from '@/sections/Numeros'
@@ -158,7 +157,6 @@ export default function App() {
                              tema em TV aberta antes de qualquer promessa nossa
                   Solucoes — e então o que se faz aqui, com nome
                   Numeros  — "não é só você": o problema é de metade do país
-                  Manifesto— por que o "não" do banco nunca vem explicado
                   ScoreRating — a explicação, que é o diferencial da empresa
                   Metodo   — como se resolve, em ordem
                   Diagnostico — a primeira ação possível, ainda na página */}
@@ -166,7 +164,6 @@ export default function App() {
             <Midia />
             <Solucoes />
             <Numeros />
-            <Manifesto />
             <ScoreRating />
             <Metodo />
             <DiagnosticoCta />

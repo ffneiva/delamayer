@@ -206,12 +206,13 @@ export const SERVICES: Service[] = [
     id: 'limpa-nome',
     name: 'Limpa nome',
     curto: 'Limpa nome',
-    resumo: 'A retirada da negativação sai por decisão judicial.',
+    resumo: 'Não é quitação: a negativação sai por decisão judicial.',
     description:
-      'Não é negociação de dívida. Abre-se um processo com pedido de tutela ' +
-      'antecipada, a liminar, que é o resultado antes da sentença. O pedido se ' +
-      'apoia nos artigos 42 e 43 do Código de Defesa do Consumidor: deferido, os ' +
-      'débitos discutidos ficam arquivados e congelados. Quem decide é o juiz.',
+      'É realizado por ação judicial, com pedido de liminar fundamentado nos artigos ' +
+      '42 e 43 do Código de Defesa do Consumidor. Após o deferimento, o juiz expede ' +
+      'ordem aos órgãos de proteção ao crédito para baixarem, ou seja, arquivarem, os ' +
+      'débitos apontados no CPF ou no CNPJ. É tirar o nome do Serasa, do SPC e da Boa ' +
+      'Vista pela via judicial, sem quitar a dívida. Quem decide é o juiz.',
     entrega: [
       'Leitura do caso antes de qualquer processo existir',
       'Ação com pedido de liminar, fundamentada nos artigos 42 e 43 do CDC',
@@ -229,9 +230,11 @@ export const SERVICES: Service[] = [
     curto: 'Rating de crédito bancário',
     resumo: 'O índice que o banco usa e que ninguém te mostra.',
     description:
-      'O rating de crédito bancário é interno, vai de A a F e cada banco calcula o seu. ' +
-      'É por isso que dá para ter score bom e crédito negado. Dos três serviços, é o único ' +
-      'operacional: aqui não se abre processo, se trabalha o relacionamento com a instituição.',
+      'Diferente do limpa nome e do Bacen, o destravamento do rating é feito de forma ' +
+      'operacional: o sistema financeiro e bancário é atualizado com o máximo de informações ' +
+      'específicas do cliente. Assim se resgata, ou se constrói, um novo perfil financeiro, ' +
+      'e as chances de aprovação de financiamentos aumentam significativamente. É o que falta ' +
+      'a quem já limpou o nome, tem score alto e ainda assim tem o crédito negado.',
     entrega: [
       'Leitura do relacionamento com cada instituição',
       'O que trava o seu rating de crédito bancário, banco a banco',
@@ -249,9 +252,11 @@ export const SERVICES: Service[] = [
     curto: 'Exclusão de Bacen',
     resumo: 'O registro que o Serasa não mostra e o banco lê.',
     description:
-      'O Banco Central mantém o SCR, onde as instituições registram as operações de crédito ' +
-      'e o que está em atraso. Esse registro não aparece na consulta do Serasa, mas é lido em ' +
-      'toda análise. Como o limpa nome, corre por processo judicial, com pedido de liminar.',
+      'Assim como o limpa nome, a exclusão de registros no Bacen, o Banco Central, é realizada ' +
+      'por ação judicial, com pedido de liminar. O Bacen mantém o SCR, onde as instituições ' +
+      'registram as operações de crédito e o que está em atraso: esse registro não aparece na ' +
+      'consulta do Serasa, mas é lido em toda análise de crédito. É o caminho para limpar o ' +
+      'nome no Banco Central.',
     entrega: [
       'Leitura do Registrato, operação por operação',
       'Identificação do que está registrado sem lastro',
