@@ -20,7 +20,10 @@ describe('protocolo do atendimento', () => {
   })
 
   it('entra no fim da mensagem, com espaço codificado como %20', () => {
-    const link = linkComProtocolo('https://wa.me/5562995006161?text=Ol%C3%A1!%20Tudo%20bem%3F', 'abc')
+    const link = linkComProtocolo(
+      'https://wa.me/5562995006161?text=Ol%C3%A1!%20Tudo%20bem%3F',
+      'abc',
+    )
     const texto = new URLSearchParams(link.split('?')[1]).get('text')
     expect(texto).toBe('Olá! Tudo bem?\n\nProtocolo: DAUH6')
     expect(link).not.toContain('+')
