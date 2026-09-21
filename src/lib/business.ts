@@ -335,8 +335,7 @@ export const METODO: Etapa[] = [
     texto:
       'Pelo WhatsApp, algumas perguntas sobre o seu caso e só o número do CPF ou do CNPJ, ' +
       'sem foto de documento. A consulta detalhada puxa Serasa, SPC, Boa Vista e cartórios ' +
-      'num relatório só, custa R$ 20 e volta no mesmo dia. Se preferir não pagar, consulte ' +
-      'de graça nos sites oficiais e mande os prints: a análise é a mesma.',
+      'num relatório só e volta no mesmo dia.',
     saida: 'O que consta nos quatro cadastros, no mesmo dia',
   },
   {
@@ -417,9 +416,8 @@ export const NAO_FAZEMOS = [
   {
     titulo: 'Não cobramos pelo que é gratuito',
     texto:
-      'Consultar o próprio CPF é de graça nos sites oficiais, e os seus prints servem para a ' +
-      'análise. Os R$ 20 da consulta detalhada pagam os relatórios dos birôs, para quem prefere ' +
-      'um lugar só. O que se cobra é o trabalho: ler aquilo e virar ordem de ação.',
+      'Consultar o próprio CPF é de graça nos sites oficiais, e a gente mostra onde. ' +
+      'O que se cobra é o trabalho: ler aquilo e virar ordem de ação.',
   },
 ]
 
@@ -579,13 +577,6 @@ export const FAQ: FaqItem[] = [
     a: 'Depende do caso e do Judiciário. O pedido de liminar é apreciado pelo juiz, e o tempo dessa apreciação não é nosso. Depois da decisão, a baixa ainda percorre os ciclos de atualização dos órgãos de proteção ao crédito e do Banco Central. O contrato traz o prazo estimado, que no limpa nome é de 15 a 60 dias úteis, e diz o que acontece se ele passar. A exclusão de Bacen é mais demorada, estimada entre três e seis meses. É estimativa, nunca promessa de data fechada.',
   },
   {
-    id: 'consulta-paga',
-    tema: 'geral',
-    tambem: ['consulta'],
-    q: 'A consulta é paga?',
-    a: 'A conversa é sem custo. A consulta detalhada, que puxa Serasa, SPC, Boa Vista e os cartórios num relatório só, custa R$ 20, que pagam os relatórios dos birôs, e volta no mesmo dia. Se preferir não pagar, consulte o próprio CPF de graça nos sites oficiais e mande os prints: a análise é a mesma. O serviço só é contratado depois, com o valor por escrito.',
-  },
-  {
     id: 'presencial',
     tema: 'geral',
     q: 'Preciso ir até o escritório?',
@@ -627,7 +618,7 @@ export const FAQ: FaqItem[] = [
     id: 'como-saber-nome-sujo',
     tema: 'consulta',
     q: 'Como saber se meu nome está sujo?',
-    a: 'Consultando o CPF nos três cadastros de inadimplentes, que são o Serasa, o SPC Brasil e a Boa Vista, e na pesquisa nacional de protestos dos cartórios. As quatro consultas são gratuitas. Para ver o que os bancos enxergam, consulte também o Registrato do Banco Central, com a sua conta gov.br. Se preferir um lugar só, mande o CPF pelo WhatsApp da Delamayer: a consulta detalhada dos quatro sai no mesmo dia, por R$ 20.',
+    a: 'Consultando o CPF nos três cadastros de inadimplentes, que são o Serasa, o SPC Brasil e a Boa Vista, e na pesquisa nacional de protestos dos cartórios. As quatro consultas são gratuitas. Para ver o que os bancos enxergam, consulte também o Registrato do Banco Central, com a sua conta gov.br. Se preferir um lugar só, mande o CPF pelo WhatsApp da Delamayer: a consulta detalhada dos quatro sai no mesmo dia.',
   },
   {
     id: 'consulta-gratis',

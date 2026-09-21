@@ -1,5 +1,11 @@
 import { useRef, useState } from 'react'
 import { PageHero } from '@/components/PageHero'
+import {
+  BOTAO_PRINCIPAL,
+  CONTATO_VAZIO,
+  type Contato,
+  PrimeiroPasso,
+} from '@/components/PrimeiroPasso'
 import { Reveal } from '@/components/Reveal'
 import { registrar, registrarConversaoWhatsApp } from '@/lib/analytics'
 import { abrirLead, type Bilhete, completarLead } from '@/lib/api'
@@ -33,6 +39,12 @@ import { cn } from '@/lib/utils'
  *
  * Tudo é salvo a cada passo, pelo mesmo motivo do diagnóstico: quem abandona
  * na terceira pergunta continua sendo alguém que a Delamayer pode retomar.
+ *
+ * ── O contato vem primeiro ──────────────────────────────────────────────────
+ *
+ * Nome, WhatsApp e e-mail abrem o formulário, e nome e WhatsApp são
+ * obrigatórios (ver PrimeiroPasso). Pedido da Delamayer: com o contato no fim,
+ * quem desistia no meio ia embora sem deixar como ser chamado de volta.
  */
 
 type Escolha = 'sim' | 'nao' | 'nao-sei'
@@ -45,14 +57,7 @@ const SIM_NAO: { id: Escolha; label: string }[] = [
 
 const ALVOS = ['Imóvel', 'Carro', 'Moto', 'Capital de giro', 'Outro']
 
-const CAMPO =
-  'w-full rounded-xl border border-edge bg-obsidian px-5 py-4 text-[0.97rem] text-plat-100 ' +
-  'placeholder:text-plat-600 transition-colors duration-300 outline-none ' +
-  'focus:border-gold-700 focus:ring-1 focus:ring-gold-800'
-
-const BOTAO =
-  'w-full rounded-xl border border-gold-700 bg-gold-900/30 px-5 py-4 text-[0.97rem] ' +
-  'text-gold-100 transition-colors duration-400 hover:border-gold-400 hover:bg-gold-800/40'
+const BOTAO = BOTAO_PRINCIPAL
 
 function Opcoes<T extends string>({
   opcoes,
@@ -98,13 +103,11 @@ const RESUMO: Record<Escolha, string> = {
 
 export function Formulario({ onNavigate }: { onNavigate: (path: string) => void }) {
   const [passo, setPasso] = useState(0)
-  const [nome, setNome] = useState('')
+  const [contato, setContato] = useState<Contato>(CONTATO_VAZIO)
+  const nome = contato.nome
   const [limpo, setLimpo] = useState<Escolha | null>(null)
   const [negativado, setNegativado] = useState<Escolha | null>(null)
   const [financiar, setFinanciar] = useState<string | null>(null)
-  const [telefone, setTelefone] = useState('')
-  const [email, setEmail] = useState('')
-  const [erro, setErro] = useState<string | null>(null)
 
   const bilhete = useRef<Bilhete | null>(null)
 
@@ -113,8 +116,8 @@ export function Formulario({ onNavigate }: { onNavigate: (path: string) => void 
     void completarLead(bilhete.current, campos)
   }
 
-  // O registro abre uma vez só: pelo botão "Continuar" ou quando o nome sai do
-  // campo, o que vier primeiro. Quem digita o nome e fecha a aba sem apertar
+  // O registro abre uma vez só: pelo botão "Começar" ou quando o primeiro
+  // campo válido perde o foco, o que vier primeiro. Quem digita o nome e fecha a aba sem apertar
   // nada também fica registrado, que é o pedido: se a pessoa preencheu, o
   // contato dela tem que estar no painel.
   const abrindo = useRef<Promise<Bilhete | null> | null>(null)
@@ -130,39 +133,12 @@ export function Formulario({ onNavigate }: { onNavigate: (path: string) => void 
     guardar(campos)
   }
 
-  const confirmarNome = async () => {
-    const limpado = nome.trim()
-    if (limpado.length < 3) {
-      setErro('Escreva seu nome completo para continuar.')
-      return
-    }
-    setErro(null)
+  const confirmarContato = async (c: Contato) => {
     registrar('formulario_iniciado')
-    anotar('formulario', 'nome-informado')
-    await garantirRegistro()
-    guardar({ nome: limpado })
-    setPasso(1)
-  }
-
-  const concluirContato = () => {
-    const tel = telefone.replace(/\D/g, '')
-    if (tel.length > 0 && tel.length < 10) {
-      setErro('O telefone precisa ter DDD e número.')
-      return
-    }
-    if (email.trim() && !/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(email.trim())) {
-      setErro('Confira o e-mail.')
-      return
-    }
-    setErro(null)
-    registrar('formulario_concluido')
     anotar('formulario', 'contato-informado')
-    guardar({
-      ...(tel ? { telefone: tel } : {}),
-      ...(email.trim() ? { email: email.trim() } : {}),
-      concluido: true,
-    })
-    setPasso(5)
+    await garantirRegistro()
+    guardar({ nome: c.nome, telefone: c.telefone, ...(c.email ? { email: c.email } : {}) })
+    setPasso(1)
   }
 
   // O e-mail não entra: quem atende vai responder no próprio WhatsApp, e a
@@ -177,8 +153,8 @@ export function Formulario({ onNavigate }: { onNavigate: (path: string) => void 
     'Podemos conversar?',
   ].join('\n')
 
-  const rotulos = ['Seu nome', 'Pergunta 1 de 3', 'Pergunta 2 de 3', 'Pergunta 3 de 3', 'Contato']
-  const progresso = Math.min(1, passo / 5)
+  const rotulos = ['Para começar', 'Pergunta 1 de 3', 'Pergunta 2 de 3', 'Pergunta 3 de 3']
+  const progresso = Math.min(1, passo / 4)
 
   return (
     <main id="conteudo">
@@ -199,7 +175,7 @@ export function Formulario({ onNavigate }: { onNavigate: (path: string) => void 
           <Reveal className="mx-auto max-w-xl">
             <div className="card p-6 md:p-9">
               <div className="mb-8">
-                <p className="label-mono mb-3">{passo < 5 ? rotulos[passo] : 'Pronto'}</p>
+                <p className="label-mono mb-3">{passo < 4 ? rotulos[passo] : 'Pronto'}</p>
                 <div className="h-px w-full bg-edge">
                   <div
                     className="h-full origin-left bg-linear-to-r from-gold-600 to-gold-200 transition-transform duration-600 ease-[var(--ease-vault)]"
@@ -214,39 +190,13 @@ export function Formulario({ onNavigate }: { onNavigate: (path: string) => void 
               </div>
 
               {passo === 0 ? (
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault()
-                    void confirmarNome()
-                  }}
-                >
-                  <h2 className="font-display text-[clamp(1.35rem,3vw,1.9rem)] leading-snug text-plat-50">
-                    Como é o seu nome completo?
-                  </h2>
-                  <input
-                    type="text"
-                    value={nome}
-                    onChange={(e) => setNome(e.target.value)}
-                    onBlur={() => {
-                      if (nome.trim().length >= 3) void guardarAoSair({ nome: nome.trim() })
-                    }}
-                    placeholder="Seu nome completo"
-                    autoComplete="name"
-                    className={`${CAMPO} mt-6`}
-                    aria-label="Nome completo"
-                  />
-                  {erro ? <p className="mt-3 text-sm text-gold-300">{erro}</p> : null}
-                  <button
-                    type="submit"
-                    data-rastro="formulario-comecar"
-                    className={`${BOTAO} mt-5`}
-                  >
-                    Começar
-                  </button>
-                  <p className="mt-6 text-xs leading-relaxed text-plat-600">
-                    O que você responder fica guardado com a Delamayer para o atendimento.
-                  </p>
-                </form>
+                <PrimeiroPasso
+                  valor={contato}
+                  aoMudar={setContato}
+                  aoSair={(campos) => void guardarAoSair(campos)}
+                  aoConfirmar={(c) => void confirmarContato(c)}
+                  rastro="formulario-comecar"
+                />
               ) : passo === 1 ? (
                 <div>
                   <h2 className="font-display text-[clamp(1.35rem,3vw,1.9rem)] leading-snug text-plat-50">
@@ -298,60 +248,13 @@ export function Formulario({ onNavigate }: { onNavigate: (path: string) => void 
                     valor={financiar}
                     aoEscolher={(id) => {
                       setFinanciar(id)
-                      guardar({ financiar: id })
+                      guardar({ financiar: id, concluido: true })
                       anotar('formulario', 'financiar', id)
+                      registrar('formulario_concluido')
                       setPasso(4)
                     }}
                   />
                 </div>
-              ) : passo === 4 ? (
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault()
-                    concluirContato()
-                  }}
-                >
-                  <h2 className="font-display text-[clamp(1.35rem,3vw,1.9rem)] leading-snug text-plat-50">
-                    Onde a gente te encontra?
-                  </h2>
-                  <p className="mt-3 text-sm text-plat-500">
-                    Serve para retomar a conversa se ela se perder.
-                  </p>
-                  <div className="mt-6 grid gap-3">
-                    <input
-                      type="tel"
-                      value={telefone}
-                      onChange={(e) => setTelefone(e.target.value)}
-                      onBlur={() => {
-                        if (telefone.replace(/\D/g, '').length >= 10)
-                          guardar({ telefone: telefone.replace(/\D/g, '') })
-                      }}
-                      placeholder="WhatsApp com DDD"
-                      autoComplete="tel"
-                      inputMode="tel"
-                      className={CAMPO}
-                      aria-label="Telefone com DDD"
-                    />
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      onBlur={() => {
-                        if (/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(email.trim()))
-                          guardar({ email: email.trim() })
-                      }}
-                      placeholder="E-mail"
-                      autoComplete="email"
-                      inputMode="email"
-                      className={CAMPO}
-                      aria-label="E-mail"
-                    />
-                    {erro ? <p className="text-sm text-gold-300">{erro}</p> : null}
-                    <button type="submit" data-rastro="formulario-concluir" className={BOTAO}>
-                      Concluir
-                    </button>
-                  </div>
-                </form>
               ) : (
                 <div>
                   <h2 className="font-display text-[clamp(1.35rem,3vw,1.9rem)] leading-snug text-plat-50">

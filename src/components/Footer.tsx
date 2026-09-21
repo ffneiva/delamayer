@@ -127,9 +127,8 @@ export function Footer({ onNavigate, onSection }: Props) {
             registro. Também não aumentamos score de crédito, o que não é possível a ninguém: o
             score responde ao histórico de pagamento do titular. Resultados variam conforme o caso e
             nenhuma aprovação de crédito é garantida. A consulta ao Serasa e o Registrato do Banco
-            Central são gratuitos e podem ser feitos por você mesmo; a consulta detalhada da
-            Delamayer, que reúne os quatro cadastros num relatório, custa R$ 20. Atendimento
-            presencial somente com hora marcada.
+            Central são gratuitos e podem ser feitos por você mesmo. Atendimento presencial somente
+            com hora marcada.
           </p>
 
           <div className="mt-6 flex flex-wrap items-center justify-between gap-4 text-xs text-plat-600">

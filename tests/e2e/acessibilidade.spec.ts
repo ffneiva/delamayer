@@ -57,6 +57,9 @@ test.describe('caminhos até o WhatsApp', () => {
   })
 
   test('todo link para o wa.me usa o número do business.ts', async ({ page }) => {
+    // Visita todas as rotas num teste só: com a máquina carregada, os 30 s
+    // padrão não bastam, e o teste falhava por tempo, e não por link errado.
+    test.setTimeout(90_000)
     for (const rota of ROTAS) {
       await page.goto(rota)
       const hrefs = await page

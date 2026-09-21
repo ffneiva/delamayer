@@ -14,10 +14,10 @@ import { expect, test } from '@playwright/test'
  *
  * ── A ordem mudou, e os testes mudaram junto ────────────────────────────────
  *
- * O fluxo passou a ser **nome → cinco perguntas → contato → leitura**. O nome
- * abre porque é ele que transforma um abandono em alguém para chamar de volta;
- * o contato fecha porque pedi-lo antes de entregar qualquer coisa espanta
- * quem chegou. Por isso quase todo teste daqui começa preenchendo o nome.
+ * O fluxo é **nome, WhatsApp e e-mail → cinco perguntas → leitura**. Pedido
+ * da Delamayer (21/09/2026): com o contato no fim, quem desistia no meio ia
+ * embora sem deixar como ser chamado. Nome e WhatsApp são obrigatórios; o
+ * e-mail, não. Por isso quase todo teste daqui começa preenchendo os dois.
  *
  * A API é interceptada: estes testes são sobre a interface, e não sobre a
  * gravação. Sem o bloqueio, cada execução deixaria lixo no banco de produção.
@@ -26,6 +26,7 @@ import { expect, test } from '@playwright/test'
 /** Responde a primeira tela e entra na pergunta 1. */
 async function comecar(page: import('@playwright/test').Page, nome = 'Fulano de Teste') {
   await page.getByLabel('Nome completo').fill(nome)
+  await page.getByLabel('WhatsApp com DDD').fill('62999998888')
   await page.getByRole('button', { name: 'Começar' }).click()
   await expect(page.getByText('Pergunta 1 de 5')).toBeVisible()
 }
@@ -41,14 +42,41 @@ test.describe('/diagnostico', () => {
     await page.goto('/diagnostico/')
   })
 
-  test('pede o nome antes de qualquer pergunta', async ({ page }) => {
-    await expect(page.getByText('Como é o seu nome completo?')).toBeVisible()
+  test('pede nome e WhatsApp antes de qualquer pergunta, e não deixa passar sem eles', async ({
+    page,
+  }) => {
+    await expect(page.getByText('Para começar, seus dados.')).toBeVisible()
     await expect(page.getByText('Pergunta 1 de 5')).toBeHidden()
 
-    // Nome curto demais não passa: um registro sem nome não serve para retomar.
-    await page.getByLabel('Nome completo').fill('Jo')
+    // Sem nada: os dois obrigatórios reclamam, e a pergunta 1 não aparece.
     await page.getByRole('button', { name: 'Começar' }).click()
     await expect(page.getByText(/Escreva seu nome completo/)).toBeVisible()
+    await expect(page.getByText(/Informe o WhatsApp com DDD/)).toBeVisible()
+    await expect(page.getByText('Pergunta 1 de 5')).toBeHidden()
+
+    // Nome certo, telefone incompleto: ainda não passa.
+    await page.getByLabel('Nome completo').fill('Maria Aparecida')
+    await page.getByLabel('WhatsApp com DDD').fill('9999')
+    await page.getByRole('button', { name: 'Começar' }).click()
+    await expect(page.getByText(/Informe o WhatsApp com DDD/)).toBeVisible()
+    await expect(page.getByText('Pergunta 1 de 5')).toBeHidden()
+
+    // O telefone ganha máscara enquanto se digita, e o e-mail é opcional.
+    await page.getByLabel('WhatsApp com DDD').fill('62999998888')
+    await expect(page.getByLabel('WhatsApp com DDD')).toHaveValue('(62) 99999-8888')
+    await page.getByRole('button', { name: 'Começar' }).click()
+    await expect(page.getByText('Pergunta 1 de 5')).toBeVisible()
+  })
+
+  test('e-mail preenchido errado é recusado; em branco, não', async ({ page }) => {
+    await page.getByLabel('Nome completo').fill('Maria Aparecida')
+    await page.getByLabel('WhatsApp com DDD').fill('62999998888')
+    await page.getByLabel('E-mail (opcional)').fill('maria@')
+    await page.getByRole('button', { name: 'Começar' }).click()
+    await expect(page.getByText('Confira o e-mail.')).toBeVisible()
+    await page.getByLabel('E-mail (opcional)').fill('')
+    await page.getByRole('button', { name: 'Começar' }).click()
+    await expect(page.getByText('Pergunta 1 de 5')).toBeVisible()
   })
 
   test('avança sozinho a cada resposta e mostra o progresso', async ({ page }) => {
@@ -60,9 +88,9 @@ test.describe('/diagnostico', () => {
     await page.getByRole('button', { name: 'Está', exact: true }).click()
     await expect(page.getByText('Pergunta 3 de 5')).toBeVisible()
 
-    // Três de sete passos (nome, cinco perguntas, contato).
+    // Três de seis passos (contato e cinco perguntas).
     const barra = page.getByRole('progressbar')
-    await expect(barra).toHaveAttribute('aria-valuenow', '43')
+    await expect(barra).toHaveAttribute('aria-valuenow', '50')
   })
 
   test('o botão voltar preserva a resposta anterior', async ({ page }) => {
@@ -90,32 +118,17 @@ test.describe('/diagnostico', () => {
     await page.getByRole('button', { name: 'Acima de 700', exact: true }).click()
     await page.getByRole('button', { name: 'Voltar a ter crédito', exact: true }).click()
 
-    await page.getByRole('button', { name: 'Pular e ver a leitura' }).click()
-
     await expect(page.getByText('Rating bancário').first()).toBeVisible()
     await expect(page.getByText('O score não é o que está te reprovando')).toBeVisible()
   })
 
-  test('o contato pode ser pulado sem prender a leitura', async ({ page }) => {
+  test('a última resposta leva direto à leitura', async ({ page }) => {
     await comecar(page)
     for (const opcao of ['Tenho', 'Está', 'Levei', 'Abaixo de 400', 'Financiar um imóvel']) {
       await page.getByRole('button', { name: opcao, exact: true }).click()
     }
-
-    await expect(page.getByText('Onde a gente te encontra?')).toBeVisible()
-    await page.getByRole('button', { name: 'Pular e ver a leitura' }).click()
     await expect(page.getByText('Leitura', { exact: true })).toBeVisible()
-  })
-
-  test('o telefone incompleto é recusado antes de seguir', async ({ page }) => {
-    await comecar(page)
-    for (const opcao of ['Tenho', 'Está', 'Levei', 'Abaixo de 400', 'Financiar um imóvel']) {
-      await page.getByRole('button', { name: opcao, exact: true }).click()
-    }
-
-    await page.getByLabel('Telefone com DDD').fill('9999')
-    await page.getByRole('button', { name: 'Ver a minha leitura' }).click()
-    await expect(page.getByText(/precisa ter DDD/)).toBeVisible()
+    await expect(page.getByText('Onde a gente te encontra?')).toBeHidden()
   })
 
   test('o resultado gera um link de WhatsApp com o nome e o caso', async ({ page }) => {
@@ -123,7 +136,6 @@ test.describe('/diagnostico', () => {
     for (const opcao of ['Tenho', 'Está', 'Levei', 'Abaixo de 400', 'Financiar um imóvel']) {
       await page.getByRole('button', { name: opcao, exact: true }).click()
     }
-    await page.getByRole('button', { name: 'Pular e ver a leitura' }).click()
 
     const link = page.getByRole('link', { name: /Levar isto para o WhatsApp/ })
     await expect(link).toBeVisible()
@@ -149,14 +161,15 @@ test.describe('/diagnostico', () => {
     ]) {
       await page.getByRole('button', { name: opcao, exact: true }).click()
     }
-    await page.getByRole('button', { name: 'Pular e ver a leitura' }).click()
 
     // `exact` importa aqui: sem ele o localizador é ambíguo — a palavra
     // "leitura" também aparece no título da página, quebrada em palavras pelo
     // <SplitHeading>, e o Playwright falha por strict mode em vez de por bug.
     await expect(page.getByText('Leitura', { exact: true })).toBeVisible()
     await page.getByRole('button', { name: 'Refazer' }).click()
-    await expect(page.getByText('Como é o seu nome completo?')).toBeVisible()
+    await expect(page.getByText('Para começar, seus dados.')).toBeVisible()
+    // Refazer não obriga a digitar o contato de novo.
+    await expect(page.getByLabel('Nome completo')).toHaveValue('Fulano de Teste')
   })
 
   /**
@@ -183,8 +196,17 @@ test.describe('/formulario', () => {
     await page.goto('/formulario/')
   })
 
+  test('não começa sem nome e WhatsApp', async ({ page }) => {
+    await page.getByLabel('Nome completo').fill('José da Silva')
+    await page.getByRole('button', { name: 'Começar' }).click()
+    await expect(page.getByText(/Informe o WhatsApp com DDD/)).toBeVisible()
+    await expect(page.getByText('Seu nome está limpo?')).toBeHidden()
+  })
+
   test('percorre as quatro perguntas e abre o WhatsApp com elas escritas', async ({ page }) => {
     await page.getByLabel('Nome completo').fill('José da Silva')
+    await page.getByLabel('WhatsApp com DDD').fill('(62) 99999-8888')
+    await page.getByLabel('E-mail (opcional)').fill('jose@exemplo.com')
     await page.getByRole('button', { name: 'Começar' }).click()
 
     await expect(page.getByText('Seu nome está limpo?')).toBeVisible()
@@ -195,9 +217,6 @@ test.describe('/formulario', () => {
 
     await expect(page.getByText('O que você quer financiar?')).toBeVisible()
     await page.getByRole('button', { name: 'Carro', exact: true }).click()
-
-    await page.getByLabel('Telefone com DDD').fill('62999998888')
-    await page.getByRole('button', { name: 'Concluir' }).click()
 
     await expect(page.getByText(/Recebemos, José/)).toBeVisible()
 

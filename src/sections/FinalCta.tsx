@@ -63,8 +63,8 @@ export function FinalCta() {
 
         <Reveal delay={0.16}>
           <p className="mx-auto mt-7 max-w-xl text-[1.02rem] leading-relaxed text-plat-400">
-            Manda o CPF pelo WhatsApp: a consulta detalhada nos quatro cadastros sai no mesmo dia,
-            por R$ 20. A conversa é sem compromisso.
+            Manda o CPF pelo WhatsApp: a consulta detalhada nos quatro cadastros sai no mesmo dia. A
+            conversa é sem compromisso.
           </p>
         </Reveal>
 

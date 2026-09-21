@@ -285,7 +285,7 @@ export function buildLlmsTxt(): string {
     '- Não apaga dívida legítima. O que se discute é o registro da negativação; o débito continua existindo e continua sendo tratado dentro do processo.',
     '- Não aumenta score do Serasa, porque não é possível: quem calcula são Serasa e SPC, e o que pesa ali é o histórico de pagamento: contas em dia, em atraso ou antecipadas. Score e rating de crédito bancário são coisas diferentes.',
     '- Não promete a decisão do juiz nem prazo fechado. A liminar é pedida, não comprada, e depois da decisão a baixa ainda percorre os ciclos de atualização dos órgãos e do Banco Central.',
-    '- Não cobra pelo que é gratuito. Consultar o próprio CPF é grátis nos sites oficiais, e os prints servem para a análise; a consulta detalhada da Delamayer custa R$ 20, que pagam os relatórios dos birôs. O serviço é a leitura e a ação sobre eles.',
+    '- Não cobra pelo que é gratuito. Consultar o próprio CPF é grátis nos sites oficiais; o serviço é a leitura e a ação sobre ela.',
     '',
     '## Atendimento',
     '',

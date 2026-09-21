@@ -13,15 +13,16 @@ import {
 import { anotar, idDoVisitante } from '@/lib/rastro'
 import { cn } from '@/lib/utils'
 import { ButtonLink } from './Button'
+import { CONTATO_VAZIO, type Contato, PrimeiroPasso } from './PrimeiroPasso'
 
 /**
  * O diagnóstico interativo.
  *
- * A ordem é deliberada e foi pedida assim: **nome primeiro, perguntas no meio,
- * contato no fim.** O nome abre porque é o que menos custa responder e é o que
- * transforma um registro anônimo em alguém para chamar de volta; o telefone e
- * o e-mail ficam para o fim porque pedi-los antes de entregar qualquer coisa é
- * a forma mais rápida de perder a pessoa na primeira tela.
+ * A ordem é deliberada e foi pedida assim: **nome, WhatsApp e e-mail
+ * primeiro, perguntas depois.** Nome e WhatsApp são obrigatórios para passar
+ * da primeira tela; o e-mail é opcional. Até 21/09/2026 o contato ficava no
+ * fim e podia ser pulado; a Delamayer pediu o contrário, porque quem desistia
+ * no meio ia embora sem deixar como ser chamado de volta.
  *
  * ── O registro nasce antes de terminar ──────────────────────────────────────
  *
@@ -43,9 +44,9 @@ import { ButtonLink } from './Button'
  *   com tudo visível parece mais rápido e converte menos: a pessoa vê o
  *   tamanho do compromisso antes de começar.
  *
- * · **A leitura aparece mesmo sem o contato.** O passo de telefone e e-mail
- *   pode ser pulado. Prender o resultado atrás do cadastro seria cobrar pelo
- *   que a página prometeu de graça.
+ * · **O contato vem antes das perguntas, não antes da leitura.** A página
+ *   promete a leitura de graça, e ela continua saindo para todo mundo que
+ *   responde; o que mudou é que a pessoa se identifica na entrada.
  *
  * A animação de saída de cada passo é o motivo de o `motion` existir no
  * projeto: o passo anterior precisa continuar montado enquanto desliza para
@@ -60,23 +61,15 @@ const VARIANTES = {
 
 const TRANSICAO = { duration: 0.42, ease: [0.16, 1, 0.3, 1] as const }
 
-/** Nome, as cinco perguntas, e o contato. */
-const TOTAL = PERGUNTAS.length + 2
-const PASSO_CONTATO = PERGUNTAS.length + 1
-
-const CAMPO =
-  'w-full rounded-xl border border-edge bg-obsidian px-5 py-4 text-[0.97rem] text-plat-100 ' +
-  'placeholder:text-plat-600 transition-colors duration-300 outline-none ' +
-  'focus:border-gold-700 focus:ring-1 focus:ring-gold-800'
+/** O contato e as cinco perguntas. */
+const TOTAL = PERGUNTAS.length + 1
 
 export function DiagnosticoTool({ className }: { className?: string }) {
   const [passo, setPasso] = useState(0)
   const [direcao, setDirecao] = useState(1)
   const [respostas, setRespostas] = useState<RespostasParciais>({})
-  const [nome, setNome] = useState('')
-  const [telefone, setTelefone] = useState('')
-  const [email, setEmail] = useState('')
-  const [erro, setErro] = useState<string | null>(null)
+  const [contato, setContato] = useState<Contato>(CONTATO_VAZIO)
+  const nome = contato.nome
 
   // O bilhete vive numa ref, e não em estado: ele não muda nada na tela, e
   // guardá-lo em estado provocaria um render a cada resposta sem necessidade.
@@ -90,8 +83,8 @@ export function DiagnosticoTool({ className }: { className?: string }) {
     void completarLead(bilhete.current, campos)
   }
 
-  // O registro abre uma vez só: pelo botão "Continuar" ou quando o nome sai do
-  // campo, o que vier primeiro. Quem digita o nome e fecha a aba sem apertar
+  // O registro abre uma vez só: pelo botão "Começar" ou quando o primeiro
+  // campo válido perde o foco, o que vier primeiro. Quem digita o nome e fecha a aba sem apertar
   // nada também fica registrado, que é o pedido: se a pessoa preencheu, o
   // contato dela tem que estar no painel.
   const abrindo = useRef<Promise<Bilhete | null> | null>(null)
@@ -112,62 +105,37 @@ export function DiagnosticoTool({ className }: { className?: string }) {
     setPasso((p) => p + 1)
   }
 
-  const confirmarNome = async () => {
-    const limpo = nome.trim()
-    if (limpo.length < 3) {
-      setErro('Escreva seu nome completo para continuar.')
-      return
-    }
-    setErro(null)
+  const confirmarContato = async (c: Contato) => {
     registrar('diagnostico_iniciado')
-    anotar('formulario', 'nome-informado')
+    anotar('formulario', 'contato-informado')
 
-    // Abre o registro e já o nomeia. Se a API não responder, `bilhete` fica
-    // nulo e todo o resto simplesmente não guarda nada — sem travar ninguém.
+    // Abre o registro e já o identifica. Se a API não responder, `bilhete`
+    // fica nulo e todo o resto simplesmente não guarda nada, sem travar ninguém.
     await garantirRegistro()
-    guardar({ nome: limpo })
+    guardar({ nome: c.nome, telefone: c.telefone, ...(c.email ? { email: c.email } : {}) })
     avancar()
   }
 
   const responder = (id: keyof RespostasParciais, valor: string) => {
     const proximas = { ...respostas, [id]: valor } as RespostasParciais
     setRespostas(proximas)
-    guardar({ respostas: proximas as Record<string, string> })
     anotar('formulario', `resposta:${id}`, valor)
-    avancar()
 
-    if (passo === PERGUNTAS.length) registrar('diagnostico_concluido')
-  }
-
-  const confirmarContato = () => {
-    const tel = telefone.replace(/\D/g, '')
-    if (tel.length > 0 && tel.length < 10) {
-      setErro('O telefone precisa ter DDD e número.')
-      return
+    // A última resposta fecha o registro com o cenário da leitura.
+    if (passo === PERGUNTAS.length) {
+      registrar('diagnostico_concluido')
+      guardar({
+        respostas: proximas as Record<string, string>,
+        ...(completo(proximas) ? { cenario: diagnosticar(proximas).id } : {}),
+        concluido: true,
+      })
+    } else {
+      guardar({ respostas: proximas as Record<string, string> })
     }
-    if (email.trim() && !/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(email.trim())) {
-      setErro('Confira o e-mail.')
-      return
-    }
-    setErro(null)
-    anotar('formulario', 'contato-informado')
-    guardar({
-      ...(tel ? { telefone: tel } : {}),
-      ...(email.trim() ? { email: email.trim() } : {}),
-      ...(leitura ? { cenario: leitura.id } : {}),
-      concluido: true,
-    })
-    avancar()
-  }
-
-  const pularContato = () => {
-    anotar('formulario', 'contato-pulado')
-    guardar({ ...(leitura ? { cenario: leitura.id } : {}), concluido: true })
     avancar()
   }
 
   const voltar = () => {
-    setErro(null)
     setDirecao(-1)
     setPasso((p) => Math.max(0, p - 1))
   }
@@ -183,9 +151,7 @@ export function DiagnosticoTool({ className }: { className?: string }) {
     ? 'Leitura'
     : passo === 0
       ? 'Para começar'
-      : passo === PASSO_CONTATO
-        ? 'Quase lá'
-        : `Pergunta ${passo} de ${PERGUNTAS.length}`
+      : `Pergunta ${passo} de ${PERGUNTAS.length}`
 
   return (
     <div className={cn('card relative overflow-hidden p-6 md:p-9', className)}>
@@ -304,117 +270,14 @@ export function DiagnosticoTool({ className }: { className?: string }) {
             exit="sai"
             transition={TRANSICAO}
           >
-            <h3 className="font-display text-[clamp(1.35rem,3vw,1.9rem)] leading-snug text-plat-50">
-              Como é o seu nome completo?
-            </h3>
-            <p className="mt-3 text-sm text-plat-500">
-              É por ele que a gente te chama na conversa.
-            </p>
-
-            <form
-              className="mt-7"
-              onSubmit={(e) => {
-                e.preventDefault()
-                void confirmarNome()
-              }}
-            >
-              <input
-                type="text"
-                value={nome}
-                onChange={(e) => setNome(e.target.value)}
-                onBlur={() => {
-                  if (nome.trim().length >= 3) void guardarAoSair({ nome: nome.trim() })
-                }}
-                placeholder="Seu nome completo"
-                autoComplete="name"
-                className={CAMPO}
-                aria-label="Nome completo"
-              />
-              {erro ? <p className="mt-3 text-sm text-gold-300">{erro}</p> : null}
-
-              <button
-                type="submit"
-                data-rastro="diagnostico-comecar"
-                className="mt-5 w-full rounded-xl border border-gold-700 bg-gold-900/30 px-5 py-4 text-[0.97rem] text-gold-100 transition-colors duration-400 hover:border-gold-400 hover:bg-gold-800/40"
-              >
-                Começar
-              </button>
-            </form>
-
-            <p className="mt-6 text-xs leading-relaxed text-plat-600">
-              O que você responder fica guardado com a Delamayer para o atendimento.
-            </p>
-          </motion.div>
-        ) : passo === PASSO_CONTATO ? (
-          <motion.div
-            key="contato"
-            custom={direcao}
-            variants={VARIANTES}
-            initial="entra"
-            animate="centro"
-            exit="sai"
-            transition={TRANSICAO}
-          >
-            <h3 className="font-display text-[clamp(1.35rem,3vw,1.9rem)] leading-snug text-plat-50">
-              Onde a gente te encontra?
-            </h3>
-            <p className="mt-3 text-sm text-plat-500">
-              Serve para retomar a conversa se ela se perder. Você pode pular.
-            </p>
-
-            <form
-              className="mt-7 grid gap-3"
-              onSubmit={(e) => {
-                e.preventDefault()
-                confirmarContato()
-              }}
-            >
-              <input
-                type="tel"
-                value={telefone}
-                onChange={(e) => setTelefone(e.target.value)}
-                onBlur={() => {
-                  if (telefone.replace(/\D/g, '').length >= 10)
-                    guardar({ telefone: telefone.replace(/\D/g, '') })
-                }}
-                placeholder="WhatsApp com DDD"
-                autoComplete="tel"
-                inputMode="tel"
-                className={CAMPO}
-                aria-label="Telefone com DDD"
-              />
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                onBlur={() => {
-                  if (/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(email.trim()))
-                    guardar({ email: email.trim() })
-                }}
-                placeholder="E-mail"
-                autoComplete="email"
-                inputMode="email"
-                className={CAMPO}
-                aria-label="E-mail"
-              />
-              {erro ? <p className="text-sm text-gold-300">{erro}</p> : null}
-
-              <button
-                type="submit"
-                data-rastro="diagnostico-ver-leitura"
-                className="mt-2 w-full rounded-xl border border-gold-700 bg-gold-900/30 px-5 py-4 text-[0.97rem] text-gold-100 transition-colors duration-400 hover:border-gold-400 hover:bg-gold-800/40"
-              >
-                Ver a minha leitura
-              </button>
-
-              <button
-                type="button"
-                onClick={pularContato}
-                className="text-sm text-plat-500 transition-colors hover:text-gold-200"
-              >
-                Pular e ver a leitura
-              </button>
-            </form>
+            <PrimeiroPasso
+              valor={contato}
+              aoMudar={setContato}
+              aoSair={(campos) => void guardarAoSair(campos)}
+              aoConfirmar={(c) => void confirmarContato(c)}
+              rastro="diagnostico-comecar"
+              Titulo="h3"
+            />
           </motion.div>
         ) : (
           <motion.div

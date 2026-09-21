@@ -160,7 +160,7 @@ export function NomeSujo({ onNavigate }: { onNavigate: (path: string) => void })
 
       <ChamadaFinal
         titulo="Prefere tudo num lugar só?"
-        texto="Mande o CPF ou o CNPJ pelo WhatsApp. A consulta detalhada sai no mesmo dia, por R$ 20, com o que está registrado em cada cadastro. Ou consulte de graça nos sites oficiais e mande os prints."
+        texto="Mande o CPF ou o CNPJ pelo WhatsApp. A consulta detalhada sai no mesmo dia, com o que está registrado em cada cadastro."
         mensagem={`Olá! Vim pela página sobre nome sujo no site da ${BUSINESS.shortName} e quero a consulta detalhada do meu CPF.`}
         origem="nome-sujo"
         rotulo="Consultar o meu CPF"
