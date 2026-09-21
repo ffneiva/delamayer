@@ -40,6 +40,7 @@ export function Localizacao() {
                     {BUSINESS.address.district} · {BUSINESS.address.city}/{BUSINESS.address.state}
                   </p>
                   <p className="text-plat-500">CEP {BUSINESS.address.zip}</p>
+                  <p className="pt-2 text-plat-400">{BUSINESS.address.referencia}.</p>
                 </address>
 
                 {/* O aviso fica junto do endereço, e não em nota de rodapé: é

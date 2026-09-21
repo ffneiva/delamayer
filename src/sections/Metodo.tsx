@@ -7,9 +7,9 @@ import { useIsDesktop, useReducedMotion } from '@/hooks/useMediaQuery'
 import { METODO } from '@/lib/business'
 
 /**
- * O método, em quatro etapas — pinado e com rolagem horizontal no desktop.
+ * O método, em cinco etapas — pinado e com rolagem horizontal no desktop.
  *
- * O gesto tem significado aqui, e não é enfeite: as quatro etapas são uma
+ * O gesto tem significado aqui, e não é enfeite: as cinco etapas são uma
  * sequência no tempo, e rolar para o lado enquanto a seção fica parada é a
  * tradução física de "avançar no processo". Numa lista vertical comum, a quarta
  * etapa concorreria com o que vem depois dela na página.
@@ -81,7 +81,7 @@ export function Metodo() {
         <div className="container-x shrink-0">
           <SectionHeading
             etiqueta="Como funciona"
-            titulo="Quatro etapas,"
+            titulo="Cinco etapas,"
             complemento="nesta ordem."
           >
             <p>

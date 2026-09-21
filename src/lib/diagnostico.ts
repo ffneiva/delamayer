@@ -230,8 +230,8 @@ export function diagnosticar(r: Respostas): Leitura {
       'Com o que você respondeu, dá para dizer que existe alguma coisa travando, mas não qual. ' +
       'Chutar aqui seria o mesmo que os sites que prometem resultado antes de olhar o caso.',
     primeiroPasso:
-      'A consulta sai na hora, pelo WhatsApp, e é ela que separa negativação de rating de ' +
-      'crédito bancário e de registro no Banco Central. Sem custo e sem compromisso.',
+      'A consulta detalhada sai no mesmo dia, pelo WhatsApp, e é ela que separa negativação de ' +
+      'rating de crédito bancário e de registro no Banco Central. A conversa é sem compromisso.',
     servicos: ehPj ? ['diagnostico', 'pj'] : ['diagnostico', 'limpa-nome', 'rating'],
   }
 }
