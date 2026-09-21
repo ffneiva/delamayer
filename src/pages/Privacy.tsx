@@ -33,7 +33,7 @@ const SECOES = [
     titulo: 'O que você informa',
     corpo: [
       'No formulário e no diagnóstico: seu nome, o telefone e o e-mail que você escrever, e as respostas que você escolher sobre a sua situação de crédito. Nada além disso é pedido, e nem CPF nem documento são solicitados nesta página.',
-      'O registro é salvo a cada resposta, e não só no fim. Isso é deliberado e vale a explicação: se você parar no meio, a Delamayer ainda consegue retomar o contato em vez de perder a conversa. O aviso aparece na própria tela, antes da primeira resposta.',
+      'O registro é salvo a cada resposta, e cada campo (nome, telefone, e-mail) é guardado assim que você o preenche, e não só no fim. Isso é deliberado e vale a explicação: se você parar no meio, a Delamayer ainda consegue retomar o contato em vez de perder a conversa. O aviso aparece na própria tela, antes da primeira resposta.',
       'A finalidade é uma só: entrar em contato e atender o seu caso. Estes dados não são vendidos, alugados nem cedidos a terceiros para publicidade.',
     ],
   },
@@ -42,7 +42,7 @@ const SECOES = [
     corpo: [
       'O site registra por onde você passou: páginas e seções vistas, cliques, profundidade de rolagem, quanto tempo ficou, de onde veio, o idioma e o tamanho da tela do aparelho.',
       'Registra também o endereço IP e a localização aproximada que a rede de entrega informa (cidade, estado e país). Essa localização vem da própria infraestrutura do site, não do GPS do seu aparelho, e é aproximada por natureza.',
-      'Se você tocar num botão do WhatsApp, esse toque fica registrado com o horário, a página e o caminho até ali. Quando você nos manda a mensagem, esse registro pode ser associado ao seu nome e telefone, para quem atende saber como você chegou.',
+      'Se você tocar num botão do WhatsApp, esse toque fica registrado com o horário, a página e o caminho até ali, e a mensagem pronta leva no fim um código de protocolo. Quando você nos manda a mensagem, é esse protocolo que liga o registro ao seu nome e telefone, para quem atende saber como você chegou. Você pode apagar o protocolo da mensagem antes de enviar, se preferir.',
       'Para que serve: entender quais explicações funcionam e avaliar o interesse de quem preencheu o formulário antes de ligar. A base legal é o legítimo interesse (art. 7º, IX, da LGPD) para a análise de audiência, e o seu consentimento, dado ao enviar o formulário, para o que está ligado ao seu nome.',
       'Um número aleatório é guardado no seu navegador para costurar os passos de uma mesma visita. Ele não é o seu nome, não identifica você sozinho e não atravessa aparelhos. Limpar os dados do site apaga esse número.',
     ],
