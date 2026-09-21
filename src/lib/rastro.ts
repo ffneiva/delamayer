@@ -8,9 +8,11 @@
  *
  * ── Três decisões que evitam que isso piore o site ──────────────────────────
  *
- * · **Nada vai embora na hora.** Os eventos entram numa fila e sobem em lote,
- *   no máximo a cada seis segundos. Uma requisição por clique competiria por
- *   rede justamente enquanto a pessoa navega, que é quando a rede importa.
+ * · **Quase nada vai embora na hora.** Os eventos entram numa fila e sobem em
+ *   lote, no máximo a cada seis segundos. Uma requisição por clique competiria
+ *   por rede justamente enquanto a pessoa navega. A exceção é o toque no
+ *   WhatsApp, que sai na hora — é o momento em que a pessoa deixa o site, e o
+ *   painel transforma esse toque num atendimento.
  *
  * · **O último lote sai por `sendBeacon`.** É a única forma de o navegador
  *   enviar algo enquanto a aba fecha: `fetch` é cancelado no descarregamento.
@@ -131,6 +133,22 @@ export function anotar(tipo: Evento['tipo'], detalhe?: string, valor?: string) {
   else agendar()
 }
 
+/**
+ * O texto de um botão como uma pessoa o leria.
+ *
+ * O `textContent` pega tudo, inclusive o que é só enfeite: a seta de "Tenho →"
+ * e o número de "01 Limpa nome" chegavam ao painel como "Tenho→" e
+ * "01Limpa nome", o que atrapalha exatamente quem precisa ler a trilha rápido.
+ */
+function textoLimpo(texto: string | null | undefined): string {
+  return (texto ?? '')
+    .replace(/[→←↓↑✦·]/g, ' ')
+    .replace(/^\s*\d{1,2}(?=\D)/, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 60)
+}
+
 /** Liga a coleta automática. Chamado uma vez, no arranque da aplicação. */
 export function iniciarRastro() {
   if (typeof window === 'undefined' || !idDoVisitante()) return
@@ -152,13 +170,20 @@ export function iniciarRastro() {
       const rotulo =
         alvo.dataset.rastro ||
         alvo.getAttribute('aria-label') ||
-        alvo.textContent?.trim().slice(0, 60) ||
+        textoLimpo(alvo.textContent) ||
         alvo.tagName.toLowerCase()
 
       const destino = alvo.getAttribute('href') ?? undefined
       anotar('clique', rotulo, destino)
 
-      if (destino?.includes('wa.me')) anotar('whatsapp', rotulo)
+      // O toque no WhatsApp é o evento mais valioso do site, e é também o
+      // momento em que a pessoa sai dele: no celular o app abre por cima e a
+      // aba é congelada logo em seguida. Esperar o lote de seis segundos é
+      // arriscar perder justamente este clique, então ele sai na hora.
+      if (destino?.includes('wa.me')) {
+        anotar('whatsapp', rotulo)
+        despachar(true)
+      }
     },
     { capture: true, passive: true },
   )
