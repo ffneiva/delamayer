@@ -42,6 +42,7 @@ const SECOES = [
     corpo: [
       'O site registra por onde você passou: páginas e seções vistas, cliques, profundidade de rolagem, quanto tempo ficou, de onde veio, o idioma e o tamanho da tela do aparelho.',
       'Registra também o endereço IP e a localização aproximada que a rede de entrega informa (cidade, estado e país). Essa localização vem da própria infraestrutura do site, não do GPS do seu aparelho, e é aproximada por natureza.',
+      'Se você tocar num botão do WhatsApp, esse toque fica registrado com o horário, a página e o caminho até ali. Quando você nos manda a mensagem, esse registro pode ser associado ao seu nome e telefone, para quem atende saber como você chegou.',
       'Para que serve: entender quais explicações funcionam e avaliar o interesse de quem preencheu o formulário antes de ligar. A base legal é o legítimo interesse (art. 7º, IX, da LGPD) para a análise de audiência, e o seu consentimento, dado ao enviar o formulário, para o que está ligado ao seu nome.',
       'Um número aleatório é guardado no seu navegador para costurar os passos de uma mesma visita. Ele não é o seu nome, não identifica você sozinho e não atravessa aparelhos. Limpar os dados do site apaga esse número.',
     ],
