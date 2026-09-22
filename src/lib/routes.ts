@@ -42,9 +42,9 @@ export const ROUTES: Route[] = [
     label: 'Início',
     title: 'Limpa nome, rating de crédito bancário e Bacen em Goiânia · Delamayer',
     description:
-      'Limpa nome por ação judicial com pedido de liminar, destravamento do rating de crédito bancário e exclusão de registro no Banco Central. Assessoria de crédito em Goiânia, com atendimento e consulta do CPF pelo WhatsApp.',
-    ogLinhas: ['Do CPF negativado', 'ao financiamento aprovado.'],
-    ogNota: 'Limpa nome · Rating bancário · Exclusão de Bacen',
+      'Assessoria de crédito em Goiânia: leitura do CPF e do CNPJ, rating de crédito bancário, registro no Banco Central e limpa nome por ação judicial, com pedido de liminar que o juiz decide. Atendimento pelo WhatsApp.',
+    ogLinhas: ['Assessoria de crédito', 'em Goiânia.'],
+    ogNota: 'CPF e CNPJ · Rating bancário · Banco Central',
   },
   {
     path: '/diagnostico',

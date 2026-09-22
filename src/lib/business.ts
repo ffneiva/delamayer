@@ -206,13 +206,13 @@ export const SERVICES: Service[] = [
     id: 'limpa-nome',
     name: 'Limpa nome',
     curto: 'Limpa nome',
-    resumo: 'Não é quitação: a negativação sai por decisão judicial.',
+    resumo: 'Não é quitação: é um pedido ao juiz.',
     description:
       'É realizado por ação judicial, com pedido de liminar fundamentado nos artigos ' +
       '42 e 43 do Código de Defesa do Consumidor. Após o deferimento, o juiz expede ' +
       'ordem aos órgãos de proteção ao crédito para baixarem, ou seja, arquivarem, os ' +
-      'débitos apontados no CPF ou no CNPJ. É tirar o nome do Serasa, do SPC e da Boa ' +
-      'Vista pela via judicial, sem quitar a dívida. Quem decide é o juiz.',
+      'débitos apontados no CPF ou no CNPJ. A dívida não é quitada nem apagada, e quem ' +
+      'decide é o juiz.',
     entrega: [
       'Leitura do caso antes de qualquer processo existir',
       'Ação com pedido de liminar, fundamentada nos artigos 42 e 43 do CDC',
@@ -255,8 +255,7 @@ export const SERVICES: Service[] = [
       'Assim como o limpa nome, a exclusão de registros no Bacen, o Banco Central, é realizada ' +
       'por ação judicial, com pedido de liminar. O Bacen mantém o SCR, onde as instituições ' +
       'registram as operações de crédito e o que está em atraso: esse registro não aparece na ' +
-      'consulta do Serasa, mas é lido em toda análise de crédito. É o caminho para limpar o ' +
-      'nome no Banco Central.',
+      'consulta do Serasa, mas é lido em toda análise de crédito. Quem decide é o juiz.',
     entrega: [
       'Leitura do Registrato, operação por operação',
       'Identificação do que está registrado sem lastro',
