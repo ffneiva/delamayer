@@ -34,7 +34,7 @@ const SECOES = [
     corpo: [
       'No formulário e no diagnóstico: seu nome, o telefone e o e-mail que você escrever, e as respostas que você escolher sobre a sua situação de crédito. Nada além disso é pedido, e nem CPF nem documento são solicitados nesta página.',
       'O registro é salvo a cada resposta, e cada campo (nome, telefone, e-mail) é guardado assim que você o preenche, e não só no fim. Isso é deliberado e vale a explicação: se você parar no meio, a Delamayer ainda consegue retomar o contato em vez de perder a conversa. O aviso aparece na própria tela, antes da primeira resposta.',
-      'A finalidade é uma só: entrar em contato e atender o seu caso. Estes dados não são vendidos, alugados nem cedidos a terceiros para publicidade.',
+      'A finalidade é uma só: entrar em contato e atender o seu caso. Estes dados não são vendidos, alugados nem cedidos a terceiros para publicidade, e o que você escreve aqui (nome, telefone, e-mail e respostas) não é enviado às plataformas de anúncio.',
     ],
   },
   {
@@ -58,6 +58,8 @@ const SECOES = [
     titulo: 'Medição de audiência',
     corpo: [
       'Se estiver configurada, a tag do Google Analytics registra páginas visitadas, origem do acesso e cliques nos botões de WhatsApp, com o endereço IP anonimizado.',
+      'O pixel da Meta, quando configurado, informa ao Facebook e ao Instagram as páginas que você visitou, os cliques nos botões de WhatsApp e o envio do formulário. Serve para medir os anúncios da Delamayer e mostrá-los a quem tem o mesmo perfil. Vão os dados que qualquer acesso carrega (endereço IP e navegador) e um identificador de visita; não vão o seu nome, telefone, e-mail nem CPF, porque o casamento avançado de dados está desligado.',
+      'A base legal dessa medição é o legítimo interesse (art. 7º, IX, da LGPD). Você pode se opor: se o seu navegador enviar o aviso "Não me rastreie", o pixel não é carregado; bloquear cookies também resolve, e nas configurações de anúncios da Meta dá para limitar o uso dessa informação.',
       'Métricas de desempenho (tempo de carregamento, estabilidade visual) também podem ser enviadas: são números sobre o site, não sobre você.',
     ],
   },
@@ -66,6 +68,7 @@ const SECOES = [
     corpo: [
       'O mapa do Google e o vídeo do YouTube só são carregados depois que você clica para abri-los. Até esse clique, nenhuma requisição sai daqui para eles. Foi uma escolha de projeto, não uma exigência legal.',
       'Ao clicar em qualquer botão de WhatsApp, você sai deste site e passa a ser regido pela política de privacidade da Meta.',
+      'O pixel da Meta, quando configurado, é carregado de connect.facebook.net depois que a página já apareceu, e nunca antes.',
       'Monitoramento de erros (Sentry), quando ativo, registra falhas de JavaScript com informações técnicas do navegador. Gravação de tela está desativada de propósito.',
     ],
   },
@@ -86,7 +89,8 @@ const SECOES = [
   {
     titulo: 'Cookies',
     corpo: [
-      'Este site não usa cookies próprios. O identificador da visita fica no armazenamento local do navegador, que não é enviado automaticamente a outros sites como um cookie seria. Os cookies que podem existir vêm da tag do Google, quando configurada, e do YouTube, depois que você clica para assistir ao vídeo.',
+      'O site não cria cookie próprio: o identificador da visita fica no armazenamento local do navegador, que não é enviado automaticamente a outros sites como um cookie seria. Os cookies que podem existir vêm da tag do Google e do pixel da Meta, quando configurados, e do YouTube, depois que você clica para assistir ao vídeo.',
+      'O pixel da Meta grava um cookie (_fbp) com um identificador aleatório da sua visita, para ligar o que você fez aqui ao anúncio que você viu. Ele não contém o seu nome.',
       'Você pode bloquear cookies nas configurações do navegador sem que nada do site deixe de funcionar.',
     ],
   },
@@ -97,7 +101,7 @@ export function Privacy({ onNavigate }: { onNavigate: (path: string) => void }) 
     <main id="conteudo">
       <PageHero etiqueta="Privacidade" titulo="Política de privacidade" onNavigate={onNavigate}>
         <p>
-          Última atualização: 19 de setembro de 2026. Escrita em português comum, porque quem
+          Última atualização: 29 de setembro de 2026. Escrita em português comum, porque quem
           precisa ler isto merece entender de primeira.
         </p>
       </PageHero>

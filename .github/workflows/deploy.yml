@@ -62,6 +62,7 @@ jobs:
           # Ficam como Variables (não Secrets) de propósito: um ID de medição
           # não é segredo, e Secrets não são legíveis no log quando algo falha.
           VITE_GTAG_ID: ${{ vars.VITE_GTAG_ID }}
+          VITE_META_PIXEL_ID: ${{ vars.VITE_META_PIXEL_ID }}
           VITE_SENTRY_DSN: ${{ vars.VITE_SENTRY_DSN }}
         run: npm run build
 

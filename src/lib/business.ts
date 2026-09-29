@@ -609,7 +609,7 @@ export const FAQ: FaqItem[] = [
     id: 'dados',
     tema: 'geral',
     q: 'O que acontece com os meus dados?',
-    a: 'Ficam entre você e a Delamayer, usados só para entrar em contato e atender o seu caso, conforme a LGPD. Nada é vendido nem cedido para publicidade. O que você preenche no formulário é salvo campo a campo, para a conversa não se perder se você parar no meio, e o registro de navegação é guardado por até 90 dias. Você pode pedir a exclusão quando quiser, e ela é feita.',
+    a: 'Ficam entre você e a Delamayer, usados só para entrar em contato e atender o seu caso, conforme a LGPD. Nada é vendido nem cedido para publicidade: para medir os anúncios, o site informa ao Google e à Meta as páginas visitadas e os cliques no WhatsApp, sem o seu nome, telefone ou e-mail. O que você preenche no formulário é salvo campo a campo, para a conversa não se perder se você parar no meio, e o registro de navegação é guardado por até 90 dias. Você pode pedir a exclusão quando quiser, e ela é feita.',
   },
 
   // ── /nome-sujo ──────────────────────────────────────────────────────────

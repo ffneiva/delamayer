@@ -11,6 +11,8 @@
  * para qualquer pré-visualização de PR.
  */
 
+import { type EventoDoPixel, pixelEvento, pixelPagina } from './pixel'
+
 const GTAG_ID = import.meta.env.VITE_GTAG_ID as string | undefined
 
 type Gtag = (...args: unknown[]) => void
@@ -71,8 +73,26 @@ export type Evento =
   | 'instagram_clique'
   | 'rota_mudou'
 
+/**
+ * O mesmo evento vai para as duas medições.
+ *
+ * Só três importam para a Meta, e por um motivo: o algoritmo da campanha
+ * aprende com o evento que separa visitante de cliente, e não com uma lista
+ * de tudo que acontece na página. `Contact` é o clique no WhatsApp, `Lead` é
+ * o formulário completo, e a troca de rota conta a página (o site é uma SPA,
+ * então isso não acontece sozinho).
+ */
+const PARA_A_META: Partial<Record<Evento, EventoDoPixel>> = {
+  whatsapp_clique: 'Contact',
+  formulario_concluido: 'Lead',
+  diagnostico_concluido: 'Lead',
+}
+
 export function registrar(evento: Evento, dados?: Record<string, unknown>): void {
   window.gtag?.('event', evento, dados)
+  if (evento === 'rota_mudou') pixelPagina()
+  const naMeta = PARA_A_META[evento]
+  if (naMeta) pixelEvento(naMeta, dados)
 }
 
 /**

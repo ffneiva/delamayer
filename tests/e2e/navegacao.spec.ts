@@ -121,6 +121,25 @@ test.describe('imagem de compartilhamento', () => {
   })
 })
 
+test.describe('medição', () => {
+  /**
+   * Sem `VITE_META_PIXEL_ID` no build, nada do pixel da Meta é carregado: nem
+   * script, nem evento, nem cookie. É a regra do lib/pixel.ts, e é ela que
+   * mantém honesta a política de privacidade em pré-visualizações e no
+   * desenvolvimento. O build dos testes nunca define a variável.
+   */
+  test('sem o ID configurado, nada sai para a Meta', async ({ page }) => {
+    const paraAMeta: string[] = []
+    page.on('request', (r) => {
+      if (/facebook\.(net|com)/.test(r.url())) paraAMeta.push(r.url())
+    })
+    await page.goto('/')
+    await page.waitForTimeout(3200) // o pixel carregaria no tempo ocioso
+    expect(paraAMeta, paraAMeta.join(', ')).toEqual([])
+    expect(await page.evaluate(() => typeof (window as { fbq?: unknown }).fbq)).toBe('undefined')
+  })
+})
+
 test.describe('arquivos de SEO', () => {
   test('sitemap.xml lista as rotas indexáveis', async ({ request }) => {
     const resposta = await request.get('/sitemap.xml')

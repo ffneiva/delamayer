@@ -5,6 +5,7 @@ import { ErrorBoundary } from './components/ErrorBoundary'
 import './index.css'
 import { iniciarAnalytics } from './lib/analytics'
 import { iniciarObservabilidade, medirWebVitals } from './lib/observability'
+import { iniciarPixel } from './lib/pixel'
 
 // O JSON-LD não é montado aqui: um plugin do Vite (ver vite.config.ts) o gera a
 // partir de src/lib/seo.ts e o grava direto no HTML durante o build, para que o
@@ -43,6 +44,7 @@ const ociosa = (fn: () => void) => {
 
 ociosa(() => {
   iniciarAnalytics()
+  iniciarPixel()
   iniciarObservabilidade()
   medirWebVitals()
 })
