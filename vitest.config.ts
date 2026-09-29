@@ -25,9 +25,20 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'lcov'],
       include: ['src/lib/**/*.ts'],
-      // O `analytics.ts` e o `observability.ts` são wrappers de API de
-      // navegador atrás de variável de ambiente: cobri-los mediria o mock.
-      exclude: ['src/lib/analytics.ts', 'src/lib/observability.ts'],
+      // Ficam de fora os invólucros de API de navegador e de rede: medição
+      // (`analytics`, `pixel`, `observability`), a fila de rastro com os
+      // ouvintes de evento (`rastro`), o cliente HTTP (`api`) e o
+      // `localStorage` (`storage`). Cobri-los mediria o mock; quem os
+      // exercita de verdade é o Playwright, no navegador. O que sobra é
+      // decisão pura, e é aí que o mínimo de 85% tem sentido.
+      exclude: [
+        'src/lib/analytics.ts',
+        'src/lib/observability.ts',
+        'src/lib/pixel.ts',
+        'src/lib/rastro.ts',
+        'src/lib/api.ts',
+        'src/lib/storage.ts',
+      ],
       thresholds: {
         lines: 85,
         functions: 85,
