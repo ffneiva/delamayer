@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Descrição do site em Markdown, para assistentes que leem em vez de rastrear.
+# Gerado no build a partir de src/lib/seo.ts.
+# llms.txt: https://delamayer.com.br/llms.txt
+
+Sitemap: https://delamayer.com.br/sitemap.xml

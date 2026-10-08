@@ -1,0 +1,16 @@
+{
+  "name": "Delamayer Soluções Financeiras",
+  "short_name": "Delamayer",
+  "description": "Diagnóstico de crédito, regularização direta e rating bancário em Goiânia.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050506",
+  "theme_color": "#050506",
+  "lang": "pt-BR",
+  "categories": ["finance", "business"],
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

@@ -1,0 +1,172 @@
+import { BUSINESS } from './business.ts'
+
+/**
+ * As rotas do site, com os metadados de cada uma.
+ *
+ * Este arquivo é importado dos DOIS lados: pelo React em tempo de execução e
+ * pelo `vite.config.ts` em tempo de build, que usa a mesma lista para gerar um
+ * HTML estático por rota. Por isso ele não toca em `window` nem importa nada
+ * de DOM.
+ *
+ * Por que HTML por rota, e não só trocar o `document.title` no cliente: três
+ * das páginas são destino de anúncio e de link colado no Instagram. O robô do
+ * Google Ads avalia a página de destino, e o leitor de link do WhatsApp lê só
+ * o HTML inicial — nenhum dos dois executa a aplicação antes de decidir o que
+ * mostrar.
+ */
+
+export type Route = {
+  path: string
+  /** `<title>` da página. */
+  title: string
+  description: string
+  /** Rótulo curto usado na navegação e na trilha de breadcrumb. */
+  label: string
+  /** Mantém a página fora do índice do Google (usado só pelo 404). */
+  noindex?: boolean
+  /**
+   * As duas linhas grandes da imagem de compartilhamento.
+   *
+   * Sem elas a rota herda a imagem da home. Ter uma por rota importa mais do
+   * que parece: um link colado no WhatsApp é lido pela imagem antes do texto, e
+   * cinco páginas com a mesma arte fazem as cinco parecerem a mesma página.
+   */
+  ogLinhas?: readonly [string, string]
+  /** A linha de apoio da imagem, abaixo do título. */
+  ogNota?: string
+}
+
+export const ROUTES: Route[] = [
+  {
+    path: '/',
+    label: 'Início',
+    title: 'Limpa nome, rating de crédito bancário e Bacen em Goiânia · Delamayer',
+    description:
+      'Assessoria de crédito em Goiânia: leitura do CPF e do CNPJ, rating de crédito bancário, registro no Banco Central e limpa nome por ação judicial, com pedido de liminar que o juiz decide. Atendimento pelo WhatsApp.',
+    ogLinhas: ['Assessoria de crédito', 'em Goiânia.'],
+    ogNota: 'CPF e CNPJ · Rating bancário · Banco Central',
+  },
+  {
+    path: '/diagnostico',
+    label: 'Diagnóstico',
+    title: 'Diagnóstico de crédito grátis · Delamayer, Goiânia',
+    description:
+      'Responda cinco perguntas e descubra onde o seu crédito está travado: negativação, rating de crédito bancário ou registro no Banco Central. O resultado vira uma mensagem pronta no WhatsApp da Delamayer.',
+    ogLinhas: ['Cinco perguntas', 'e uma leitura honesta.'],
+    ogNota: 'Cinco perguntas · Sem custo · Resposta na hora',
+  },
+  {
+    path: '/formulario',
+    label: 'Formulário',
+    title: 'Fale com um consultor · Delamayer Soluções Financeiras',
+    description:
+      'Quatro perguntas rápidas — nome, se está limpo, se está negativado e o que quer financiar — e um consultor retorna. São as mesmas perguntas do atendimento, respondidas antes da conversa começar.',
+    ogLinhas: ['Quatro perguntas.', 'E um consultor te chama.'],
+    ogNota: 'As mesmas perguntas do atendimento, adiantadas',
+  },
+  // As três páginas-guia nasceram da pesquisa de palavras-chave do Google
+  // (set. 2026): são as três perguntas mais buscadas do assunto, e o título de
+  // cada uma usa as palavras de quem busca, não as da empresa.
+  {
+    path: '/limpar-nome',
+    label: 'Limpar o nome',
+    title: 'Como limpar o nome: pagar, esperar ou pela Justiça · Delamayer',
+    description:
+      'Os três caminhos para limpar o nome no Serasa e no SPC: pagar ou negociar, esperar o prazo máximo do registro ou entrar na Justiça com pedido de liminar. O que cada um resolve, quanto tempo leva e quando faz sentido.',
+    ogLinhas: ['Limpar o nome', 'tem três caminhos.'],
+    ogNota: 'Pagar · Esperar · Ação judicial com liminar',
+  },
+  {
+    path: '/nome-sujo',
+    label: 'Nome sujo?',
+    title: 'Como saber se o nome está sujo: consulta grátis do CPF e CNPJ',
+    description:
+      'Os cinco lugares oficiais onde você consulta de graça se o CPF ou o CNPJ está negativado: Serasa, SPC, Boa Vista, protesto em cartório e o Registrato do Banco Central. O que cada um mostra, e quanto tempo o nome fica sujo.',
+    ogLinhas: ['Seu nome está sujo?', 'Dá para ver de graça.'],
+    ogNota: 'Serasa · SPC · Boa Vista · Protesto · Banco Central',
+  },
+  {
+    path: '/bacen',
+    label: 'Banco Central',
+    title: 'Como limpar o nome no Banco Central (Registrato e SCR) · Delamayer',
+    description:
+      'Nome limpo no Serasa e crédito negado no banco? O motivo costuma estar no SCR do Banco Central. Como consultar o Registrato de graça, o que significam vencido e prejuízo, e como um registro é corrigido ou excluído.',
+    ogLinhas: ['Nome limpo no Serasa', 'e sujo no Banco Central?'],
+    ogNota: 'Registrato · SCR · Exclusão de Bacen',
+  },
+  {
+    path: '/rating',
+    label: 'Score × Rating',
+    title: 'Score alto e crédito negado? O rating de crédito bancário explica',
+    description:
+      'O score é calculado por Serasa e SPC; o rating de crédito bancário é interno do banco, vai de A a F e mede só o seu relacionamento com ele. Entenda por que os dois discordam, e o que fazer quando isso trava o seu crédito.',
+    ogLinhas: ['Score alto,', 'crédito negado.'],
+    ogNota: 'O índice que o banco usa e não aparece em consulta',
+  },
+  {
+    path: '/imovel',
+    label: 'Imóvel',
+    title: 'Financiamento imobiliário com o nome negativado · Delamayer Goiânia',
+    description:
+      'Tirar a restrição do CPF é o primeiro passo para financiar um imóvel, não o último. Veja o que o gerente analisa além do nome limpo, na ordem em que ele analisa, e como chegar à proposta com tudo resolvido.',
+    ogLinhas: ['Nome limpo é o', 'primeiro passo.'],
+    ogNota: 'O que o banco analisa além da restrição',
+  },
+  {
+    path: '/politica-de-privacidade',
+    label: 'Privacidade',
+    title: 'Política de privacidade · Delamayer Soluções Financeiras',
+    description:
+      'Como a Delamayer trata dados neste site: o que é coletado no formulário, o que é registrado sobre a navegação, por quanto tempo fica guardado e como exercer seus direitos pela LGPD.',
+  },
+]
+
+/**
+ * Rota usada quando o endereço não existe.
+ *
+ * `noindex` é o ponto: sem ele, uma URL errada devolveria a home com status
+ * 200 — o *soft 404* que o Google trata como sinal de site mal cuidado.
+ */
+export const NAO_ENCONTRADA: Route = {
+  path: '/404',
+  label: 'Não encontrada',
+  title: 'Página não encontrada · Delamayer',
+  description: 'Este endereço não existe no site da Delamayer Soluções Financeiras.',
+  noindex: true,
+}
+
+/** Normaliza o pathname (ignora barra final e diferenças de caixa). */
+function limpar(pathname: string): string {
+  return pathname.replace(/\/+$/, '').toLowerCase() || '/'
+}
+
+/** Devolve a rota correspondente, ou a de 404 se o endereço não existir. */
+export function routeFor(pathname: string): Route {
+  return ROUTES.find((r) => r.path === limpar(pathname)) ?? NAO_ENCONTRADA
+}
+
+export function canonicalFor(route: Route): string {
+  return route.path === '/' ? `${BUSINESS.url}/` : `${BUSINESS.url}${route.path}`
+}
+
+/**
+ * Nome do arquivo da imagem de compartilhamento da rota.
+ *
+ * A home fica em `og.png` porque é o nome que qualquer um procura primeiro; as
+ * demais viram `og-<rota>.png`. Rotas sem `ogLinhas` — hoje só a política de
+ * privacidade, que ninguém compartilha — caem na arte da home em vez de exigir
+ * uma peça que nunca seria vista.
+ *
+ * É a MESMA função usada pelo gerador de imagens (scripts/make-brand.mjs) e
+ * pelo plugin que reescreve o `<head>` de cada rota no build. Dois lugares
+ * derivando o nome por conta própria é como uma meta tag acaba apontando para
+ * um arquivo que não existe.
+ */
+export function ogArquivoDe(route: Route): string {
+  if (!route.ogLinhas || route.path === '/') return 'og.png'
+  return `og-${route.path.replace(/^\//, '')}.png`
+}
+
+export function ogUrlDe(route: Route): string {
+  return `${BUSINESS.url}/${ogArquivoDe(route)}`
+}
