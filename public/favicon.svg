@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+  <linearGradient id="ouro" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#F3DFAE"/>
+    <stop offset="35%" stop-color="#D9AE5B"/>
+    <stop offset="62%" stop-color="#B07C24"/>
+    <stop offset="100%" stop-color="#E8CB8A"/>
+  </linearGradient></defs>
+  
+  <g transform="translate(0 0)">
+    <path d="M 114.41 118.65 L 13.59 25.57 L 13.59 9.35 L 66.12 9.35 A 55.58 55.58 0 0 1 78.48 114.41 L 13.59 114.41 L 13.59 51.83 L 69.21 114.41" fill="none" stroke="url(#ouro)" stroke-width="8.690671031096564"
+          stroke-linejoin="miter" stroke-linecap="butt" stroke-miterlimit="10"/>
+  </g>
+</svg>
