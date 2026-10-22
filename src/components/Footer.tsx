@@ -1,3 +1,4 @@
+import { useAno } from '@/hooks/useRelogio'
 import { registrarConversaoWhatsApp } from '@/lib/analytics'
 import { BUSINESS, SCHEDULE_SUMMARY, SERVICES } from '@/lib/business'
 import { linkWhatsApp } from '@/lib/diagnostico'
@@ -22,7 +23,7 @@ type Props = {
 }
 
 export function Footer({ onNavigate, onSection }: Props) {
-  const ano = new Date().getFullYear()
+  const ano = useAno()
 
   return (
     <footer className="relative border-t border-edge bg-ink">
@@ -133,7 +134,8 @@ export function Footer({ onNavigate, onSection }: Props) {
 
           <div className="mt-6 flex flex-wrap items-center justify-between gap-4 text-xs text-plat-600">
             <p>
-              © {ano} {BUSINESS.name}. {BUSINESS.address.city}/{BUSINESS.address.state}.
+              ©{ano ? ` ${ano}` : ''} {BUSINESS.name}. {BUSINESS.address.city}/
+              {BUSINESS.address.state}.
             </p>
             <p>
               Feito por{' '}

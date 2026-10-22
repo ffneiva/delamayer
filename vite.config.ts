@@ -66,31 +66,41 @@ function perRouteHtmlPlugin(): Plugin {
             `$1${escapeHtml(rota.description)}$2`,
           )
           .replace(/(<link rel="canonical" href=")[^"]*(")/, `$1${canonicalFor(rota)}$2`)
-          .replace(/(<meta property="og:title" content=")[^"]*(")/, `$1${escapeHtml(rota.title)}$2`)
           .replace(
-            /(<meta property="og:description" content=")[^"]*(")/,
-            `$1${escapeHtml(rota.description)}$2`,
-          )
-          .replace(/(<meta property="og:url" content=")[^"]*(")/, `$1${canonicalFor(rota)}$2`)
-          // A arte de compartilhamento é própria de cada rota (ver ogUrlDe).
-          // Sem esta reescrita, as cinco páginas apareceriam no WhatsApp com a
-          // mesma imagem — e um link colado é lido pela imagem antes do texto.
-          .replace(/(<meta property="og:image" content=")[^"]*(")/, `$1${ogUrlDe(rota)}$2`)
-          .replace(/(<meta name="twitter:image" content=")[^"]*(")/, `$1${ogUrlDe(rota)}$2`)
-          .replace(
-            /(<meta property="og:image:alt" content=")[^"]*(")/,
-            `$1${escapeHtml(rota.ogLinhas ? rota.ogLinhas.join(' ') : rota.title)}$2`,
-          )
-          .replace(
-            /(<meta name="twitter:image:alt" content=")[^"]*(")/,
-            `$1${escapeHtml(rota.ogLinhas ? rota.ogLinhas.join(' ') : rota.title)}$2`,
-          )
-          .replace(
-            /(<meta name="twitter:title" content=")[^"]*(")/,
+            /(<meta\s+property="og:title"\s+content=")[^"]*(")/,
             `$1${escapeHtml(rota.title)}$2`,
           )
           .replace(
-            /(<meta name="robots" content=")[^"]*(")/,
+            /(<meta\s+property="og:description"\s+content=")[^"]*(")/,
+            `$1${escapeHtml(rota.description)}$2`,
+          )
+          .replace(/(<meta\s+property="og:url"\s+content=")[^"]*(")/, `$1${canonicalFor(rota)}$2`)
+          // A arte de compartilhamento é própria de cada rota (ver ogUrlDe).
+          // Sem esta reescrita, as cinco páginas apareceriam no WhatsApp com a
+          // mesma imagem — e um link colado é lido pela imagem antes do texto.
+          .replace(/(<meta\s+property="og:image"\s+content=")[^"]*(")/, `$1${ogUrlDe(rota)}$2`)
+          .replace(/(<meta\s+name="twitter:image"\s+content=")[^"]*(")/, `$1${ogUrlDe(rota)}$2`)
+          .replace(
+            /(<meta\s+property="og:image:alt"\s+content=")[^"]*(")/,
+            `$1${escapeHtml(rota.ogLinhas ? rota.ogLinhas.join(' ') : rota.title)}$2`,
+          )
+          .replace(
+            /(<meta\s+name="twitter:image:alt"\s+content=")[^"]*(")/,
+            `$1${escapeHtml(rota.ogLinhas ? rota.ogLinhas.join(' ') : rota.title)}$2`,
+          )
+          .replace(
+            /(<meta\s+name="twitter:title"\s+content=")[^"]*(")/,
+            `$1${escapeHtml(rota.title)}$2`,
+          )
+          // A description de compartilhamento quebrava linha no index.html e a
+          // regex antiga (com espaço literal) não casava: todas as rotas saíam
+          // com a description da home no WhatsApp.
+          .replace(
+            /(<meta\s+name="twitter:description"\s+content=")[^"]*(")/,
+            `$1${escapeHtml(rota.description)}$2`,
+          )
+          .replace(
+            /(<meta\s+name="robots"\s+content=")[^"]*(")/,
             `$1${rota.noindex ? 'noindex, follow' : DIRETIVAS_ROBOTS}$2`,
           )
           // Dados estruturados próprios por rota: trilha de navegação nas

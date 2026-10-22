@@ -1,9 +1,9 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useState } from 'react'
+import { useEstadoAtual } from '@/hooks/useRelogio'
 import { registrarConversaoWhatsApp } from '@/lib/analytics'
 import { BUSINESS, SERVICOS_NUCLEO } from '@/lib/business'
 import { linkWhatsApp } from '@/lib/diagnostico'
-import { estadoAtual } from '@/lib/hours'
 import { ROUTES } from '@/lib/routes'
 import { cn } from '@/lib/utils'
 import { Logo } from './Logo'
@@ -54,7 +54,7 @@ export function Nav({ onSection, onNavigate, path }: Props) {
   const [aberto, setAberto] = useState(false)
   const [encolhido, setEncolhido] = useState(false)
   const [escondido, setEscondido] = useState(false)
-  const estado = estadoAtual()
+  const estado = useEstadoAtual()
 
   /**
    * O cabeçalho recua ao descer e volta ao subir.

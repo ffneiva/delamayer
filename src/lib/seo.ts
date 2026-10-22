@@ -49,7 +49,7 @@ function faqNode(id: string, itens: typeof FAQ) {
 function videoNode(caminho: string) {
   return {
     '@type': 'VideoObject',
-    '@id': `${BUSINESS.url}${caminho === '/' ? '' : caminho}#materia`,
+    '@id': `${BUSINESS.url}${caminho === '/' ? '/' : caminho}#materia`,
     name: MIDIA.tituloOriginal,
     description: MIDIA.chamada,
     thumbnailUrl: [MIDIA.miniatura],
@@ -101,7 +101,11 @@ function nosDaRota(caminho: string) {
   const rota = routeFor(caminho)
 
   if (rota.path === '/') {
-    return [faqNode(`${BUSINESS.url}/#faq`, perguntasDa('home')), videoNode('/')]
+    return [
+      paginaNode('/', 'Assessoria de crédito em Goiânia'),
+      faqNode(`${BUSINESS.url}/#faq`, perguntasDa('home')),
+      videoNode('/'),
+    ]
   }
 
   // As páginas-guia: cada uma declara as perguntas que mostra, e só elas.
