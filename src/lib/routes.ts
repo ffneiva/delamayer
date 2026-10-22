@@ -40,9 +40,9 @@ export const ROUTES: Route[] = [
   {
     path: '/',
     label: 'Início',
-    title: 'Limpa nome, rating de crédito bancário e Bacen em Goiânia · Delamayer',
+    title: 'Limpa nome, rating de crédito e Bacen em Goiânia · Delamayer',
     description:
-      'Assessoria de crédito em Goiânia: leitura do CPF e do CNPJ, rating de crédito bancário, registro no Banco Central e limpa nome por ação judicial, com pedido de liminar que o juiz decide. Atendimento pelo WhatsApp.',
+      'Assessoria de crédito em Goiânia: leitura do CPF e do CNPJ, rating de crédito bancário, Banco Central e limpa nome por ação judicial. Atendimento pelo WhatsApp.',
     ogLinhas: ['Assessoria de crédito', 'em Goiânia.'],
     ogNota: 'CPF e CNPJ · Rating bancário · Banco Central',
   },
@@ -51,7 +51,7 @@ export const ROUTES: Route[] = [
     label: 'Diagnóstico',
     title: 'Diagnóstico de crédito grátis · Delamayer, Goiânia',
     description:
-      'Responda cinco perguntas e descubra onde o seu crédito está travado: negativação, rating de crédito bancário ou registro no Banco Central. O resultado vira uma mensagem pronta no WhatsApp da Delamayer.',
+      'Cinco perguntas para descobrir onde o seu crédito trava: negativação, rating de crédito bancário ou Banco Central. O resultado sai pronto no WhatsApp.',
     ogLinhas: ['Cinco perguntas', 'e uma leitura honesta.'],
     ogNota: 'Cinco perguntas · Sem custo · Resposta na hora',
   },
@@ -60,7 +60,7 @@ export const ROUTES: Route[] = [
     label: 'Formulário',
     title: 'Fale com um consultor · Delamayer Soluções Financeiras',
     description:
-      'Quatro perguntas rápidas — nome, se está limpo, se está negativado e o que quer financiar — e um consultor retorna. São as mesmas perguntas do atendimento, respondidas antes da conversa começar.',
+      'Quatro perguntas rápidas sobre o seu nome e o que você quer financiar, e um consultor da Delamayer retorna pelo WhatsApp com as respostas já em mãos.',
     ogLinhas: ['Quatro perguntas.', 'E um consultor te chama.'],
     ogNota: 'As mesmas perguntas do atendimento, adiantadas',
   },
@@ -70,45 +70,45 @@ export const ROUTES: Route[] = [
   {
     path: '/limpar-nome',
     label: 'Limpar o nome',
-    title: 'Como limpar o nome: pagar, esperar ou pela Justiça · Delamayer',
+    title: 'Como limpar o nome: pagar, esperar ou na Justiça · Delamayer',
     description:
-      'Os três caminhos para limpar o nome no Serasa e no SPC: pagar ou negociar, esperar o prazo máximo do registro ou entrar na Justiça com pedido de liminar. O que cada um resolve, quanto tempo leva e quando faz sentido.',
+      'Os três caminhos para limpar o nome no Serasa e no SPC: pagar ou negociar, esperar o prazo do registro ou ação judicial com liminar. Quando cada um faz sentido.',
     ogLinhas: ['Limpar o nome', 'tem três caminhos.'],
     ogNota: 'Pagar · Esperar · Ação judicial com liminar',
   },
   {
     path: '/nome-sujo',
     label: 'Nome sujo?',
-    title: 'Como saber se o nome está sujo: consulta grátis do CPF e CNPJ',
+    title: 'Como saber se o nome está sujo: consulta grátis do CPF',
     description:
-      'Os cinco lugares oficiais onde você consulta de graça se o CPF ou o CNPJ está negativado: Serasa, SPC, Boa Vista, protesto em cartório e o Registrato do Banco Central. O que cada um mostra, e quanto tempo o nome fica sujo.',
+      'Onde consultar de graça se o CPF ou o CNPJ está negativado: Serasa, SPC, Boa Vista, cartório de protesto e Registrato do Banco Central. O que cada um mostra.',
     ogLinhas: ['Seu nome está sujo?', 'Dá para ver de graça.'],
     ogNota: 'Serasa · SPC · Boa Vista · Protesto · Banco Central',
   },
   {
     path: '/bacen',
     label: 'Banco Central',
-    title: 'Como limpar o nome no Banco Central (Registrato e SCR) · Delamayer',
+    title: 'Limpar o nome no Banco Central: Registrato e SCR · Delamayer',
     description:
-      'Nome limpo no Serasa e crédito negado no banco? O motivo costuma estar no SCR do Banco Central. Como consultar o Registrato de graça, o que significam vencido e prejuízo, e como um registro é corrigido ou excluído.',
+      'Nome limpo no Serasa e crédito negado no banco? O motivo costuma estar no SCR do Banco Central. Como consultar o Registrato grátis e o que cada item significa.',
     ogLinhas: ['Nome limpo no Serasa', 'e sujo no Banco Central?'],
     ogNota: 'Registrato · SCR · Exclusão de Bacen',
   },
   {
     path: '/rating',
     label: 'Score × Rating',
-    title: 'Score alto e crédito negado? O rating de crédito bancário explica',
+    title: 'Score alto e crédito negado? Rating de crédito bancário',
     description:
-      'O score é calculado por Serasa e SPC; o rating de crédito bancário é interno do banco, vai de A a F e mede só o seu relacionamento com ele. Entenda por que os dois discordam, e o que fazer quando isso trava o seu crédito.',
+      'O score vem do Serasa e do SPC; o rating de crédito bancário é interno do banco e vai de A a F. Por que os dois discordam e o que fazer quando o crédito trava.',
     ogLinhas: ['Score alto,', 'crédito negado.'],
     ogNota: 'O índice que o banco usa e não aparece em consulta',
   },
   {
     path: '/imovel',
     label: 'Imóvel',
-    title: 'Financiamento imobiliário com o nome negativado · Delamayer Goiânia',
+    title: 'Financiamento imobiliário com nome negativado · Delamayer',
     description:
-      'Tirar a restrição do CPF é o primeiro passo para financiar um imóvel, não o último. Veja o que o gerente analisa além do nome limpo, na ordem em que ele analisa, e como chegar à proposta com tudo resolvido.',
+      'Tirar a restrição do CPF é o primeiro passo para financiar um imóvel. Veja o que o banco analisa além do nome limpo e como chegar à proposta com tudo resolvido.',
     ogLinhas: ['Nome limpo é o', 'primeiro passo.'],
     ogNota: 'O que o banco analisa além da restrição',
   },
@@ -117,7 +117,7 @@ export const ROUTES: Route[] = [
     label: 'Privacidade',
     title: 'Política de privacidade · Delamayer Soluções Financeiras',
     description:
-      'Como a Delamayer trata dados neste site: o que é coletado no formulário, o que é registrado sobre a navegação, por quanto tempo fica guardado e como exercer seus direitos pela LGPD.',
+      'Como a Delamayer trata os dados deste site: o que o formulário coleta, o que fica da navegação, por quanto tempo e como exercer seus direitos pela LGPD.',
   },
 ]
 
