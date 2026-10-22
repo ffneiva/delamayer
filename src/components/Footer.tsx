@@ -140,7 +140,7 @@ export function Footer({ onNavigate, onSection }: Props) {
             <p>
               Feito por{' '}
               <a
-                href="https://github.com/ffneiva"
+                href="https://ffneiva.com.br"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-plat-500 transition-colors hover:text-gold-300"
