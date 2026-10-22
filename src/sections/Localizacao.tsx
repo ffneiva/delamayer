@@ -2,8 +2,9 @@ import { ButtonLink } from '@/components/Button'
 import { Mapa } from '@/components/Mapa'
 import { Reveal } from '@/components/Reveal'
 import { SectionHeading } from '@/components/SectionHeading'
+import { useDiaDeHoje, useEstadoAtual } from '@/hooks/useRelogio'
 import { BUSINESS, SCHEDULE } from '@/lib/business'
-import { agoraEmGoiania, estadoAtual, porExtenso } from '@/lib/hours'
+import { porExtenso } from '@/lib/hours'
 import { cn } from '@/lib/utils'
 
 /**
@@ -15,8 +16,8 @@ import { cn } from '@/lib/utils'
  * terceiro.
  */
 export function Localizacao() {
-  const estado = estadoAtual()
-  const hoje = agoraEmGoiania().dia
+  const estado = useEstadoAtual()
+  const hoje = useDiaDeHoje()
 
   return (
     <section id="contato" className="scroll-mt-24 py-24 md:py-32">

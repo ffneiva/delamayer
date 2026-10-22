@@ -1,5 +1,5 @@
 import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot, hydrateRoot } from 'react-dom/client'
 import App from './App'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import './index.css'
@@ -11,13 +11,21 @@ import { iniciarPixel } from './lib/pixel'
 // partir de src/lib/seo.ts e o grava direto no HTML durante o build, para que o
 // dado estruturado chegue mesmo a crawlers que não executam JavaScript.
 
-createRoot(document.getElementById('root')!).render(
+const raiz = document.getElementById('root')!
+const app = (
   <StrictMode>
     <ErrorBoundary>
       <App />
     </ErrorBoundary>
-  </StrictMode>,
+  </StrictMode>
 )
+
+// No build, cada rota já chega com o conteúdo pré-renderizado (scripts/
+// prerender.mjs): a hidratação reaproveita esse HTML em vez de redesenhar a
+// página, o que manteria a cortina do preloader recomeçando no meio. No modo de
+// desenvolvimento o `#root` vem vazio e a montagem é a de sempre.
+if (raiz.hasChildNodes()) hydrateRoot(raiz, app)
+else createRoot(raiz).render(app)
 
 /**
  * Telemetria depois do primeiro render, e nunca antes.

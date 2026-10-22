@@ -91,6 +91,7 @@ jobs:
             --exclude "robots.txt" \
             --exclude "sitemap.xml" \
             --exclude "llms.txt" \
+            --exclude "llms-full.txt" \
             --exclude "site.webmanifest" \
             --exclude "og*.png" \
             --exclude "google*.html" \
@@ -140,6 +141,11 @@ jobs:
           # navegador baixar o arquivo em vez de exibi-lo, e quem abre a URL
           # está justamente querendo lê-la.
           aws s3 cp dist/llms.txt "s3://${{ vars.S3_BUCKET_NAME }}/llms.txt" \
+            --no-progress --content-type "text/plain; charset=utf-8" \
+            --cache-control "public,max-age=3600"
+
+          # O texto completo das páginas, gerado pelo pré-render (scripts/prerender.mjs).
+          aws s3 cp dist/llms-full.txt "s3://${{ vars.S3_BUCKET_NAME }}/llms-full.txt" \
             --no-progress --content-type "text/plain; charset=utf-8" \
             --cache-control "public,max-age=3600"
 
