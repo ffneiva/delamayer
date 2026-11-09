@@ -481,17 +481,17 @@ export const RATING_ESCALA = [
 export const MIDIA = {
   veiculo: 'TV Serra Dourada · SBT Goiás',
   titulo: 'A diferença entre o score e o rating de crédito bancário',
-  tituloOriginal: 'SBT & Delamayer: A Diferença entre o SCORE e o RATING de Crédito Bancário',
+  tituloOriginal: 'SBT & Delamayer A Diferença entre o SCORE e o RATING de Crédito Bancário',
   chamada:
     'A explicação que virou pauta de TV aberta: por que o crédito é negado mesmo ' +
     'com score alto, e onde procurar a trava.',
-  url: 'https://www.youtube.com/watch?v=lF44FdFNcn4',
-  youtubeId: 'lF44FdFNcn4',
+  url: 'https://www.youtube.com/watch?v=o0VpLlE6Y80',
+  youtubeId: 'o0VpLlE6Y80',
   /** ISO 8601, como o schema.org espera. */
-  publicadoEm: '2026-04-03',
+  publicadoEm: '2026-11-09',
   /** Duração em formato de período ISO 8601 — 195 segundos. */
   duracao: 'PT3M15S',
-  miniatura: 'https://i.ytimg.com/vi/lF44FdFNcn4/maxresdefault.jpg',
+  miniatura: 'https://i.ytimg.com/vi/o0VpLlE6Y80/maxresdefault.jpg',
 } as const
 
 // ─────────────────────────────────────────────────────────────────────────────
